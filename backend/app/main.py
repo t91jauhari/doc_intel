@@ -400,35 +400,20 @@ class ConfigInput(BaseModel):
 
 @app.post("/api/config/publish")
 def publish_config(data: ConfigInput, user=Depends(ADMIN)):
-    from .extraction_prompts import system_instruction
-    for profile in data.payload.get("profiles", {}).values():
-        profile["system_instruction"] = system_instruction(profile)
+    from .configuration.publication import publish_configuration, ConfigurationStorageNotReady
+    from .configuration.service import StaleConfiguration
+
     try:
-        validate_config(data.payload)
+        with SessionLocal.begin() as db:
+            return publish_configuration(db, organization=user.org, actor=user.id,
+                                         expected_version=data.expected_version, payload=data.payload,
+                                         storage_mode=settings.configuration_storage_mode)
+    except StaleConfiguration as exc:
+        raise HTTPException(409, str(exc)) from exc
+    except ConfigurationStorageNotReady as exc:
+        raise HTTPException(503, str(exc)) from exc
     except (ValueError, TypeError, KeyError) as exc:
         raise HTTPException(422, str(exc))
-    with SessionLocal.begin() as db:
-        from .profile_guidance import locked_latest_config
-        latest = locked_latest_config(db, user.org)
-        if latest.version != data.expected_version:
-            raise HTTPException(409, "Configuration changed. Reload before publishing.")
-        cfg = Config(
-            org=user.org,
-            version=latest.version + 1,
-            payload=data.payload,
-            published_by=user.id,
-        )
-        db.add(cfg)
-        db.flush()
-        audit(
-            db,
-            user.org,
-            user.id,
-            "config.published",
-            version=cfg.version,
-            previous_version=latest.version,
-        )
-        return {"id": cfg.id, "version": cfg.version, "payload": cfg.payload}
 
 
 @app.post("/api/config/test")

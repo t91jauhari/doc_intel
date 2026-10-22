@@ -10,3 +10,5 @@ Step 2: 0001_publications applied to sqe_refactor in stopped-after-test sqe-refa
 Step 4: 0002_identity_bindings applied on sqe_refactor only. Migration replay empty. Configuration history and case rows verified unchanged; no new live tables. Restored DB retained stopped. Additive rollback remains old runtime plus unused tables.
 
 Step 6: migration 0003_family_rule_membership applied only to sqe_refactor. Replay applied none. Historical publications 40, source rows unchanged. Dedicated new-policy import tested in temporary PostgreSQL schema and SQLite. Existing live schema untouched. Additive rollback leaves new tables unused.
+
+Step12: no new schema migration. Publication service rehearsed on already migrated isolated sqe_refactor; proposed Config41/publication/audit all rolled back. Unit migration-history corruption test ran in temporary schema and rolled back; production journal untouched. Live deployment flag unchanged.

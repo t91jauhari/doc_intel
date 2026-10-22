@@ -85,3 +85,16 @@ def test_identity_bindings_round_trip_in_postgres(isolated_engine):
         assert compile_publication(session, publication) == payload
         assert session.scalar(text("SELECT count(*) FROM configuration_identity_bindings")) == 1
         assert session.scalar(text("SELECT count(*) FROM configuration_family_rule_members")) == 1
+
+
+def test_publication_requires_intact_migration_history(isolated_engine):
+    from sqlalchemy.orm import Session
+    from app.configuration.publication import require_storage_schema, ConfigurationStorageNotReady
+
+    migrate.apply_migrations(isolated_engine, expected_database="sqe_refactor")
+    with Session(isolated_engine) as session:
+        require_storage_schema(session)
+        session.execute(text("UPDATE configuration_schema_migrations SET checksum=:checksum"), {"checksum": "0" * 64})
+        with pytest.raises(ConfigurationStorageNotReady, match="migration history"):
+            require_storage_schema(session)
+        session.rollback()

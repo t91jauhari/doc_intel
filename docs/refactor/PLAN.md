@@ -1,16 +1,30 @@
-# Refactor plan
+# Refactor plan and current position
 
-- [ ] B0: isolated source baseline, Git commit, database archive and restore rehearsal
-- [ ] B1: configuration inventory and regression baseline
-- [ ] D1: schema design: family, profile, identity binding, rule, policy, dataset, report binding; immutable publication revisions
-- [ ] D2: typed contracts and compatibility compiler to existing payload format
-- [ ] M1: explicit idempotent import from current configuration; round-trip equivalence tests
-- [ ] R1: configurable grouping and generic SOP policies
-- [ ] R2: application services, provider boundaries and explicit prompt inputs
-- [ ] R3: independent report read models and dataset registry
-- [ ] V1: full regression, saved dataset comparison and parallel evaluation
-- [ ] C1: reviewed cutover, health verification and rollback rehearsal
+Current position: **M1 - validated import and publication integration (Step 12)**.
+No live cutover. Status refers to isolated implementation, not activation.
 
-A step is complete only with linked evidence. Distinguish implemented, tested, migrated and activated. Never mark all hard coding removed without inventory closure.
+| Point | Status | Completed | Remaining |
+|---|---|---|---|
+| B0 Baseline and isolation | Partial | Git baseline, database backup/restore | Object-storage backup |
+| B1 Inventory and regression | Partial | Initial inventory, saved history, baseline failure recorded | Complete all business configuration locations |
+| D1 Configuration schema | Partial | Publications, entries, identity bindings, family-rule membership; 3 migrations | Remaining entities and database immutability |
+| D2 Typed contracts/compiler | Partial | Lossless history, identity/text comparison contracts | Full configuration typing and policy types |
+| **M1 Import/publication** | **Current - partial** | 40 historical imports; opt-in atomic publication | Other writers, normalized reads, rollout |
+| R1 Grouping and SOP | Partial | Identity, text comparisons, applicability, editor | Complex/visual policies, dynamic profiles and contexts |
+| R2 Services/providers | Partial | Preview/publication services, upgrade router | Remaining API services and provider/prompt boundaries |
+| R3 Datasets/reports | Pending | Existing report compatibility retained | Dataset registry and report read models |
+| V1 Final verification | Partial | Unit/API/browser checks, 54 cases/7049 findings | Full suite, extraction/dataset acceptance, baseline bugs |
+| C1 Cutover/rollback | Pending | Original app unchanged | Backups, activation, monitoring and rollback |
 
-Current implementation milestones (2026-10-22): configuration compatibility persistence and two additive migrations rehearsed; configurable identity policy tested against 67 cases; explicit SOP membership compiled identically across 40 revisions/112 flows. Remaining: typed SOP runtime integration, family-rule tables/UI, service boundaries, datasets/reporting, full regression, public sanitization and cutover. No activation.
+CHANGES.md records files and commits; VERIFICATION.md records checks;
+MIGRATIONS.md records isolated schema changes; CHECKPOINT.md records resume state.
+Do not equate implemented, tested, migrated and activated.
+
+## Step 12 rollout boundary
+
+CONFIGURATION_STORAGE_MODE defaults to legacy. Explicit dual mode requires all
+configuration tables and matching PostgreSQL migration checksums; no startup
+schema creation. Interactive publishing writes legacy Config, normalized rows
+and audit in one caller-owned transaction. Case pins/extraction stay unchanged.
+Other writers (startup seeds and profile-guidance append) still need migration
+before normalized storage can become authoritative application-wide.

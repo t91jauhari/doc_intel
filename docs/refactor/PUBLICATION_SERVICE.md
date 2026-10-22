@@ -1,0 +1,37 @@
+# Atomic interactive configuration publication
+
+Plan position: M1, Step 12. Implemented/tested in isolation, not activated.
+
+The existing publish endpoint now delegates to `configuration/publication.py`.
+The application service copies and JSON-normalizes request data, compiles system
+instructions, validates the draft, acquires the existing organization publication
+lock, checks expected version, and writes a new Config revision plus audit.
+
+Infrastructure rollout setting `CONFIGURATION_STORAGE_MODE`:
+- `legacy` (default): existing persistence contract; new tables not required.
+- `dual`: also imports the same revision into publication/entry/binding tables
+  and verifies reconstruction inside the same transaction.
+
+The HTTP caller owns commit/rollback. A failure after Config flush or after
+normalized insertion rolls back all rows. Stale requests return409; absent tables
+or mismatched PostgreSQL migration history return503. The service never creates
+tables and never enables schema migration during startup. PostgreSQL deployment
+requires the explicit migrations already rehearsed; SQLite metadata creation is
+used only in isolated unit tests.
+
+Historical versions, case pins, extraction inputs, authentication and CSRF remain
+unchanged. A reconstruction digest is checked before return. No automatic
+reprocessing or provider call occurs during publication.
+
+Verification: 17 publication/API/flow tests passed;5 PostgreSQL migration tests
+passed; final input-immutability/prompt-compilation test passed separately.
+Restored PostgreSQL rehearsal proposed version41, verified equal reconstruction,
+then rolled back. Configuration/case/publication/audit records remained unchanged.
+
+## Remaining M1 work
+
+Only interactive `/api/config/publish` uses this service today. Startup seeds,
+profile-guidance append and other direct Config writers still need integration.
+Normalized read authority and database-enforced immutability are also pending.
+Do not turn dual storage into the application-wide source of truth yet. The live
+environment has not been changed; rollout flag remains at its legacy default.

@@ -12,6 +12,7 @@ load_dotenv(ROOT / ".env")
 
 @dataclass(frozen=True)
 class Settings:
+    configuration_storage_mode: str = os.getenv("CONFIGURATION_STORAGE_MODE", "legacy")
     environment: str = os.getenv("APP_ENV", "development")
     database_url: str = os.getenv(
         "DATABASE_URL", f"sqlite:///{ROOT / 'data/platform.db'}"
@@ -40,6 +41,8 @@ class Settings:
 
 
 settings = Settings()
+if settings.configuration_storage_mode not in {"legacy", "dual"}:
+    raise RuntimeError("CONFIGURATION_STORAGE_MODE must be legacy or dual.")
 settings.storage.mkdir(parents=True, exist_ok=True)
 (ROOT / "data").mkdir(exist_ok=True)
 if not settings.secret:
