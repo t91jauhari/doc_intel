@@ -1,0 +1,419 @@
+{
+  "id": "ext-synthetic-account_opening_form",
+  "status": "COMPLETED",
+  "extract_result": {
+    "form_type": null,
+    "branch": null,
+    "transaction_date": null,
+    "customer_status": null,
+    "existing_account": null,
+    "existing_account_number": null,
+    "account_type": null,
+    "currency": null,
+    "acting_for": null,
+    "customer_name": "Synthetic Account Customer",
+    "birth_place_date": null,
+    "gender": null,
+    "marital_status": null,
+    "citizenship": null,
+    "identity_type": null,
+    "identity_number": null,
+    "identity_valid_until": null,
+    "supporting_identity_type": null,
+    "supporting_identity_number": null,
+    "supporting_identity_valid_until": null,
+    "tin_ssn": null,
+    "mother_name": null,
+    "npwp": null,
+    "current_address_choice": null,
+    "current_address": null,
+    "rt": null,
+    "rw": null,
+    "village": null,
+    "district": null,
+    "city": null,
+    "postal_code": null,
+    "province": null,
+    "mailing_address_choice": null,
+    "residence_status": null,
+    "education": null,
+    "home_phone": null,
+    "mobile_phone": null,
+    "email": null,
+    "occupation": null,
+    "employment_status": null,
+    "business_sector": null,
+    "company_name": null,
+    "position": null,
+    "employed_since": null,
+    "office_address": null,
+    "office_city": null,
+    "office_postal_code": null,
+    "office_province": null,
+    "office_phone": null,
+    "office_extension": null,
+    "monthly_income": null,
+    "opening_purpose": null,
+    "source_of_funds": null,
+    "additional_income_source": null,
+    "additional_monthly_income": null,
+    "transaction_frequency": null,
+    "transaction_average": null,
+    "facilities": null,
+    "atm_card_number": null,
+    "pin_maker_id": null,
+    "token_id": null,
+    "sms_notification": null,
+    "foreign_tax_obligation": null,
+    "consent": null,
+    "consent_place": null,
+    "consent_date": null,
+    "signing_customer_name": null,
+    "customer_signature": {
+      "present": null,
+      "text": null,
+      "complete": null,
+      "evidence": "Synthetic fixture; no source observation"
+    },
+    "meterai": {
+      "present": null,
+      "text": null,
+      "complete": null,
+      "evidence": "Synthetic fixture; no source observation"
+    },
+    "cif": null,
+    "classification_code": null,
+    "bank_relationship": null,
+    "dhn_check": null,
+    "risk_category": null,
+    "sector": null,
+    "industry": null,
+    "target": null,
+    "referral_source": null,
+    "marketing_code": null,
+    "referral_other": null,
+    "identity_copy_check": null,
+    "npwp_copy_check": null,
+    "other_required_documents": null,
+    "cs_name": null,
+    "cs_date": null,
+    "supervisor_name": null,
+    "supervisor_date": null,
+    "supervisor_approval": null,
+    "cs_signature": {
+      "present": null,
+      "text": null,
+      "complete": null,
+      "evidence": "Synthetic fixture; no source observation"
+    },
+    "supervisor_signature": {
+      "present": null,
+      "text": null,
+      "complete": null,
+      "evidence": "Synthetic fixture; no source observation"
+    },
+    "verification_stamp": {
+      "present": null,
+      "text": null,
+      "complete": null,
+      "evidence": "Synthetic fixture; no source observation"
+    },
+    "confirmation_stamp": {
+      "present": null,
+      "text": null,
+      "complete": null,
+      "evidence": "Synthetic fixture; no source observation"
+    },
+    "cs_stamp": {
+      "present": null,
+      "text": null,
+      "complete": null,
+      "evidence": "Synthetic fixture; no source observation"
+    }
+  },
+  "extract_metadata": {
+    "field_metadata": {
+      "document_metadata": {
+        "form_type": {
+          "confidence": 0.99
+        },
+        "branch": {
+          "confidence": 0.99
+        },
+        "transaction_date": {
+          "confidence": 0.99
+        },
+        "customer_status": {
+          "confidence": 0.99
+        },
+        "existing_account": {
+          "confidence": 0.99
+        },
+        "existing_account_number": {
+          "confidence": 0.99
+        },
+        "account_type": {
+          "confidence": 0.99
+        },
+        "currency": {
+          "confidence": 0.99
+        },
+        "acting_for": {
+          "confidence": 0.99
+        },
+        "customer_name": {
+          "confidence": 0.99
+        },
+        "birth_place_date": {
+          "confidence": 0.99
+        },
+        "gender": {
+          "confidence": 0.99
+        },
+        "marital_status": {
+          "confidence": 0.99
+        },
+        "citizenship": {
+          "confidence": 0.99
+        },
+        "identity_type": {
+          "confidence": 0.99
+        },
+        "identity_number": {
+          "confidence": 0.99
+        },
+        "identity_valid_until": {
+          "confidence": 0.99
+        },
+        "supporting_identity_type": {
+          "confidence": 0.99
+        },
+        "supporting_identity_number": {
+          "confidence": 0.99
+        },
+        "supporting_identity_valid_until": {
+          "confidence": 0.99
+        },
+        "tin_ssn": {
+          "confidence": 0.99
+        },
+        "mother_name": {
+          "confidence": 0.99
+        },
+        "npwp": {
+          "confidence": 0.99
+        },
+        "current_address_choice": {
+          "confidence": 0.99
+        },
+        "current_address": {
+          "confidence": 0.99
+        },
+        "rt": {
+          "confidence": 0.99
+        },
+        "rw": {
+          "confidence": 0.99
+        },
+        "village": {
+          "confidence": 0.99
+        },
+        "district": {
+          "confidence": 0.99
+        },
+        "city": {
+          "confidence": 0.99
+        },
+        "postal_code": {
+          "confidence": 0.99
+        },
+        "province": {
+          "confidence": 0.99
+        },
+        "mailing_address_choice": {
+          "confidence": 0.99
+        },
+        "residence_status": {
+          "confidence": 0.99
+        },
+        "education": {
+          "confidence": 0.99
+        },
+        "home_phone": {
+          "confidence": 0.99
+        },
+        "mobile_phone": {
+          "confidence": 0.99
+        },
+        "email": {
+          "confidence": 0.99
+        },
+        "occupation": {
+          "confidence": 0.99
+        },
+        "employment_status": {
+          "confidence": 0.99
+        },
+        "business_sector": {
+          "confidence": 0.99
+        },
+        "company_name": {
+          "confidence": 0.99
+        },
+        "position": {
+          "confidence": 0.99
+        },
+        "employed_since": {
+          "confidence": 0.99
+        },
+        "office_address": {
+          "confidence": 0.99
+        },
+        "office_city": {
+          "confidence": 0.99
+        },
+        "office_postal_code": {
+          "confidence": 0.99
+        },
+        "office_province": {
+          "confidence": 0.99
+        },
+        "office_phone": {
+          "confidence": 0.99
+        },
+        "office_extension": {
+          "confidence": 0.99
+        },
+        "monthly_income": {
+          "confidence": 0.99
+        },
+        "opening_purpose": {
+          "confidence": 0.99
+        },
+        "source_of_funds": {
+          "confidence": 0.99
+        },
+        "additional_income_source": {
+          "confidence": 0.99
+        },
+        "additional_monthly_income": {
+          "confidence": 0.99
+        },
+        "transaction_frequency": {
+          "confidence": 0.99
+        },
+        "transaction_average": {
+          "confidence": 0.99
+        },
+        "facilities": {
+          "confidence": 0.99
+        },
+        "atm_card_number": {
+          "confidence": 0.99
+        },
+        "pin_maker_id": {
+          "confidence": 0.99
+        },
+        "token_id": {
+          "confidence": 0.99
+        },
+        "sms_notification": {
+          "confidence": 0.99
+        },
+        "foreign_tax_obligation": {
+          "confidence": 0.99
+        },
+        "consent": {
+          "confidence": 0.99
+        },
+        "consent_place": {
+          "confidence": 0.99
+        },
+        "consent_date": {
+          "confidence": 0.99
+        },
+        "signing_customer_name": {
+          "confidence": 0.99
+        },
+        "customer_signature": {
+          "confidence": 0.99
+        },
+        "meterai": {
+          "confidence": 0.99
+        },
+        "cif": {
+          "confidence": 0.99
+        },
+        "classification_code": {
+          "confidence": 0.99
+        },
+        "bank_relationship": {
+          "confidence": 0.99
+        },
+        "dhn_check": {
+          "confidence": 0.99
+        },
+        "risk_category": {
+          "confidence": 0.99
+        },
+        "sector": {
+          "confidence": 0.99
+        },
+        "industry": {
+          "confidence": 0.99
+        },
+        "target": {
+          "confidence": 0.99
+        },
+        "referral_source": {
+          "confidence": 0.99
+        },
+        "marketing_code": {
+          "confidence": 0.99
+        },
+        "referral_other": {
+          "confidence": 0.99
+        },
+        "identity_copy_check": {
+          "confidence": 0.99
+        },
+        "npwp_copy_check": {
+          "confidence": 0.99
+        },
+        "other_required_documents": {
+          "confidence": 0.99
+        },
+        "cs_name": {
+          "confidence": 0.99
+        },
+        "cs_date": {
+          "confidence": 0.99
+        },
+        "supervisor_name": {
+          "confidence": 0.99
+        },
+        "supervisor_date": {
+          "confidence": 0.99
+        },
+        "supervisor_approval": {
+          "confidence": 0.99
+        },
+        "cs_signature": {
+          "confidence": 0.99
+        },
+        "supervisor_signature": {
+          "confidence": 0.99
+        },
+        "verification_stamp": {
+          "confidence": 0.99
+        },
+        "confirmation_stamp": {
+          "confidence": 0.99
+        },
+        "cs_stamp": {
+          "confidence": 0.99
+        }
+      }
+    }
+  }
+}

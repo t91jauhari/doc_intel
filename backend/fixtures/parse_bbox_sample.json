@@ -1,0 +1,145 @@
+{
+  "job": {
+    "status": "COMPLETED"
+  },
+  "forms": {
+    "pages": [
+      {
+        "page_number": 1,
+        "page_width": 595.2,
+        "page_height": 841.68,
+        "forms": [
+          {
+            "json_": [
+              {
+                "field": "signature",
+                "id": null,
+                "bbox": null,
+                "is_empty": null,
+                "label": "Tanda Tangan Nasabah / Signature of customer",
+                "type": "field",
+                "value": true,
+                "value_items": null
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "items": {
+    "pages": [
+      {
+        "items": [
+          {
+            "type": "image",
+            "caption": "logo: Bank Sinarmas",
+            "value": "",
+            "bbox": [
+              {
+                "h": 35.08,
+                "w": 143.42,
+                "x": 27.46,
+                "y": 6.24,
+                "confidence": 0.5,
+                "end_index": null,
+                "label": "image",
+                "r": null,
+                "start_index": null
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "caption": null,
+            "value": "Tanda Tangan Nasabah / Signature of customer",
+            "bbox": [
+              {
+                "h": 35.08,
+                "w": 143.42,
+                "x": 27.46,
+                "y": 6.24,
+                "confidence": 0.5,
+                "end_index": null,
+                "label": "image",
+                "r": null,
+                "start_index": null
+              },
+              {
+                "h": 17.43,
+                "w": 240.15,
+                "x": 46.11,
+                "y": 779.48,
+                "confidence": 0.5,
+                "end_index": null,
+                "label": "text",
+                "r": null,
+                "start_index": null
+              },
+              {
+                "h": 9.27,
+                "w": 52.7,
+                "x": 46.31,
+                "y": 798.44,
+                "confidence": 0.5,
+                "end_index": null,
+                "label": "text",
+                "r": null,
+                "start_index": null
+              },
+              {
+                "h": 9.23,
+                "w": 111.18,
+                "x": 46.36,
+                "y": 809.71,
+                "confidence": 0.5,
+                "end_index": null,
+                "label": "text",
+                "r": null,
+                "start_index": null
+              },
+              {
+                "h": 8.66,
+                "w": 78.96,
+                "x": 46.37,
+                "y": 818.82,
+                "confidence": 0.5,
+                "end_index": null,
+                "label": "text",
+                "r": null,
+                "start_index": null
+              },
+              {
+                "h": 13.37,
+                "w": 35.52,
+                "x": 186.1,
+                "y": 790.88,
+                "confidence": 0.5,
+                "end_index": null,
+                "label": "form",
+                "r": null,
+                "start_index": null
+              },
+              {
+                "h": 17.22,
+                "w": 67.07,
+                "x": 434.46,
+                "y": 781.46,
+                "confidence": 0.5,
+                "end_index": null,
+                "label": "form",
+                "r": null,
+                "start_index": null
+              }
+            ]
+          }
+        ],
+        "page_height": 841.68,
+        "page_number": 1,
+        "page_width": 595.2,
+        "success": true,
+        "revisions": null
+      }
+    ]
+  }
+}

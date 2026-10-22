@@ -1,0 +1,303 @@
+{
+  "cases": [
+    {
+      "pack": "01-Langit-R.zip",
+      "sha256": "6ad6a9df8b5a493f5a34c5fcbf9b22166a87711bc1f22d0a8ac3b836e267edf9",
+      "documents": [
+        {
+          "filename": "Surat Pernyataan Pembelian Valas-Langit R.pdf",
+          "sha256": "93685d603852c5ff94eaa2737c7fc5de432ed94800050e9f403011c110f65aa3",
+          "bytes": 394410,
+          "pages": 1,
+          "expected_type": null,
+          "classification_status": "PENDING_CONTENT_VERIFICATION"
+        },
+        {
+          "filename": "(Compressed)Form LLD-Langit R.pdf",
+          "sha256": "f1ed50e817f2115ab70fa1cc57ffe0af8e7b08b5dc866584cf65795c2fb3e910",
+          "bytes": 132926,
+          "pages": 1,
+          "expected_type": null,
+          "classification_status": "PENDING_CONTENT_VERIFICATION"
+        },
+        {
+          "filename": "(Compressed)Form Riplay-Langit R.pdf",
+          "sha256": "ad0d4a44aad8e169a76bee718ad0eb02f7d4fac69e3207ca5230fe9eb4948b42",
+          "bytes": 1281975,
+          "pages": 4,
+          "expected_type": null,
+          "classification_status": "PENDING_CONTENT_VERIFICATION"
+        },
+        {
+          "filename": "(Compressed)Slip Aplikasi Transaksi-Langit R.pdf",
+          "sha256": "4e93b13591bbe6f18e41166ead09a07307b21db0c8c1856ae9b3e9881ce3a618",
+          "bytes": 267946,
+          "pages": 1,
+          "expected_type": null,
+          "classification_status": "PENDING_CONTENT_VERIFICATION"
+        },
+        {
+          "filename": "Dokumen Underlying-Langit R.pdf",
+          "sha256": "1589d8d855665133a45ff930340fedb0dfedeb3fbc64f1bd69e62ad20d609e8c",
+          "bytes": 46889,
+          "pages": 1,
+          "expected_type": null,
+          "classification_status": "PENDING_CONTENT_VERIFICATION"
+        },
+        {
+          "filename": "EKTP Langit Raharja.pdf",
+          "sha256": "86d613fbdd4284db593a15c43b5d3d604b8d9d04227a98bab64b6f6cfecf339c",
+          "bytes": 288145,
+          "pages": 1,
+          "expected_type": null,
+          "classification_status": "PENDING_CONTENT_VERIFICATION"
+        }
+      ],
+      "scenario": "PENDING_BANK_CONFIRMATION"
+    },
+    {
+      "pack": "01-Sri.zip",
+      "sha256": "6c1c887c5fd39da5e93155a0d3bb6545c6a8f43069fbdec844636a3f9139bcd7",
+      "documents": [
+        {
+          "filename": "Surat Pernyataan Pembelian Valas-Sri P.pdf",
+          "sha256": "96725a8bd2d240e57de8f1ff3029db39c7688114b99a09a32187b95b49d38d4a",
+          "bytes": 218948,
+          "pages": 1,
+          "expected_type": null,
+          "classification_status": "PENDING_CONTENT_VERIFICATION"
+        },
+        {
+          "filename": "EKTP-Sri Pujianty.png",
+          "sha256": "8aa5d4113a4478b1126efa0aa378bff6de2833dc4e430822de5a009b76658130",
+          "bytes": 1344849,
+          "pages": null,
+          "expected_type": null,
+          "classification_status": "PENDING_CONTENT_VERIFICATION"
+        },
+        {
+          "filename": "Form Riplay-Sri P.pdf",
+          "sha256": "3c19fc4ffa5a0132956a95150728c0ebcb72a85ace1a34c634ccc20e2578b2fd",
+          "bytes": 545741,
+          "pages": 4,
+          "expected_type": null,
+          "classification_status": "PENDING_CONTENT_VERIFICATION"
+        },
+        {
+          "filename": "Invoice-Sri P.pdf",
+          "sha256": "134f3a6bd2fbe1b0ffd72e81f8a342777cc8260b555c08efdf90da21c20308fc",
+          "bytes": 48581,
+          "pages": 1,
+          "expected_type": null,
+          "classification_status": "PENDING_CONTENT_VERIFICATION"
+        },
+        {
+          "filename": "Slip Aplikasi Transaksi-Sri P.pdf",
+          "sha256": "e53d4c7cb7ab93dec8649c74386d81703834e7ab4a88319bd1954d25f7ff6405",
+          "bytes": 61983,
+          "pages": 1,
+          "expected_type": null,
+          "classification_status": "PENDING_CONTENT_VERIFICATION"
+        }
+      ],
+      "scenario": "PENDING_BANK_CONFIRMATION"
+    },
+    {
+      "pack": "02-Indah-Laruna.zip",
+      "sha256": "34af7b32774bb1fadea55cd369746d7837c9fd51827e7e796def96a604780e36",
+      "documents": [
+        {
+          "filename": "EKTP-Indah Laruna.png",
+          "sha256": "074ef3c753317c777b796835a4ed6a14f000cad3846a10fd52dfeca96a603b7c",
+          "bytes": 1371218,
+          "pages": null,
+          "expected_type": null,
+          "classification_status": "PENDING_CONTENT_VERIFICATION"
+        },
+        {
+          "filename": "(Compressed)Form Riplay-Indah Laruna.pdf",
+          "sha256": "b714776e0f3ec6eb77a826f6335a15f08c7ea861b4c39b666076816d7f984dda",
+          "bytes": 1480994,
+          "pages": 4,
+          "expected_type": null,
+          "classification_status": "PENDING_CONTENT_VERIFICATION"
+        },
+        {
+          "filename": "(Compressed)Slip Aplikasi Transaksi-Indah Laruna.pdf",
+          "sha256": "6d930926220aa1e478eea92eb6304b285db3a8ac225c12ec8bbff4073423ddf8",
+          "bytes": 247257,
+          "pages": 1,
+          "expected_type": null,
+          "classification_status": "PENDING_CONTENT_VERIFICATION"
+        },
+        {
+          "filename": "(Compressed)Surat Pernyataan Pembelian Valas-Indah Laruna.pdf",
+          "sha256": "a247eac2da397e5765674d155f5f996f3330b7a3952d3a3ffcfc0d1a55c180be",
+          "bytes": 284329,
+          "pages": 1,
+          "expected_type": null,
+          "classification_status": "PENDING_CONTENT_VERIFICATION"
+        }
+      ],
+      "scenario": "PENDING_BANK_CONFIRMATION"
+    },
+    {
+      "pack": "02-Steve.zip",
+      "sha256": "d2e5ba3aa65b8b7577a1a4079cfed602b2ed3908a13b22e8daa70195b540abfa",
+      "documents": [
+        {
+          "filename": "Forex - Steve Captain - Surat Pernyataan Valas.pdf",
+          "sha256": "56ab2ac8402e90155845314f47adf94697ff8b7a4b07a42d575377e81627c044",
+          "bytes": 318848,
+          "pages": 1,
+          "expected_type": null,
+          "classification_status": "PENDING_CONTENT_VERIFICATION"
+        },
+        {
+          "filename": "Forex - Steve Captain - Aplikasi Transaksi.pdf",
+          "sha256": "3115adf2974f9962d6638fdd3c3542dd94d9e1e12c3a04da690aadaed81aec75",
+          "bytes": 142612,
+          "pages": 1,
+          "expected_type": null,
+          "classification_status": "PENDING_CONTENT_VERIFICATION"
+        },
+        {
+          "filename": "Forex - Steve Captain - EKTP.pdf",
+          "sha256": "7f894e9c2e3f4d24a12c489cb7b354d9d52852b5589f4191c561849a9969b2f4",
+          "bytes": 616970,
+          "pages": 1,
+          "expected_type": null,
+          "classification_status": "PENDING_CONTENT_VERIFICATION"
+        },
+        {
+          "filename": "Forex - Steve Captain - Invoice.pdf",
+          "sha256": "9d53fa7163a71e87d6be2894c58adbcc419b5b73d2a25bbb51c1688c0cd08f6f",
+          "bytes": 4245,
+          "pages": 2,
+          "expected_type": null,
+          "classification_status": "PENDING_CONTENT_VERIFICATION"
+        },
+        {
+          "filename": "Forex - Steve Captain - LLD.pdf",
+          "sha256": "c63362aea67b8744b19a468236bb1b1e265ef90a23bdf08baac393b25b526325",
+          "bytes": 185329,
+          "pages": 1,
+          "expected_type": null,
+          "classification_status": "PENDING_CONTENT_VERIFICATION"
+        },
+        {
+          "filename": "Forex - Steve Captain - Riplay.pdf",
+          "sha256": "5de07ddbff95fe56bd396acdc50ce0cf33f2cb74a0e672b89173e1f3b403a09e",
+          "bytes": 517191,
+          "pages": 4,
+          "expected_type": null,
+          "classification_status": "PENDING_CONTENT_VERIFICATION"
+        }
+      ],
+      "scenario": "PENDING_BANK_CONFIRMATION"
+    },
+    {
+      "pack": "03-Bayu-B.zip",
+      "sha256": "d7705efe8f3a7fc520005b469e22029d460a133f42973282f97d69bc115d9437",
+      "documents": [
+        {
+          "filename": "Forex - Bayu Birdless - Surat Pernyataan Valas.pdf",
+          "sha256": "465a04a659701849331da8f5cd802891194f18411e4bb9449e2b08be260a4890",
+          "bytes": 633126,
+          "pages": 1,
+          "expected_type": null,
+          "classification_status": "PENDING_CONTENT_VERIFICATION"
+        },
+        {
+          "filename": "Forex - Bayu Birdless - Aplikasi Transaksi.pdf",
+          "sha256": "0bb34ed3d2897d1fe9790d3b55936a463451b292fa97595982bebf7075b5aa73",
+          "bytes": 171396,
+          "pages": 1,
+          "expected_type": null,
+          "classification_status": "PENDING_CONTENT_VERIFICATION"
+        },
+        {
+          "filename": "Forex - Bayu Birdless - EKTP.pdf",
+          "sha256": "1af18af08b891861f846fa8ed2de1f89980bf52f28ab79917a2c5392c0084705",
+          "bytes": 561206,
+          "pages": 1,
+          "expected_type": null,
+          "classification_status": "PENDING_CONTENT_VERIFICATION"
+        },
+        {
+          "filename": "Forex - Bayu Birdless - Invoice.pdf",
+          "sha256": "9952008dd17061875cb6cae43b16c848fe371058b087adcacf7b227518e86546",
+          "bytes": 76679,
+          "pages": 1,
+          "expected_type": null,
+          "classification_status": "PENDING_CONTENT_VERIFICATION"
+        },
+        {
+          "filename": "Forex - Bayu Birdless - LLD.pdf",
+          "sha256": "b1f5a8e2e1401a8d400b4f929ddc880158427f77861537bd7b8574c7a761bc77",
+          "bytes": 238337,
+          "pages": 1,
+          "expected_type": null,
+          "classification_status": "PENDING_CONTENT_VERIFICATION"
+        },
+        {
+          "filename": "Forex - Bayu Birdless - Riplay.pdf",
+          "sha256": "9d09490a116f192524dd9e6e620dc34b17aa9e5e12692023590b02c711967075",
+          "bytes": 503715,
+          "pages": 4,
+          "expected_type": null,
+          "classification_status": "PENDING_CONTENT_VERIFICATION"
+        }
+      ],
+      "scenario": "PENDING_BANK_CONFIRMATION"
+    },
+    {
+      "pack": "03-Stuart.zip",
+      "sha256": "92a4223542b9292d305edcfb9704f5fd2d576e343bf97316c241e8e5665ac268",
+      "documents": [
+        {
+          "filename": "Forex - Stuart Starshine - Surat Pernyataan Valas.pdf",
+          "sha256": "d3b72e78a403fdf96b1fcd9d721be1425a9e20640cfa215c6f58c79bbd5f030b",
+          "bytes": 548285,
+          "pages": 1,
+          "expected_type": null,
+          "classification_status": "PENDING_CONTENT_VERIFICATION"
+        },
+        {
+          "filename": "Forex - Stuart Starshine - Aplikasi Transaksi.pdf",
+          "sha256": "084ddbad6ecc0a7070ac2a4a825ad006c9d25ffcace4e30e90462aee20d19d37",
+          "bytes": 145126,
+          "pages": 1,
+          "expected_type": null,
+          "classification_status": "PENDING_CONTENT_VERIFICATION"
+        },
+        {
+          "filename": "Forex - Stuart Starshine - EKTP.pdf",
+          "sha256": "f14274fa71faffe1f0b02742e5023f710464d989dc16923603343a3fe948a8b2",
+          "bytes": 473401,
+          "pages": 1,
+          "expected_type": null,
+          "classification_status": "PENDING_CONTENT_VERIFICATION"
+        },
+        {
+          "filename": "Forex - Stuart Starshine - Invoice.pdf",
+          "sha256": "71ece66422e24950042b1ba2b52f9e5bed7ef2cd8ff715bd9f6540550d79f423",
+          "bytes": 3064,
+          "pages": 1,
+          "expected_type": null,
+          "classification_status": "PENDING_CONTENT_VERIFICATION"
+        },
+        {
+          "filename": "Forex - Stuart Starshine - Riplay.pdf",
+          "sha256": "26ab4f3bca9c11b30cb17656ce072bd0783cc8a5b9f7412f34a3e38ee4758273",
+          "bytes": 499416,
+          "pages": 4,
+          "expected_type": null,
+          "classification_status": "PENDING_CONTENT_VERIFICATION"
+        }
+      ],
+      "scenario": "PENDING_BANK_CONFIRMATION"
+    }
+  ],
+  "live_provider_executed": false
+}

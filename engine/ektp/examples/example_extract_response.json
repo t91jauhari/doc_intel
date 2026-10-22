@@ -1,0 +1,131 @@
+{
+  "id": "ext-synthetic-ektp",
+  "status": "COMPLETED",
+  "extract_result": {
+    "nik": "0001234567890123",
+    "name": {
+      "raw": " Rina Putri ",
+      "complete": true
+    },
+    "birth_place": {
+      "raw": " Jakarta Selatan ",
+      "complete": true
+    },
+    "birth_date": "1 Juni 1993",
+    "gender": "perempuan",
+    "blood_type": "ab",
+    "address": {
+      "raw": "Jl. Contoh 12, Blok A/3",
+      "complete": true
+    },
+    "rt": "4",
+    "rw": "12",
+    "village": {
+      "raw": "Contoh Desa",
+      "complete": true
+    },
+    "district": {
+      "raw": "Contoh Kecamatan",
+      "complete": true
+    },
+    "religion": "islam",
+    "marital_status": "belum kawin",
+    "occupation": {
+      "raw": "Karyawan Swasta",
+      "complete": true
+    },
+    "citizenship": "wni",
+    "valid_until": "Seumur Hidup",
+    "issuance": {
+      "raw": "Kota Adm. Jakarta Selatan, 7 Agustus 2025",
+      "place_raw": " Kota Adm. Jakarta Selatan ",
+      "place_complete": true,
+      "date_raw": "7 Agustus 2025"
+    },
+    "owner_signature": {
+      "present": true,
+      "non_text": true,
+      "complete": true,
+      "corrupted": false,
+      "evidence": "Non-text ink signature strokes visible in cardholder region."
+    },
+    "owner_photo": {
+      "present": true,
+      "face_visible": true,
+      "face_cropped": false,
+      "evidence": "Holder portrait with entire face visible within the image boundary."
+    },
+    "stamp_verification": {
+      "present": false,
+      "text": null,
+      "complete": null,
+      "evidence": "No distinct stamp observed after inspecting card."
+    }
+  },
+  "extract_metadata": {
+    "field_metadata": {
+      "document_metadata": {
+        "nik": {
+          "confidence": 0.99
+        },
+        "name": {
+          "confidence": 0.99
+        },
+        "birth_place": {
+          "confidence": 0.99
+        },
+        "birth_date": {
+          "confidence": 0.99
+        },
+        "gender": {
+          "confidence": 0.99
+        },
+        "blood_type": {
+          "confidence": 0.99
+        },
+        "address": {
+          "confidence": 0.99
+        },
+        "rt": {
+          "confidence": 0.99
+        },
+        "rw": {
+          "confidence": 0.99
+        },
+        "village": {
+          "confidence": 0.99
+        },
+        "district": {
+          "confidence": 0.99
+        },
+        "religion": {
+          "confidence": 0.99
+        },
+        "marital_status": {
+          "confidence": 0.99
+        },
+        "occupation": {
+          "confidence": 0.99
+        },
+        "citizenship": {
+          "confidence": 0.99
+        },
+        "valid_until": {
+          "confidence": 0.99
+        },
+        "issuance": {
+          "confidence": 0.99
+        },
+        "owner_signature": {
+          "confidence": 0.99
+        },
+        "owner_photo": {
+          "confidence": 0.99
+        },
+        "stamp_verification": {
+          "confidence": 0.99
+        }
+      }
+    }
+  }
+}

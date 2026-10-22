@@ -1,0 +1,2168 @@
+{
+  "release": "0.4.0",
+  "source": {
+    "file": "01-Account-Opening-Reference-Doc-and-dataset.xlsx",
+    "sha256": "0b3c553881a8df2fe28c2980205e26bc168991e014ef8481edccbdad15b863a0"
+  },
+  "field_contracts": [
+    {
+      "document_type": "join_visit",
+      "field_count": 16,
+      "fields": [
+        {
+          "key": "customer_name",
+          "label": "Nama Nasabah",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 29,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "cif",
+          "label": "CIF",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 30,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "visit_date",
+          "label": "Tanggal Visit/Kunjungan",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 31,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "marketing_name",
+          "label": "Nama Marketing Pembawa Form",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 32,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "ktp_photo_check",
+          "label": "Foto KTP Nasabah",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 33,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "identity_address_check",
+          "label": "Alamat KTP",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 34,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "current_address_check",
+          "label": "Alamat Tinggal Sekarang",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 35,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "phone_check",
+          "label": "Nomor Handphone",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 36,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "email_check",
+          "label": "Alamat Email",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 37,
+          "required_in_workbook": true,
+          "conditional_in_policy": true
+        },
+        {
+          "key": "birth_check",
+          "label": "Tempat Tanggal Lahir",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 38,
+          "required_in_workbook": true,
+          "conditional_in_policy": true
+        },
+        {
+          "key": "mother_name_check",
+          "label": "Nama Ibu Kandung",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 39,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "visitor",
+          "label": "Dibuat Oleh (Visitor name  & Role)",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 40,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "supervisor",
+          "label": "Diterima Oleh (Penerima name & Supervisor name/ Head of Operations)",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 41,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "visitor_signature",
+          "label": "Tanda tangan pembuat (visitor)",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 42,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "supervisor_signature",
+          "label": "Tanda tangan penerima (supervisor)",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 43,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "confirmation_stamp",
+          "label": "Stempel konfirmasi (by supervisor/same-level)",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 44,
+          "required_in_workbook": false,
+          "conditional_in_policy": false
+        }
+      ]
+    },
+    {
+      "document_type": "edd",
+      "field_count": 39,
+      "fields": [
+        {
+          "key": "transaction_type",
+          "label": "Pilihan jenis transaksi",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 51,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "person_type",
+          "label": "Pilihan perorangan ",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 52,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "customer_name",
+          "label": "Nama",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 53,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "cif",
+          "label": "Nomor CIF",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 54,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "product",
+          "label": "Jenis Produk / Layanan Bank",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 55,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "screening_dttot",
+          "label": "Screening – DTTOT / DPPSPM",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 56,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "screening_negative_news",
+          "label": "Screening – Informasi Negative (News)",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 57,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "screening_watchlist",
+          "label": "Screening -Watchlist",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 58,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "screening_no_match",
+          "label": "Screening - Tidak ditemukan",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 59,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "high_risk_occupation",
+          "label": "Kriteria High Risk – Pekerjaan",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 60,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "high_risk_country",
+          "label": "Kriteria High Risk – Negara",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 61,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "high_risk_business",
+          "label": "Kriteria High Risk – Bidang Usaha",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 62,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "high_risk_pep",
+          "label": "Kriteria High Risk – Politically Exposed Person",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 63,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "high_risk_watchlist",
+          "label": "Kriteria High Risk - Screening Watchlist",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 64,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "high_risk_other",
+          "label": "Kriteria High Risk - Lainnya",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 65,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "edd_result",
+          "label": "Hasil EDD",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 66,
+          "required_in_workbook": false,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "occupation",
+          "label": "Informasi jabatan",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 67,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "beneficial_owner_wealth",
+          "label": "Sumber kekayaan dan latar belakang dari  beneficial owner (jika ada)",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 68,
+          "required_in_workbook": true,
+          "conditional_in_policy": true
+        },
+        {
+          "key": "pep_information",
+          "label": "Informasi PEP pada calon nasabah/nasabah/ BO/WIC (jika ada)",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 69,
+          "required_in_workbook": true,
+          "conditional_in_policy": true
+        },
+        {
+          "key": "other_funds",
+          "label": "Sumber dana lainnya (jika ada)",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 70,
+          "required_in_workbook": true,
+          "conditional_in_policy": true
+        },
+        {
+          "key": "other_business",
+          "label": "Jenis usaha/bidang usaha lainnya di dalam negeri ataupun di luar negeri (jika ada)",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 71,
+          "required_in_workbook": true,
+          "conditional_in_policy": true
+        },
+        {
+          "key": "other_business_location",
+          "label": "Lokasi usaha dan status tempat usaha lainnya (jika ada)",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 72,
+          "required_in_workbook": true,
+          "conditional_in_policy": true
+        },
+        {
+          "key": "supporting_information",
+          "label": "Informasi pendukung lainnya seperti antara lain ",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 73,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "product_transactions",
+          "label": "Produk bank apa yang digunakan dan transaksi yang akan sering dilakukan",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 74,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "pep_family",
+          "label": "Apakah nasabah memiliki keuarga inti (1 layer vertikal dan horizontal) yang menjabat sebagai pejabat negara/pejabat pemerintahan",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 75,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "pep_family_details",
+          "label": "Jika iya sebutkan ",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 76,
+          "required_in_workbook": true,
+          "conditional_in_policy": true
+        },
+        {
+          "key": "business_partners",
+          "label": "Informasi mitra usaha calon nasabah/nasabah/BO/WIC (jika memiliki usaha, siapa dan jenis usaha dan mitra usaha tersebut)",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 77,
+          "required_in_workbook": true,
+          "conditional_in_policy": true
+        },
+        {
+          "key": "transaction_information",
+          "label": "Informais tambahan untuk transaksi nasabah *) (diisi untuk EDD yang dilakukan terhadap transaksi nasabah)",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 78,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "counterparty_relationship",
+          "label": "Hubungan nasabah dengan penerima atau pengirim atau pelaku transaksi",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 79,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "transaction_purpose",
+          "label": "Tujuan transaksi nasabah dengan penerima atau pengirim atau pelaku transaksi",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 80,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "profile_transaction_relation",
+          "label": "Deskripsikan keterkaitan prdil nasabah dengan transaksi yang dilakukan",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 81,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "additional_edd_information",
+          "label": "Informasi relevan launnya dari hasil EDD  yang dilakukan (jika ada)",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 82,
+          "required_in_workbook": true,
+          "conditional_in_policy": true
+        },
+        {
+          "key": "edd_attachments",
+          "label": "Informasi hasil EDD dapat dilampirkan pada formulir ini",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 83,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "edd_officer",
+          "label": "Nama pihak yang melakukan EDD",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 84,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "supervisor",
+          "label": "Nama SPV/HO/Pejabat Setara",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 85,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "edd_officer_signature",
+          "label": "Tanda tanganpihak yang melakukan EDD",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 86,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "supervisor_signature",
+          "label": "Tanda tangan SPV/HO/Pejabat Setara",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 87,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "verification_stamp",
+          "label": "Stempel verifikasi tandatangan",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 88,
+          "required_in_workbook": false,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "confirmation_stamp",
+          "label": "Stempel konfirmasi (by supervisor/se-level)",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 89,
+          "required_in_workbook": false,
+          "conditional_in_policy": false
+        }
+      ]
+    },
+    {
+      "document_type": "account_opening_form",
+      "field_count": 93,
+      "fields": [
+        {
+          "key": "form_type",
+          "label": "Jenis Formulir",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 96,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "branch",
+          "label": "Kantor Cabang",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 97,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "transaction_date",
+          "label": "Tanggal",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 98,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "customer_status",
+          "label": "Status Nasabah",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 99,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "existing_account",
+          "label": "Saya memliki rekening di Bank Sinarmas",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 100,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "existing_account_number",
+          "label": "No Rekening Bank Sinarmas",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 101,
+          "required_in_workbook": true,
+          "conditional_in_policy": true
+        },
+        {
+          "key": "account_type",
+          "label": "Tipe Rekening",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 102,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "currency",
+          "label": "Mata Uang",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 103,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "acting_for",
+          "label": "Bertindak Untuk",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 104,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "customer_name",
+          "label": "Nama Lengkap",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 105,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "birth_place_date",
+          "label": "Tempat / Tanggal Lahir",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 106,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "gender",
+          "label": "Jenis Kelamin",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 107,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "marital_status",
+          "label": "Status Pernikahan",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 108,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "citizenship",
+          "label": "Kewarganegaraan",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 109,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "identity_type",
+          "label": "Jenis Identitas",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 110,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "identity_number",
+          "label": "Nomor Identitas",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 111,
+          "required_in_workbook": true,
+          "conditional_in_policy": true
+        },
+        {
+          "key": "identity_valid_until",
+          "label": "Berlaku s/d",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 112,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "supporting_identity_type",
+          "label": "Jenis identitas pendukung",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 113,
+          "required_in_workbook": true,
+          "conditional_in_policy": true
+        },
+        {
+          "key": "supporting_identity_number",
+          "label": "Nomor Identitas Pendukung",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 114,
+          "required_in_workbook": true,
+          "conditional_in_policy": true
+        },
+        {
+          "key": "supporting_identity_valid_until",
+          "label": "Nomor Identitas Pendukung Berlaku s/d",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 115,
+          "required_in_workbook": true,
+          "conditional_in_policy": true
+        },
+        {
+          "key": "tin_ssn",
+          "label": "No. TIN/SSN",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 116,
+          "required_in_workbook": true,
+          "conditional_in_policy": true
+        },
+        {
+          "key": "mother_name",
+          "label": "Nama Gadis Ibu kandung",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 117,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "npwp",
+          "label": "NPWP (jika ada)",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 118,
+          "required_in_workbook": true,
+          "conditional_in_policy": true
+        },
+        {
+          "key": "current_address_choice",
+          "label": "Alamat Tempat Tinggal (Sama/Berbeda)",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 119,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "current_address",
+          "label": "Alamat Terkini",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 120,
+          "required_in_workbook": true,
+          "conditional_in_policy": true
+        },
+        {
+          "key": "rt",
+          "label": "RT",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 121,
+          "required_in_workbook": true,
+          "conditional_in_policy": true
+        },
+        {
+          "key": "rw",
+          "label": "RW",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 122,
+          "required_in_workbook": true,
+          "conditional_in_policy": true
+        },
+        {
+          "key": "village",
+          "label": "Kelurahan",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 123,
+          "required_in_workbook": true,
+          "conditional_in_policy": true
+        },
+        {
+          "key": "district",
+          "label": "Kecamatan",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 124,
+          "required_in_workbook": true,
+          "conditional_in_policy": true
+        },
+        {
+          "key": "city",
+          "label": "Kota",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 125,
+          "required_in_workbook": true,
+          "conditional_in_policy": true
+        },
+        {
+          "key": "postal_code",
+          "label": "Kode Pos",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 126,
+          "required_in_workbook": true,
+          "conditional_in_policy": true
+        },
+        {
+          "key": "province",
+          "label": "Provinsi",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 127,
+          "required_in_workbook": true,
+          "conditional_in_policy": true
+        },
+        {
+          "key": "mailing_address_choice",
+          "label": "Alamat Surat Menyurat",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 128,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "residence_status",
+          "label": "Status Tempat Tinggal",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 129,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "education",
+          "label": "Pendidikan",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 130,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "home_phone",
+          "label": "Nomor Telepon Rumah",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 131,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "mobile_phone",
+          "label": "No Handphone/Seluler",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 132,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "email",
+          "label": "Email",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 133,
+          "required_in_workbook": true,
+          "conditional_in_policy": true
+        },
+        {
+          "key": "occupation",
+          "label": "Pekerjaan Utama",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 134,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "employment_status",
+          "label": "Satus Pekerjaan",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 135,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "business_sector",
+          "label": "Bidang Usaha",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 136,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "company_name",
+          "label": "Nama Perusahaan",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 137,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "position",
+          "label": "Jabatan",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 138,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "employed_since",
+          "label": "Bekerja Sejak",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 139,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "office_address",
+          "label": "Alamat kantor",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 140,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "office_city",
+          "label": "Kota Alamat kantor",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 141,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "office_postal_code",
+          "label": "Kode Pos Alamat kantor",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 142,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "office_province",
+          "label": "Provinsi Kantor",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 143,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "office_phone",
+          "label": "No. Telp Alamat Kantor (Nexus-> No. Telp)",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 144,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "office_extension",
+          "label": "ext Kantor (on Nexus ext)",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 145,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "monthly_income",
+          "label": "Pendapatan per Bulan",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 146,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "opening_purpose",
+          "label": "Tujuan Pembukaan Rekening",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 147,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "source_of_funds",
+          "label": "Sumber Dana",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 148,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "additional_income_source",
+          "label": "Sumber Penghasilan Tambahan",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 149,
+          "required_in_workbook": true,
+          "conditional_in_policy": true
+        },
+        {
+          "key": "additional_monthly_income",
+          "label": "Rata-rata penghasilan tambahan per bulan (jika ada)",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 150,
+          "required_in_workbook": true,
+          "conditional_in_policy": true
+        },
+        {
+          "key": "transaction_frequency",
+          "label": "Frekuensi Transaksi Per Bulan (Debit & Kredit)",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 151,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "transaction_average",
+          "label": "Rata-Rata Transaksi Per Bulan (Debit & Kredit)",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 152,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "facilities",
+          "label": "Fasilitas Layanan",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 153,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "atm_card_number",
+          "label": "No. Kartu ATM/Debit",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 154,
+          "required_in_workbook": true,
+          "conditional_in_policy": true
+        },
+        {
+          "key": "pin_maker_id",
+          "label": "PIN Maker ID",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 155,
+          "required_in_workbook": true,
+          "conditional_in_policy": true
+        },
+        {
+          "key": "token_id",
+          "label": "Token ID",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 156,
+          "required_in_workbook": true,
+          "conditional_in_policy": true
+        },
+        {
+          "key": "sms_notification",
+          "label": "SMS Notidikasi",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 157,
+          "required_in_workbook": true,
+          "conditional_in_policy": true
+        },
+        {
+          "key": "foreign_tax_obligation",
+          "label": "Saya memiliki kewajiban pajak di negara lain (selain indonesia)",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 158,
+          "required_in_workbook": true,
+          "conditional_in_policy": true
+        },
+        {
+          "key": "consent",
+          "label": "Checklist Persetujuan",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 159,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "consent_place",
+          "label": "Kota Checklist Persetujuan",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 160,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "consent_date",
+          "label": "Tanggal Checklist Persetujuan",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 161,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "signing_customer_name",
+          "label": "Nama nasabah",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 162,
+          "required_in_workbook": false,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "customer_signature",
+          "label": "Tanda tangan nasabah",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 163,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "meterai",
+          "label": "Materai",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 164,
+          "required_in_workbook": true,
+          "conditional_in_policy": true
+        },
+        {
+          "key": "cif",
+          "label": "Nomor CIF",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 165,
+          "required_in_workbook": true,
+          "conditional_in_policy": true
+        },
+        {
+          "key": "classification_code",
+          "label": "Kode Golongan",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 166,
+          "required_in_workbook": true,
+          "conditional_in_policy": true
+        },
+        {
+          "key": "bank_relationship",
+          "label": "Keterkaitan Dengan Bank Sinarmas",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 167,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "dhn_check",
+          "label": "Pemeriksaan DHN",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 168,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "risk_category",
+          "label": "Kategori Risiko",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 169,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "sector",
+          "label": "Sektor",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 170,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "industry",
+          "label": "Industri",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 171,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "target",
+          "label": "Target",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 172,
+          "required_in_workbook": true,
+          "conditional_in_policy": true
+        },
+        {
+          "key": "referral_source",
+          "label": "Referensi dari",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 173,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "marketing_code",
+          "label": "Kode Marketing",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 174,
+          "required_in_workbook": true,
+          "conditional_in_policy": true
+        },
+        {
+          "key": "referral_other",
+          "label": "Lainnya, sebutkan",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 175,
+          "required_in_workbook": true,
+          "conditional_in_policy": true
+        },
+        {
+          "key": "identity_copy_check",
+          "label": "Dokumen Wajib – Fotocopy E-KTP/Paspor",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 176,
+          "required_in_workbook": true,
+          "conditional_in_policy": true
+        },
+        {
+          "key": "npwp_copy_check",
+          "label": "Dokumen Wajib – Fotocopy NPWP",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 177,
+          "required_in_workbook": true,
+          "conditional_in_policy": true
+        },
+        {
+          "key": "other_required_documents",
+          "label": "Dokumen Wajib – Lainnya, sebutkan",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 178,
+          "required_in_workbook": true,
+          "conditional_in_policy": true
+        },
+        {
+          "key": "cs_name",
+          "label": "Nama Customer Service",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 179,
+          "required_in_workbook": false,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "cs_date",
+          "label": "Tanggal Diproses oleh Customer Service",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 180,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "supervisor_name",
+          "label": "Nama Supervisor / Kepala Operasional /Pimpinan Cabang",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 181,
+          "required_in_workbook": false,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "supervisor_date",
+          "label": "Tanggal Diperiksa oleh Supervisor / Kepala Operasional/Pimpinan Cabang",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 182,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "supervisor_approval",
+          "label": "Persetujuan Supervisor",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 183,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "cs_signature",
+          "label": "Tanda tanganpihak Customer service",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 184,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "supervisor_signature",
+          "label": "Tanda tangan Supervisor / Kepala Operasional /Pimpinan Cabang",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 185,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "verification_stamp",
+          "label": "Stempel verifikasi tandatangan",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 186,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "confirmation_stamp",
+          "label": "Stempel konfirmasi (by supervisor/se-level)",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 187,
+          "required_in_workbook": true,
+          "conditional_in_policy": true
+        },
+        {
+          "key": "cs_stamp",
+          "label": "Stempel customer service",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 188,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        }
+      ]
+    },
+    {
+      "document_type": "signature_difference",
+      "field_count": 12,
+      "fields": [
+        {
+          "key": "customer_name",
+          "label": "Nama",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 211,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "identity_number",
+          "label": "Nomor Identitas",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 212,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "identity_address",
+          "label": "Alamat Sesuai Identitas",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 213,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "account_number",
+          "label": "Nomor Rekening",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 214,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "signature_one",
+          "label": "Tanda Tangan  1",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 215,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "signature_two",
+          "label": "Tanda Tangan 2",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 216,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "creation_place",
+          "label": "Kota / Tempat Surat Dibuat",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 217,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "creation_date",
+          "label": "Tanggal Surat Dibuat",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 218,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "declarant_name",
+          "label": "Nama Pembuat Pernyataan",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 219,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "declarant_signature",
+          "label": "Tanda Tangan Pembuat Pernyataan",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 220,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "meterai",
+          "label": "Meterai / Cap",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 221,
+          "required_in_workbook": true,
+          "conditional_in_policy": true
+        },
+        {
+          "key": "verification_stamp",
+          "label": "Stamp verification",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 222,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        }
+      ]
+    },
+    {
+      "document_type": "company_reference",
+      "field_count": 20,
+      "fields": [
+        {
+          "key": "company_name",
+          "label": "Nama Perusahaan",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 229,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "letter_date",
+          "label": "Tanggal Surat",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 230,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "letter_number",
+          "label": "Nomor Surat",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 231,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "letter_purpose",
+          "label": "Tujuan Surat",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 232,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "subject",
+          "label": "Perihal",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 233,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "customer_name",
+          "label": "Nama Nasabah (disebutkan dalam surat)",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 234,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "customer_position",
+          "label": "Jabatan Nasabah",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 235,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "partnership_date",
+          "label": "Tanggal Menjadi Partner",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 236,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "signatory_name",
+          "label": "Nama Penandatangan Surat",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 237,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "signatory_position",
+          "label": "Jabatan Penandatangan Surat",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 238,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "signatory_phone",
+          "label": "Nomor Telepon Penandatangan Surat",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 239,
+          "required_in_workbook": false,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "signatory_signature",
+          "label": "Tanda Tangan Penandatangan Surat",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 240,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "branch_address",
+          "label": "Alamat Kantor Cabang / Branch Office",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 241,
+          "required_in_workbook": true,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "confirmation_customer_name",
+          "label": "Nama Nasabah (Konfirmasi Transaksi)",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 242,
+          "required_in_workbook": false,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "confirmation_phone",
+          "label": "Nomor Telepon (Konfirmasi Transaksi)",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 243,
+          "required_in_workbook": false,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "confirmation_result",
+          "label": "Hasil Konfirmasi",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 244,
+          "required_in_workbook": false,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "confirmation_date",
+          "label": "Tanggal Konfirmasi Transaksi",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 245,
+          "required_in_workbook": false,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "confirmation_time",
+          "label": "Jam Konfirmasi Transaksi",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 246,
+          "required_in_workbook": false,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "confirmation_officer",
+          "label": "Nama Petugas Konfirmasi",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 247,
+          "required_in_workbook": false,
+          "conditional_in_policy": false
+        },
+        {
+          "key": "confirmation_stamp",
+          "label": "Stamp comfirmation from supervisor",
+          "source_sheet": "Field Rule extraction Sampl dt",
+          "source_row": 248,
+          "required_in_workbook": false,
+          "conditional_in_policy": false
+        }
+      ]
+    }
+  ],
+  "shared_profiles": [
+    "ektp",
+    "riplay"
+  ],
+  "dataset_rows": 210,
+  "dataset_samples": [
+    {
+      "id": "1",
+      "name": "INDAH LARUNA PRIMA"
+    },
+    {
+      "id": "3",
+      "name": "ARTHA MILANI"
+    },
+    {
+      "id": "4",
+      "name": "LANGIT RAHARJA"
+    },
+    {
+      "id": "5",
+      "name": "POKO"
+    },
+    {
+      "id": "6",
+      "name": "DIRMAN SISWANTO"
+    },
+    {
+      "id": "7",
+      "name": "BAYU BIRDLESS"
+    },
+    {
+      "id": "8",
+      "name": "PAULUS HERDIANSYAH"
+    },
+    {
+      "id": "9",
+      "name": "STUART STARSHINE"
+    },
+    {
+      "id": "10",
+      "name": "STEVE CAPTAIN"
+    }
+  ],
+  "sop_sources": [
+    {
+      "source_ref": "AO:SOP 1:1",
+      "source_row": 2,
+      "included": false,
+      "rule_ids": [],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP 1:2",
+      "source_row": 3,
+      "included": false,
+      "rule_ids": [],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP 1:3",
+      "source_row": 4,
+      "included": false,
+      "rule_ids": [],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP 1:4",
+      "source_row": 5,
+      "included": false,
+      "rule_ids": [],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP 1:5",
+      "source_row": 6,
+      "included": false,
+      "rule_ids": [],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP 1:6",
+      "source_row": 7,
+      "included": false,
+      "rule_ids": [],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP 1:7",
+      "source_row": 8,
+      "included": false,
+      "rule_ids": [],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP 1:8",
+      "source_row": 9,
+      "included": false,
+      "rule_ids": [],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP 1:9",
+      "source_row": 10,
+      "included": true,
+      "rule_ids": [
+        "AO_SURVEY"
+      ],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP 1:10",
+      "source_row": 11,
+      "included": true,
+      "rule_ids": [
+        "AO_BO_REQUIRED"
+      ],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP 1:11",
+      "source_row": 12,
+      "included": true,
+      "rule_ids": [
+        "AO_EDD_TRANSACTION_TYPE",
+        "AO_EDD_PERSON_TYPE",
+        "AO_EDD_CUSTOMER_NAME",
+        "AO_EDD_CIF",
+        "AO_EDD_PRODUCT",
+        "AO_EDD_SCREENING_DTTOT",
+        "AO_EDD_SCREENING_NEGATIVE_NEWS",
+        "AO_EDD_SCREENING_WATCHLIST",
+        "AO_EDD_SCREENING_NO_MATCH",
+        "AO_EDD_HIGH_RISK_OCCUPATION",
+        "AO_EDD_HIGH_RISK_COUNTRY",
+        "AO_EDD_HIGH_RISK_BUSINESS",
+        "AO_EDD_HIGH_RISK_PEP",
+        "AO_EDD_HIGH_RISK_WATCHLIST",
+        "AO_EDD_HIGH_RISK_OTHER",
+        "AO_EDD_OCCUPATION",
+        "AO_EDD_BENEFICIAL_OWNER_WEALTH",
+        "AO_EDD_PEP_INFORMATION",
+        "AO_EDD_OTHER_FUNDS",
+        "AO_EDD_OTHER_BUSINESS",
+        "AO_EDD_OTHER_BUSINESS_LOCATION",
+        "AO_EDD_SUPPORTING_INFORMATION",
+        "AO_EDD_PRODUCT_TRANSACTIONS",
+        "AO_EDD_PEP_FAMILY",
+        "AO_EDD_PEP_FAMILY_DETAILS",
+        "AO_EDD_BUSINESS_PARTNERS",
+        "AO_EDD_TRANSACTION_INFORMATION",
+        "AO_EDD_COUNTERPARTY_RELATIONSHIP",
+        "AO_EDD_TRANSACTION_PURPOSE",
+        "AO_EDD_PROFILE_TRANSACTION_RELATION",
+        "AO_EDD_ADDITIONAL_EDD_INFORMATION",
+        "AO_EDD_EDD_ATTACHMENTS",
+        "AO_EDD_EDD_OFFICER",
+        "AO_EDD_SUPERVISOR",
+        "AO_EDD_EDD_OFFICER_SIGNATURE",
+        "AO_EDD_SUPERVISOR_SIGNATURE",
+        "AO_EDD_REQUIRED"
+      ],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP 1:12",
+      "source_row": 13,
+      "included": false,
+      "rule_ids": [],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP System:1",
+      "source_row": 2,
+      "included": true,
+      "rule_ids": [
+        "AO_SYSTEM_1"
+      ],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP System:2",
+      "source_row": 3,
+      "included": true,
+      "rule_ids": [
+        "AO_SYSTEM_2"
+      ],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP System:3",
+      "source_row": 4,
+      "included": true,
+      "rule_ids": [
+        "AO_SYSTEM_3"
+      ],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP System:4",
+      "source_row": 5,
+      "included": true,
+      "rule_ids": [
+        "AO_SYSTEM_4"
+      ],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP System:5",
+      "source_row": 6,
+      "included": true,
+      "rule_ids": [
+        "AO_SYSTEM_5"
+      ],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP System:6",
+      "source_row": 7,
+      "included": true,
+      "rule_ids": [
+        "AO_SYSTEM_6"
+      ],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP System:7",
+      "source_row": 8,
+      "included": true,
+      "rule_ids": [
+        "AO_SYSTEM_7"
+      ],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP System:8",
+      "source_row": 9,
+      "included": true,
+      "rule_ids": [
+        "AO_SYSTEM_8"
+      ],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP System:9",
+      "source_row": 10,
+      "included": true,
+      "rule_ids": [
+        "AO_SYSTEM_9"
+      ],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP System:10",
+      "source_row": 11,
+      "included": true,
+      "rule_ids": [
+        "AO_SYSTEM_10",
+        "AO_EDD_REFERENCE_POSITION"
+      ],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP System:11",
+      "source_row": 12,
+      "included": true,
+      "rule_ids": [
+        "AO_SYSTEM_11"
+      ],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP System:12",
+      "source_row": 13,
+      "included": false,
+      "rule_ids": [],
+      "note": "External specimen verification excluded"
+    },
+    {
+      "source_ref": "AO:SOP System:13",
+      "source_row": 14,
+      "included": true,
+      "rule_ids": [
+        "AO_SYSTEM_13"
+      ],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP System:14",
+      "source_row": 15,
+      "included": true,
+      "rule_ids": [
+        "AO_SYSTEM_14"
+      ],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP System:15",
+      "source_row": 16,
+      "included": true,
+      "rule_ids": [
+        "AO_COMPANY_REFERENCE_COMPANY_NAME",
+        "AO_COMPANY_REFERENCE_LETTER_DATE",
+        "AO_COMPANY_REFERENCE_LETTER_NUMBER",
+        "AO_COMPANY_REFERENCE_LETTER_PURPOSE",
+        "AO_COMPANY_REFERENCE_SUBJECT",
+        "AO_COMPANY_REFERENCE_CUSTOMER_NAME",
+        "AO_COMPANY_REFERENCE_CUSTOMER_POSITION",
+        "AO_COMPANY_REFERENCE_PARTNERSHIP_DATE",
+        "AO_COMPANY_REFERENCE_SIGNATORY_NAME",
+        "AO_COMPANY_REFERENCE_SIGNATORY_POSITION",
+        "AO_COMPANY_REFERENCE_SIGNATORY_SIGNATURE",
+        "AO_COMPANY_REFERENCE_BRANCH_ADDRESS",
+        "AO_SYSTEM_15"
+      ],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP Riplay:1",
+      "source_row": 2,
+      "included": true,
+      "rule_ids": [
+        "AO_RIPLAY_REQUIRED",
+        "AO_RIPLAY_DOCUMENT_PLACE",
+        "AO_RIPLAY_DOCUMENT_DATE",
+        "AO_RIPLAY_BANK_OFFICER_SIGNATURE",
+        "AO_RIPLAY_CUSTOMER_SIGNATURE",
+        "AO_RIPLAY_CS_STAMP",
+        "AO_RIPLAY_STAMP_VERIFICATION",
+        "AO_RIPLAY_PRINTED_DATE"
+      ],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP Riplay:2",
+      "source_row": 3,
+      "included": true,
+      "rule_ids": [
+        "AO_RIPLAY_IDENTITY"
+      ],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP Riplay:3",
+      "source_row": 4,
+      "included": false,
+      "rule_ids": [],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP Riplay:4",
+      "source_row": 5,
+      "included": true,
+      "rule_ids": [
+        "AO_RIPLAY_PAGE_INITIALS"
+      ],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP Riplay:5",
+      "source_row": 6,
+      "included": true,
+      "rule_ids": [
+        "AO_RIPLAY_STAMP"
+      ],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP Riplay:6",
+      "source_row": 7,
+      "included": false,
+      "rule_ids": [],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP Riplay:7",
+      "source_row": 8,
+      "included": false,
+      "rule_ids": [],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP Stemple:1",
+      "source_row": 2,
+      "included": true,
+      "rule_ids": [
+        "AO_STAMP_TYPE"
+      ],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP Stemple:2",
+      "source_row": 3,
+      "included": false,
+      "rule_ids": [],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP Stemple:3",
+      "source_row": 4,
+      "included": true,
+      "rule_ids": [
+        "AO_STAMP_CONDITION"
+      ],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP Stemple:4",
+      "source_row": 5,
+      "included": true,
+      "rule_ids": [
+        "AO_STAMP_ROLE"
+      ],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP Stemple:5",
+      "source_row": 6,
+      "included": true,
+      "rule_ids": [
+        "AO_STAMP_PLACEMENT"
+      ],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP Stemple:6",
+      "source_row": 7,
+      "included": false,
+      "rule_ids": [],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP Stemple:7",
+      "source_row": 8,
+      "included": false,
+      "rule_ids": [],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP Stemple:8",
+      "source_row": 9,
+      "included": false,
+      "rule_ids": [],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP Stemple:9",
+      "source_row": 10,
+      "included": false,
+      "rule_ids": [],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP Stemple:10",
+      "source_row": 11,
+      "included": false,
+      "rule_ids": [],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP Tabungan:1",
+      "source_row": 2,
+      "included": true,
+      "rule_ids": [
+        "AO_IDENTITY_REQUIRED",
+        "AO_NIK_BIRTH"
+      ],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP Tabungan:2",
+      "source_row": 3,
+      "included": false,
+      "rule_ids": [],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP Tabungan:3",
+      "source_row": 4,
+      "included": true,
+      "rule_ids": [
+        "AO_ACCOUNT_OPENING_FORM_FORM_TYPE",
+        "AO_ACCOUNT_OPENING_FORM_BRANCH",
+        "AO_ACCOUNT_OPENING_FORM_TRANSACTION_DATE",
+        "AO_ACCOUNT_OPENING_FORM_CUSTOMER_STATUS",
+        "AO_ACCOUNT_OPENING_FORM_EXISTING_ACCOUNT",
+        "AO_ACCOUNT_OPENING_FORM_EXISTING_ACCOUNT_NUMBER",
+        "AO_ACCOUNT_OPENING_FORM_ACCOUNT_TYPE",
+        "AO_ACCOUNT_OPENING_FORM_CURRENCY",
+        "AO_ACCOUNT_OPENING_FORM_ACTING_FOR",
+        "AO_ACCOUNT_OPENING_FORM_CUSTOMER_NAME",
+        "AO_ACCOUNT_OPENING_FORM_BIRTH_PLACE_DATE",
+        "AO_ACCOUNT_OPENING_FORM_GENDER",
+        "AO_ACCOUNT_OPENING_FORM_MARITAL_STATUS",
+        "AO_ACCOUNT_OPENING_FORM_CITIZENSHIP",
+        "AO_ACCOUNT_OPENING_FORM_IDENTITY_TYPE",
+        "AO_ACCOUNT_OPENING_FORM_IDENTITY_NUMBER",
+        "AO_ACCOUNT_OPENING_FORM_IDENTITY_VALID_UNTIL",
+        "AO_ACCOUNT_OPENING_FORM_SUPPORTING_IDENTITY_TYPE",
+        "AO_ACCOUNT_OPENING_FORM_SUPPORTING_IDENTITY_NUMBER",
+        "AO_ACCOUNT_OPENING_FORM_SUPPORTING_IDENTITY_VALID_UNTIL",
+        "AO_ACCOUNT_OPENING_FORM_TIN_SSN",
+        "AO_ACCOUNT_OPENING_FORM_MOTHER_NAME",
+        "AO_ACCOUNT_OPENING_FORM_NPWP",
+        "AO_ACCOUNT_OPENING_FORM_CURRENT_ADDRESS_CHOICE",
+        "AO_ACCOUNT_OPENING_FORM_CURRENT_ADDRESS",
+        "AO_ACCOUNT_OPENING_FORM_RT",
+        "AO_ACCOUNT_OPENING_FORM_RW",
+        "AO_ACCOUNT_OPENING_FORM_VILLAGE",
+        "AO_ACCOUNT_OPENING_FORM_DISTRICT",
+        "AO_ACCOUNT_OPENING_FORM_CITY",
+        "AO_ACCOUNT_OPENING_FORM_POSTAL_CODE",
+        "AO_ACCOUNT_OPENING_FORM_PROVINCE",
+        "AO_ACCOUNT_OPENING_FORM_MAILING_ADDRESS_CHOICE",
+        "AO_ACCOUNT_OPENING_FORM_RESIDENCE_STATUS",
+        "AO_ACCOUNT_OPENING_FORM_EDUCATION",
+        "AO_ACCOUNT_OPENING_FORM_HOME_PHONE",
+        "AO_ACCOUNT_OPENING_FORM_MOBILE_PHONE",
+        "AO_ACCOUNT_OPENING_FORM_EMAIL",
+        "AO_ACCOUNT_OPENING_FORM_OCCUPATION",
+        "AO_ACCOUNT_OPENING_FORM_EMPLOYMENT_STATUS",
+        "AO_ACCOUNT_OPENING_FORM_BUSINESS_SECTOR",
+        "AO_ACCOUNT_OPENING_FORM_COMPANY_NAME",
+        "AO_ACCOUNT_OPENING_FORM_POSITION",
+        "AO_ACCOUNT_OPENING_FORM_EMPLOYED_SINCE",
+        "AO_ACCOUNT_OPENING_FORM_OFFICE_ADDRESS",
+        "AO_ACCOUNT_OPENING_FORM_OFFICE_CITY",
+        "AO_ACCOUNT_OPENING_FORM_OFFICE_POSTAL_CODE",
+        "AO_ACCOUNT_OPENING_FORM_OFFICE_PROVINCE",
+        "AO_ACCOUNT_OPENING_FORM_OFFICE_PHONE",
+        "AO_ACCOUNT_OPENING_FORM_OFFICE_EXTENSION",
+        "AO_ACCOUNT_OPENING_FORM_MONTHLY_INCOME",
+        "AO_ACCOUNT_OPENING_FORM_OPENING_PURPOSE",
+        "AO_ACCOUNT_OPENING_FORM_SOURCE_OF_FUNDS",
+        "AO_ACCOUNT_OPENING_FORM_ADDITIONAL_INCOME_SOURCE",
+        "AO_ACCOUNT_OPENING_FORM_ADDITIONAL_MONTHLY_INCOME",
+        "AO_ACCOUNT_OPENING_FORM_TRANSACTION_FREQUENCY",
+        "AO_ACCOUNT_OPENING_FORM_TRANSACTION_AVERAGE",
+        "AO_ACCOUNT_OPENING_FORM_FACILITIES",
+        "AO_ACCOUNT_OPENING_FORM_ATM_CARD_NUMBER",
+        "AO_ACCOUNT_OPENING_FORM_PIN_MAKER_ID",
+        "AO_ACCOUNT_OPENING_FORM_TOKEN_ID",
+        "AO_ACCOUNT_OPENING_FORM_SMS_NOTIFICATION",
+        "AO_ACCOUNT_OPENING_FORM_FOREIGN_TAX_OBLIGATION",
+        "AO_ACCOUNT_OPENING_FORM_CONSENT",
+        "AO_ACCOUNT_OPENING_FORM_CONSENT_PLACE",
+        "AO_ACCOUNT_OPENING_FORM_CONSENT_DATE",
+        "AO_ACCOUNT_OPENING_FORM_CUSTOMER_SIGNATURE",
+        "AO_ACCOUNT_OPENING_FORM_METERAI",
+        "AO_ACCOUNT_OPENING_FORM_CIF",
+        "AO_ACCOUNT_OPENING_FORM_CLASSIFICATION_CODE",
+        "AO_ACCOUNT_OPENING_FORM_BANK_RELATIONSHIP",
+        "AO_ACCOUNT_OPENING_FORM_DHN_CHECK",
+        "AO_ACCOUNT_OPENING_FORM_RISK_CATEGORY",
+        "AO_ACCOUNT_OPENING_FORM_SECTOR",
+        "AO_ACCOUNT_OPENING_FORM_INDUSTRY",
+        "AO_ACCOUNT_OPENING_FORM_TARGET",
+        "AO_ACCOUNT_OPENING_FORM_REFERRAL_SOURCE",
+        "AO_ACCOUNT_OPENING_FORM_MARKETING_CODE",
+        "AO_ACCOUNT_OPENING_FORM_REFERRAL_OTHER",
+        "AO_ACCOUNT_OPENING_FORM_IDENTITY_COPY_CHECK",
+        "AO_ACCOUNT_OPENING_FORM_NPWP_COPY_CHECK",
+        "AO_ACCOUNT_OPENING_FORM_OTHER_REQUIRED_DOCUMENTS",
+        "AO_ACCOUNT_OPENING_FORM_CS_DATE",
+        "AO_ACCOUNT_OPENING_FORM_SUPERVISOR_DATE",
+        "AO_ACCOUNT_OPENING_FORM_SUPERVISOR_APPROVAL",
+        "AO_ACCOUNT_OPENING_FORM_CS_SIGNATURE",
+        "AO_ACCOUNT_OPENING_FORM_SUPERVISOR_SIGNATURE",
+        "AO_ACCOUNT_OPENING_FORM_VERIFICATION_STAMP",
+        "AO_ACCOUNT_OPENING_FORM_CONFIRMATION_STAMP",
+        "AO_ACCOUNT_OPENING_FORM_CS_STAMP",
+        "AO_OPENING_REQUIRED"
+      ],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP Tabungan:4",
+      "source_row": 5,
+      "included": true,
+      "rule_ids": [
+        "AO_SIGNATURE_DIFFERENCE_CUSTOMER_NAME",
+        "AO_SIGNATURE_DIFFERENCE_IDENTITY_NUMBER",
+        "AO_SIGNATURE_DIFFERENCE_IDENTITY_ADDRESS",
+        "AO_SIGNATURE_DIFFERENCE_ACCOUNT_NUMBER",
+        "AO_SIGNATURE_DIFFERENCE_SIGNATURE_ONE",
+        "AO_SIGNATURE_DIFFERENCE_SIGNATURE_TWO",
+        "AO_SIGNATURE_DIFFERENCE_CREATION_PLACE",
+        "AO_SIGNATURE_DIFFERENCE_CREATION_DATE",
+        "AO_SIGNATURE_DIFFERENCE_DECLARANT_NAME",
+        "AO_SIGNATURE_DIFFERENCE_DECLARANT_SIGNATURE",
+        "AO_SIGNATURE_DIFFERENCE_METERAI",
+        "AO_SIGNATURE_DIFFERENCE_VERIFICATION_STAMP",
+        "AO_SIGNATURE_DECLARATION",
+        "AO_CUSTOMER_SIGNATURE_COMPARE"
+      ],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP Tabungan:5",
+      "source_row": 6,
+      "included": true,
+      "rule_ids": [
+        "AO_CS_VERIFICATION"
+      ],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP Tabungan:6",
+      "source_row": 7,
+      "included": false,
+      "rule_ids": [],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP Tabungan:7",
+      "source_row": 8,
+      "included": true,
+      "rule_ids": [
+        "AO_JOIN_VISIT_CUSTOMER_NAME",
+        "AO_JOIN_VISIT_CIF",
+        "AO_JOIN_VISIT_VISIT_DATE",
+        "AO_JOIN_VISIT_MARKETING_NAME",
+        "AO_JOIN_VISIT_KTP_PHOTO_CHECK",
+        "AO_JOIN_VISIT_IDENTITY_ADDRESS_CHECK",
+        "AO_JOIN_VISIT_CURRENT_ADDRESS_CHECK",
+        "AO_JOIN_VISIT_PHONE_CHECK",
+        "AO_JOIN_VISIT_EMAIL_CHECK",
+        "AO_JOIN_VISIT_BIRTH_CHECK",
+        "AO_JOIN_VISIT_MOTHER_NAME_CHECK",
+        "AO_JOIN_VISIT_VISITOR",
+        "AO_JOIN_VISIT_SUPERVISOR",
+        "AO_JOIN_VISIT_VISITOR_SIGNATURE",
+        "AO_JOIN_VISIT_SUPERVISOR_SIGNATURE",
+        "AO_VISIT_REQUIRED"
+      ],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP Tabungan:8",
+      "source_row": 9,
+      "included": false,
+      "rule_ids": [],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP Tabungan:9",
+      "source_row": 10,
+      "included": false,
+      "rule_ids": [],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP Tabungan:10",
+      "source_row": 11,
+      "included": false,
+      "rule_ids": [],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP Tabungan:11",
+      "source_row": 12,
+      "included": true,
+      "rule_ids": [
+        "AO_LAST_PAGE_STAMPS"
+      ],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP Tabungan:12",
+      "source_row": 13,
+      "included": false,
+      "rule_ids": [],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    },
+    {
+      "source_ref": "AO:SOP Tabungan:13",
+      "source_row": 14,
+      "included": false,
+      "rule_ids": [],
+      "note": "Document-visible scope only; unresolved/external clauses require review or are excluded"
+    }
+  ],
+  "known_gaps": [
+    "No embedded source PDFs; no live OCR accuracy claim.",
+    "No field schema for BO form or WIC survey; unresolved conditional checks remain REVIEW.",
+    "Stamp requirement numbers 5/18/22 lack a complete bank-approved authenticity/placement specification.",
+    "Newly opened account number requires audited case annotation from source; existing account number is not substituted.",
+    "Business holiday calendar requires bank configuration.",
+    "Nine extraction sample columns; ten report examples; reference-letter customer name discrepancy preserved."
+  ]
+}

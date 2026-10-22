@@ -1,0 +1,125 @@
+{
+  "id": "ext-synthetic-riplay",
+  "status": "COMPLETED",
+  "extract_result": {
+    "document_place": {
+      "raw": " Jakarta ",
+      "complete": true
+    },
+    "document_date": "25 Agustus 2025",
+    "bank_officer_name": {
+      "raw": "Tari O’Neil.",
+      "complete": true
+    },
+    "bank_officer_signature": {
+      "present": true,
+      "non_text": true,
+      "complete": true,
+      "corrupted": false,
+      "page_number": 4,
+      "evidence": "Visible handwritten strokes in labelled signer block on page four."
+    },
+    "customer_name": {
+      "raw": " Rina Putri ",
+      "complete": true
+    },
+    "customer_signature": {
+      "present": true,
+      "non_text": true,
+      "complete": true,
+      "corrupted": false,
+      "page_number": 4,
+      "evidence": "Visible handwritten strokes in labelled signer block on page four."
+    },
+    "printed_date": "25/08/2025",
+    "page_initials": {
+      "page_count": 4,
+      "pages": [
+        {
+          "page_number": 1,
+          "footer_present": true,
+          "non_text": true,
+          "complete": true,
+          "main_signature_present": false,
+          "evidence": "Visible handwritten customer initials in bottom-right margin of physical page 1."
+        },
+        {
+          "page_number": 2,
+          "footer_present": true,
+          "non_text": true,
+          "complete": true,
+          "main_signature_present": false,
+          "evidence": "Visible handwritten customer initials in bottom-right margin of physical page 2."
+        },
+        {
+          "page_number": 3,
+          "footer_present": true,
+          "non_text": true,
+          "complete": true,
+          "main_signature_present": false,
+          "evidence": "Visible handwritten customer initials in bottom-right margin of physical page 3."
+        },
+        {
+          "page_number": 4,
+          "footer_present": true,
+          "non_text": true,
+          "complete": true,
+          "main_signature_present": true,
+          "evidence": "Visible handwritten customer initials in bottom-right margin of physical page 4."
+        }
+      ]
+    },
+    "customer_stamp": {
+      "present": false,
+      "text": null,
+      "complete": null,
+      "at_signer_region": null,
+      "page_number": null,
+      "evidence": "Inspected labelled signer region; no stamp."
+    },
+    "cs_stamp": {
+      "present": false,
+      "text": null,
+      "complete": null,
+      "at_signer_region": null,
+      "page_number": null,
+      "evidence": "Inspected labelled signer region; no stamp."
+    }
+  },
+  "extract_metadata": {
+    "field_metadata": {
+      "document_metadata": {
+        "document_place": {
+          "confidence": 0.99
+        },
+        "document_date": {
+          "confidence": 0.99
+        },
+        "bank_officer_name": {
+          "confidence": 0.99
+        },
+        "bank_officer_signature": {
+          "confidence": 0.99
+        },
+        "customer_name": {
+          "confidence": 0.99
+        },
+        "customer_signature": {
+          "confidence": 0.99
+        },
+        "printed_date": {
+          "confidence": 0.99
+        },
+        "page_initials": {
+          "confidence": 0.99
+        },
+        "customer_stamp": {
+          "confidence": 0.99
+        },
+        "cs_stamp": {
+          "confidence": 0.99
+        }
+      }
+    }
+  }
+}

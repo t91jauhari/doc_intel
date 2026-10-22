@@ -1,0 +1,88 @@
+{
+  "id": "ext-synthetic-valas2",
+  "status": "COMPLETED",
+  "extract_result": {
+    "customer_name": {
+      "raw": " PT Contoh & Mitra. ",
+      "complete": true,
+      "subject_type": "company"
+    },
+    "customer_address": {
+      "raw": " Jalan Contoh 12, Jakarta ",
+      "complete": true
+    },
+    "currency": "usd",
+    "creation_place": {
+      "raw": " Jakarta ",
+      "complete": true
+    },
+    "creation_date": "5 Oktober 2026",
+    "signatory": {
+      "raw": "Rina Putri, Direktur",
+      "name_raw": " Rina Putri ",
+      "role_raw": " Direktur ",
+      "complete": true,
+      "is_company_representative": true,
+      "capacity_evidence": "Filled signer role Direktur and represented company PT Contoh & Mitra."
+    },
+    "signatory_company": {
+      "raw": "PT Contoh & Mitra.",
+      "complete": true
+    },
+    "stamp_duty": {
+      "present": true,
+      "denomination_raw": "Rp10 000",
+      "complete": true,
+      "suspected_tampering": false,
+      "evidence": "Whole fiscal stamp with readable Rp10 000 denomination."
+    },
+    "signatory_signature": {
+      "present": true,
+      "handwritten": true,
+      "complete": true,
+      "evidence": "Distinct handwritten ink signature in signer region."
+    },
+    "stamp_verification": {
+      "present": true,
+      "text": "PT Contoh & Mitra.",
+      "complete": true,
+      "evidence": "Whole round company stamp beside signature."
+    }
+  },
+  "extract_metadata": {
+    "field_metadata": {
+      "document_metadata": {
+        "customer_name": {
+          "confidence": 0.99
+        },
+        "customer_address": {
+          "confidence": 0.99
+        },
+        "currency": {
+          "confidence": 0.99
+        },
+        "creation_place": {
+          "confidence": 0.99
+        },
+        "creation_date": {
+          "confidence": 0.99
+        },
+        "signatory": {
+          "confidence": 0.99
+        },
+        "signatory_company": {
+          "confidence": 0.99
+        },
+        "stamp_duty": {
+          "confidence": 0.99
+        },
+        "signatory_signature": {
+          "confidence": 0.99
+        },
+        "stamp_verification": {
+          "confidence": 0.99
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,298 @@
+{
+  "id": "synthetic-invoice",
+  "status": "COMPLETED",
+  "extract_result": {
+    "to_name": {
+      "raw": "Test Customer Ltd.",
+      "complete": true
+    },
+    "to_address": {
+      "raw": "Customer Road 1, Test City",
+      "complete": true
+    },
+    "to_phone": "+62 (21) 123-4567",
+    "from_name": {
+      "raw": "Test Supplier Ltd.",
+      "complete": true
+    },
+    "from_address": {
+      "raw": "Supplier Road 2, Test City",
+      "complete": true
+    },
+    "from_phone": null,
+    "bank_name": {
+      "raw": "Test Bank",
+      "complete": true
+    },
+    "swift_code": "TESTUS33",
+    "bank_account_number": "0001 2345-6789",
+    "invoice_date": "2025-08-07",
+    "due_date": "08/08/2025",
+    "invoice_number": "INV-2025/001_A",
+    "item_name": {
+      "table_complete": true,
+      "items": [
+        {
+          "row_id": "1",
+          "raw": "Test equipment A",
+          "complete": true
+        },
+        {
+          "row_id": "2",
+          "raw": "Test equipment B",
+          "complete": true
+        }
+      ]
+    },
+    "quantity": [
+      {
+        "row_id": "1",
+        "raw": "2 PCS (20 BAGS packaging)",
+        "value_raw": "2",
+        "unit_raw": "PCS",
+        "other_quantity_note": "20 BAGS packaging"
+      },
+      {
+        "row_id": "2",
+        "raw": "3 Box",
+        "value_raw": "3",
+        "unit_raw": "Box",
+        "other_quantity_note": null
+      }
+    ],
+    "unit_price": [
+      {
+        "row_id": "1",
+        "amount_raw": "10.00",
+        "currency_raw": "USD",
+        "unit_raw": "PCS"
+      },
+      {
+        "row_id": "2",
+        "amount_raw": "20.00",
+        "currency_raw": "USD",
+        "unit_raw": "BOX"
+      }
+    ],
+    "subtotal": [
+      {
+        "row_id": "1",
+        "amount_raw": "20.00",
+        "currency_raw": "USD"
+      },
+      {
+        "row_id": "2",
+        "amount_raw": "60.00",
+        "currency_raw": "USD"
+      }
+    ],
+    "subtotal_all_items": {
+      "amount_raw": "80.00",
+      "currency_raw": "USD"
+    },
+    "final_total_amount": {
+      "amount_raw": "88.00",
+      "currency_raw": "USD",
+      "calculation_basis": "full_invoice",
+      "adjustments_complete": true,
+      "adjustments": [
+        {
+          "label": "VAT",
+          "kind": "tax",
+          "amount_raw": "8.00",
+          "currency_raw": "USD",
+          "included_in_base": false
+        }
+      ]
+    },
+    "claim_note": {
+      "present": false,
+      "note_raw": null,
+      "claim_number_raw": null,
+      "percentage_raw": null,
+      "amount_raw": null,
+      "currency_raw": null,
+      "base_kind": null,
+      "base_amount_raw": null,
+      "base_currency_raw": null,
+      "basis_evidence": null
+    }
+  },
+  "extract_metadata": {
+    "field_metadata": {
+      "document_metadata": {
+        "to_name": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "to_address": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "to_phone": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "from_name": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "from_address": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "from_phone": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "bank_name": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "swift_code": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "bank_account_number": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "invoice_date": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "due_date": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "invoice_number": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "item_name": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "quantity": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "unit_price": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "subtotal": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "subtotal_all_items": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "final_total_amount": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "claim_note": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

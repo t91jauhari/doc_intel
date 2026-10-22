@@ -1,0 +1,188 @@
+{
+  "id": "ext-synthetic-edd",
+  "status": "COMPLETED",
+  "extract_result": {
+    "transaction_type": null,
+    "person_type": null,
+    "customer_name": "Synthetic Account Customer",
+    "cif": null,
+    "product": null,
+    "screening_dttot": null,
+    "screening_negative_news": null,
+    "screening_watchlist": null,
+    "screening_no_match": null,
+    "high_risk_occupation": null,
+    "high_risk_country": null,
+    "high_risk_business": null,
+    "high_risk_pep": null,
+    "high_risk_watchlist": null,
+    "high_risk_other": null,
+    "edd_result": null,
+    "occupation": null,
+    "beneficial_owner_wealth": null,
+    "pep_information": null,
+    "other_funds": null,
+    "other_business": null,
+    "other_business_location": null,
+    "supporting_information": null,
+    "product_transactions": null,
+    "pep_family": null,
+    "pep_family_details": null,
+    "business_partners": null,
+    "transaction_information": null,
+    "counterparty_relationship": null,
+    "transaction_purpose": null,
+    "profile_transaction_relation": null,
+    "additional_edd_information": null,
+    "edd_attachments": null,
+    "edd_officer": null,
+    "supervisor": null,
+    "edd_officer_signature": {
+      "present": null,
+      "text": null,
+      "complete": null,
+      "evidence": "Synthetic fixture; no source observation"
+    },
+    "supervisor_signature": {
+      "present": null,
+      "text": null,
+      "complete": null,
+      "evidence": "Synthetic fixture; no source observation"
+    },
+    "verification_stamp": {
+      "present": null,
+      "text": null,
+      "complete": null,
+      "evidence": "Synthetic fixture; no source observation"
+    },
+    "confirmation_stamp": {
+      "present": null,
+      "text": null,
+      "complete": null,
+      "evidence": "Synthetic fixture; no source observation"
+    }
+  },
+  "extract_metadata": {
+    "field_metadata": {
+      "document_metadata": {
+        "transaction_type": {
+          "confidence": 0.99
+        },
+        "person_type": {
+          "confidence": 0.99
+        },
+        "customer_name": {
+          "confidence": 0.99
+        },
+        "cif": {
+          "confidence": 0.99
+        },
+        "product": {
+          "confidence": 0.99
+        },
+        "screening_dttot": {
+          "confidence": 0.99
+        },
+        "screening_negative_news": {
+          "confidence": 0.99
+        },
+        "screening_watchlist": {
+          "confidence": 0.99
+        },
+        "screening_no_match": {
+          "confidence": 0.99
+        },
+        "high_risk_occupation": {
+          "confidence": 0.99
+        },
+        "high_risk_country": {
+          "confidence": 0.99
+        },
+        "high_risk_business": {
+          "confidence": 0.99
+        },
+        "high_risk_pep": {
+          "confidence": 0.99
+        },
+        "high_risk_watchlist": {
+          "confidence": 0.99
+        },
+        "high_risk_other": {
+          "confidence": 0.99
+        },
+        "edd_result": {
+          "confidence": 0.99
+        },
+        "occupation": {
+          "confidence": 0.99
+        },
+        "beneficial_owner_wealth": {
+          "confidence": 0.99
+        },
+        "pep_information": {
+          "confidence": 0.99
+        },
+        "other_funds": {
+          "confidence": 0.99
+        },
+        "other_business": {
+          "confidence": 0.99
+        },
+        "other_business_location": {
+          "confidence": 0.99
+        },
+        "supporting_information": {
+          "confidence": 0.99
+        },
+        "product_transactions": {
+          "confidence": 0.99
+        },
+        "pep_family": {
+          "confidence": 0.99
+        },
+        "pep_family_details": {
+          "confidence": 0.99
+        },
+        "business_partners": {
+          "confidence": 0.99
+        },
+        "transaction_information": {
+          "confidence": 0.99
+        },
+        "counterparty_relationship": {
+          "confidence": 0.99
+        },
+        "transaction_purpose": {
+          "confidence": 0.99
+        },
+        "profile_transaction_relation": {
+          "confidence": 0.99
+        },
+        "additional_edd_information": {
+          "confidence": 0.99
+        },
+        "edd_attachments": {
+          "confidence": 0.99
+        },
+        "edd_officer": {
+          "confidence": 0.99
+        },
+        "supervisor": {
+          "confidence": 0.99
+        },
+        "edd_officer_signature": {
+          "confidence": 0.99
+        },
+        "supervisor_signature": {
+          "confidence": 0.99
+        },
+        "verification_stamp": {
+          "confidence": 0.99
+        },
+        "confirmation_stamp": {
+          "confidence": 0.99
+        }
+      }
+    }
+  }
+}

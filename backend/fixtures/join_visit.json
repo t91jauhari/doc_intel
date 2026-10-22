@@ -1,0 +1,91 @@
+{
+  "id": "ext-synthetic-join_visit",
+  "status": "COMPLETED",
+  "extract_result": {
+    "customer_name": "Synthetic Account Customer",
+    "cif": null,
+    "visit_date": null,
+    "marketing_name": null,
+    "ktp_photo_check": null,
+    "identity_address_check": null,
+    "current_address_check": null,
+    "phone_check": null,
+    "email_check": null,
+    "birth_check": null,
+    "mother_name_check": null,
+    "visitor": null,
+    "supervisor": null,
+    "visitor_signature": {
+      "present": null,
+      "text": null,
+      "complete": null,
+      "evidence": "Synthetic fixture; no source observation"
+    },
+    "supervisor_signature": {
+      "present": null,
+      "text": null,
+      "complete": null,
+      "evidence": "Synthetic fixture; no source observation"
+    },
+    "confirmation_stamp": {
+      "present": null,
+      "text": null,
+      "complete": null,
+      "evidence": "Synthetic fixture; no source observation"
+    }
+  },
+  "extract_metadata": {
+    "field_metadata": {
+      "document_metadata": {
+        "customer_name": {
+          "confidence": 0.99
+        },
+        "cif": {
+          "confidence": 0.99
+        },
+        "visit_date": {
+          "confidence": 0.99
+        },
+        "marketing_name": {
+          "confidence": 0.99
+        },
+        "ktp_photo_check": {
+          "confidence": 0.99
+        },
+        "identity_address_check": {
+          "confidence": 0.99
+        },
+        "current_address_check": {
+          "confidence": 0.99
+        },
+        "phone_check": {
+          "confidence": 0.99
+        },
+        "email_check": {
+          "confidence": 0.99
+        },
+        "birth_check": {
+          "confidence": 0.99
+        },
+        "mother_name_check": {
+          "confidence": 0.99
+        },
+        "visitor": {
+          "confidence": 0.99
+        },
+        "supervisor": {
+          "confidence": 0.99
+        },
+        "visitor_signature": {
+          "confidence": 0.99
+        },
+        "supervisor_signature": {
+          "confidence": 0.99
+        },
+        "confirmation_stamp": {
+          "confidence": 0.99
+        }
+      }
+    }
+  }
+}

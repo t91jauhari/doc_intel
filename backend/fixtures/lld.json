@@ -1,0 +1,859 @@
+{
+  "id": "synthetic-lld",
+  "status": "COMPLETED",
+  "extract_result": {
+    "transaction_date": "2025 08 05",
+    "transaction_id": "000001TX",
+    "account_type": "01",
+    "beneficiary_name": {
+      "raw": "Beneficiary Test Name",
+      "complete": true
+    },
+    "beneficiary_address": {
+      "raw": "Beneficiary Test Address",
+      "complete": true
+    },
+    "beneficiary_postal_code": "04567",
+    "beneficiary_phone": "+1 (555) 123-4567",
+    "beneficiary_status": {
+      "selected": [
+        "Bukan Penduduk"
+      ],
+      "selected_codes": [],
+      "options_complete": true,
+      "options": [
+        {
+          "label": "Bukan Penduduk",
+          "code": null,
+          "state": "selected",
+          "local_mark_present": true,
+          "tail_overlap_only": false,
+          "mark_type": "tick",
+          "evidence": "local tick body inside box"
+        },
+        {
+          "label": "Penduduk",
+          "code": null,
+          "state": "unselected",
+          "local_mark_present": false,
+          "tail_overlap_only": false,
+          "mark_type": "none",
+          "evidence": "empty box, no local mark"
+        }
+      ]
+    },
+    "beneficiary_country_code": "USA",
+    "beneficiary_category": {
+      "selected": [
+        "Perusahaan"
+      ],
+      "selected_codes": [
+        "E0"
+      ],
+      "options_complete": true,
+      "options": [
+        {
+          "label": "Perusahaan",
+          "code": "E0",
+          "state": "selected",
+          "local_mark_present": true,
+          "tail_overlap_only": false,
+          "mark_type": "tick",
+          "evidence": "local tick body inside box"
+        },
+        {
+          "label": "Perorangan",
+          "code": null,
+          "state": "unselected",
+          "local_mark_present": false,
+          "tail_overlap_only": false,
+          "mark_type": "none",
+          "evidence": "empty box, no local mark"
+        },
+        {
+          "label": "Pemerintah",
+          "code": null,
+          "state": "unselected",
+          "local_mark_present": false,
+          "tail_overlap_only": false,
+          "mark_type": "none",
+          "evidence": "empty box, no local mark"
+        },
+        {
+          "label": "Bank Pelapor",
+          "code": null,
+          "state": "unselected",
+          "local_mark_present": false,
+          "tail_overlap_only": false,
+          "mark_type": "none",
+          "evidence": "empty box, no local mark"
+        },
+        {
+          "label": "Non Bank",
+          "code": null,
+          "state": "unselected",
+          "local_mark_present": false,
+          "tail_overlap_only": false,
+          "mark_type": "none",
+          "evidence": "empty box, no local mark"
+        }
+      ]
+    },
+    "beneficiary_bank": {
+      "selected": [],
+      "selected_codes": [],
+      "options_complete": true,
+      "options": [
+        {
+          "label": "Bank Pelapor",
+          "code": null,
+          "state": "unselected",
+          "local_mark_present": false,
+          "tail_overlap_only": false,
+          "mark_type": "none",
+          "evidence": "empty box, no local mark"
+        },
+        {
+          "label": "KC/KP di LN",
+          "code": null,
+          "state": "unselected",
+          "local_mark_present": false,
+          "tail_overlap_only": false,
+          "mark_type": "none",
+          "evidence": "empty box, no local mark"
+        },
+        {
+          "label": "Bank Lainnya",
+          "code": null,
+          "state": "unselected",
+          "local_mark_present": false,
+          "tail_overlap_only": false,
+          "mark_type": "none",
+          "evidence": "empty box, no local mark"
+        },
+        {
+          "label": "Otoritas Moneter",
+          "code": null,
+          "state": "unselected",
+          "local_mark_present": false,
+          "tail_overlap_only": false,
+          "mark_type": "none",
+          "evidence": "empty box, no local mark"
+        }
+      ]
+    },
+    "beneficiary_international_organization": {
+      "selected": [],
+      "selected_codes": [],
+      "options_complete": true,
+      "options": [
+        {
+          "label": "Bank",
+          "code": null,
+          "state": "unselected",
+          "local_mark_present": false,
+          "tail_overlap_only": false,
+          "mark_type": "none",
+          "evidence": "empty box, no local mark"
+        },
+        {
+          "label": "Non Bank",
+          "code": null,
+          "state": "unselected",
+          "local_mark_present": false,
+          "tail_overlap_only": false,
+          "mark_type": "none",
+          "evidence": "empty box, no local mark"
+        }
+      ]
+    },
+    "beneficiary_identity_relation": {
+      "selected": [
+        "Penerima dana ≠ Pembayar"
+      ],
+      "selected_codes": [],
+      "options_complete": true,
+      "options": [
+        {
+          "label": "Penerima dana ≠ Pembayar",
+          "code": null,
+          "state": "selected",
+          "local_mark_present": true,
+          "tail_overlap_only": false,
+          "mark_type": "tick",
+          "evidence": "local tick body inside box"
+        },
+        {
+          "label": "Penerima dana = Pembayar",
+          "code": null,
+          "state": "unselected",
+          "local_mark_present": false,
+          "tail_overlap_only": false,
+          "mark_type": "none",
+          "evidence": "empty box, no local mark"
+        }
+      ]
+    },
+    "beneficiary_identification_type": {
+      "selected": [
+        "KTP"
+      ],
+      "selected_codes": [
+        "B"
+      ],
+      "options_complete": true,
+      "options": [
+        {
+          "label": "KTP",
+          "code": "B",
+          "state": "selected",
+          "local_mark_present": true,
+          "tail_overlap_only": false,
+          "mark_type": "tick",
+          "evidence": "local tick body inside box"
+        },
+        {
+          "label": "NPWP",
+          "code": null,
+          "state": "unselected",
+          "local_mark_present": false,
+          "tail_overlap_only": false,
+          "mark_type": "none",
+          "evidence": "empty box, no local mark"
+        },
+        {
+          "label": "SIM",
+          "code": null,
+          "state": "unselected",
+          "local_mark_present": false,
+          "tail_overlap_only": false,
+          "mark_type": "none",
+          "evidence": "empty box, no local mark"
+        },
+        {
+          "label": "Paspor",
+          "code": null,
+          "state": "unselected",
+          "local_mark_present": false,
+          "tail_overlap_only": false,
+          "mark_type": "none",
+          "evidence": "empty box, no local mark"
+        }
+      ]
+    },
+    "beneficiary_identification_number": "0000123456789012",
+    "payer_name": {
+      "raw": "Payer Test Name",
+      "complete": true
+    },
+    "payer_address": {
+      "raw": "Payer Test Address",
+      "complete": true
+    },
+    "payer_postal_code": "00001",
+    "payer_phone": null,
+    "payer_status": {
+      "selected": [
+        "Penduduk"
+      ],
+      "selected_codes": [],
+      "options_complete": true,
+      "options": [
+        {
+          "label": "Penduduk",
+          "code": null,
+          "state": "selected",
+          "local_mark_present": true,
+          "tail_overlap_only": false,
+          "mark_type": "tick",
+          "evidence": "local tick body inside box"
+        },
+        {
+          "label": "Bukan Penduduk",
+          "code": null,
+          "state": "unselected",
+          "local_mark_present": false,
+          "tail_overlap_only": false,
+          "mark_type": "none",
+          "evidence": "empty box, no local mark"
+        }
+      ]
+    },
+    "payer_country_code": "ID",
+    "payer_category": {
+      "selected": [
+        "Perorangan"
+      ],
+      "selected_codes": [
+        "A0"
+      ],
+      "options_complete": true,
+      "options": [
+        {
+          "label": "Perorangan",
+          "code": "A0",
+          "state": "selected",
+          "local_mark_present": true,
+          "tail_overlap_only": false,
+          "mark_type": "tick",
+          "evidence": "local tick body inside box"
+        },
+        {
+          "label": "Perusahaan",
+          "code": null,
+          "state": "unselected",
+          "local_mark_present": false,
+          "tail_overlap_only": false,
+          "mark_type": "none",
+          "evidence": "empty box, no local mark"
+        },
+        {
+          "label": "Pemerintah",
+          "code": null,
+          "state": "unselected",
+          "local_mark_present": false,
+          "tail_overlap_only": false,
+          "mark_type": "none",
+          "evidence": "empty box, no local mark"
+        },
+        {
+          "label": "Bank Pelapor",
+          "code": null,
+          "state": "unselected",
+          "local_mark_present": false,
+          "tail_overlap_only": false,
+          "mark_type": "none",
+          "evidence": "empty box, no local mark"
+        },
+        {
+          "label": "Non Bank",
+          "code": null,
+          "state": "unselected",
+          "local_mark_present": false,
+          "tail_overlap_only": false,
+          "mark_type": "none",
+          "evidence": "empty box, no local mark"
+        }
+      ]
+    },
+    "payer_bank": {
+      "selected": [],
+      "selected_codes": [],
+      "options_complete": true,
+      "options": [
+        {
+          "label": "Bank Pelapor",
+          "code": null,
+          "state": "unselected",
+          "local_mark_present": false,
+          "tail_overlap_only": false,
+          "mark_type": "none",
+          "evidence": "empty box, no local mark"
+        },
+        {
+          "label": "KC/KP di LN",
+          "code": null,
+          "state": "unselected",
+          "local_mark_present": false,
+          "tail_overlap_only": false,
+          "mark_type": "none",
+          "evidence": "empty box, no local mark"
+        },
+        {
+          "label": "Bank Lainnya",
+          "code": null,
+          "state": "unselected",
+          "local_mark_present": false,
+          "tail_overlap_only": false,
+          "mark_type": "none",
+          "evidence": "empty box, no local mark"
+        },
+        {
+          "label": "Otoritas Moneter",
+          "code": null,
+          "state": "unselected",
+          "local_mark_present": false,
+          "tail_overlap_only": false,
+          "mark_type": "none",
+          "evidence": "empty box, no local mark"
+        }
+      ]
+    },
+    "payer_international_organization": {
+      "selected": [],
+      "selected_codes": [],
+      "options_complete": true,
+      "options": [
+        {
+          "label": "Bank",
+          "code": null,
+          "state": "unselected",
+          "local_mark_present": false,
+          "tail_overlap_only": false,
+          "mark_type": "none",
+          "evidence": "empty box, no local mark"
+        },
+        {
+          "label": "Non Bank",
+          "code": null,
+          "state": "unselected",
+          "local_mark_present": false,
+          "tail_overlap_only": false,
+          "mark_type": "none",
+          "evidence": "empty box, no local mark"
+        }
+      ]
+    },
+    "financial_relationship": {
+      "selected": [
+        "Non afiliasi"
+      ],
+      "selected_codes": [
+        "N"
+      ],
+      "options_complete": true,
+      "options": [
+        {
+          "label": "Non afiliasi",
+          "code": "N",
+          "state": "selected",
+          "local_mark_present": true,
+          "tail_overlap_only": false,
+          "mark_type": "tick",
+          "evidence": "local tick body inside box"
+        },
+        {
+          "label": "Pemegang Saham",
+          "code": null,
+          "state": "unselected",
+          "local_mark_present": false,
+          "tail_overlap_only": false,
+          "mark_type": "none",
+          "evidence": "empty box, no local mark"
+        },
+        {
+          "label": "Terafiliasi",
+          "code": null,
+          "state": "unselected",
+          "local_mark_present": false,
+          "tail_overlap_only": false,
+          "mark_type": "none",
+          "evidence": "empty box, no local mark"
+        },
+        {
+          "label": "Group",
+          "code": null,
+          "state": "unselected",
+          "local_mark_present": false,
+          "tail_overlap_only": false,
+          "mark_type": "none",
+          "evidence": "empty box, no local mark"
+        }
+      ]
+    },
+    "depository_correspondent_bank_country_code": "US",
+    "payer_identification_type": {
+      "selected": [
+        "KTP"
+      ],
+      "selected_codes": [
+        "B"
+      ],
+      "options_complete": true,
+      "options": [
+        {
+          "label": "KTP",
+          "code": "B",
+          "state": "selected",
+          "local_mark_present": true,
+          "tail_overlap_only": false,
+          "mark_type": "tick",
+          "evidence": "local tick body inside box"
+        },
+        {
+          "label": "NPWP",
+          "code": null,
+          "state": "unselected",
+          "local_mark_present": false,
+          "tail_overlap_only": false,
+          "mark_type": "none",
+          "evidence": "empty box, no local mark"
+        },
+        {
+          "label": "SIM",
+          "code": null,
+          "state": "unselected",
+          "local_mark_present": false,
+          "tail_overlap_only": false,
+          "mark_type": "none",
+          "evidence": "empty box, no local mark"
+        },
+        {
+          "label": "Paspor",
+          "code": null,
+          "state": "unselected",
+          "local_mark_present": false,
+          "tail_overlap_only": false,
+          "mark_type": "none",
+          "evidence": "empty box, no local mark"
+        }
+      ]
+    },
+    "payer_identification_number": "0100123456789012",
+    "transaction_value": {
+      "currency_raw": "USD",
+      "amount_raw": "150 000",
+      "segmented_cells": true
+    },
+    "purpose": "X012",
+    "details": {
+      "raw": null,
+      "complete": null
+    },
+    "transaction_code": "S001",
+    "declaration_date": "05/08/25",
+    "customer_signature": {
+      "present": true,
+      "handwritten": true
+    },
+    "bank_officer_signature": {
+      "present": true,
+      "handwritten": true
+    },
+    "bank_stamp": {
+      "present": true,
+      "text": "TEST BANK",
+      "complete": true
+    }
+  },
+  "extract_metadata": {
+    "field_metadata": {
+      "document_metadata": {
+        "transaction_date": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "transaction_id": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "account_type": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "beneficiary_name": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "beneficiary_address": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "beneficiary_postal_code": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "beneficiary_phone": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "beneficiary_status": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "beneficiary_country_code": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "beneficiary_category": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "beneficiary_bank": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "beneficiary_international_organization": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "beneficiary_identity_relation": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "beneficiary_identification_type": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "beneficiary_identification_number": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "payer_name": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "payer_address": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "payer_postal_code": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "payer_phone": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "payer_status": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "payer_country_code": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "payer_category": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "payer_bank": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "payer_international_organization": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "financial_relationship": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "depository_correspondent_bank_country_code": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "payer_identification_type": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "payer_identification_number": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "transaction_value": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "purpose": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "details": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "transaction_code": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "declaration_date": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "customer_signature": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "bank_officer_signature": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "bank_stamp": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

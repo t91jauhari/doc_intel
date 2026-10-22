@@ -1,0 +1,85 @@
+{
+  "id": "ext-synthetic-signature_difference",
+  "status": "COMPLETED",
+  "extract_result": {
+    "customer_name": "Synthetic Account Customer",
+    "identity_number": null,
+    "identity_address": null,
+    "account_number": null,
+    "signature_one": {
+      "present": null,
+      "text": null,
+      "complete": null,
+      "evidence": "Synthetic fixture; no source observation"
+    },
+    "signature_two": {
+      "present": null,
+      "text": null,
+      "complete": null,
+      "evidence": "Synthetic fixture; no source observation"
+    },
+    "creation_place": null,
+    "creation_date": null,
+    "declarant_name": null,
+    "declarant_signature": {
+      "present": null,
+      "text": null,
+      "complete": null,
+      "evidence": "Synthetic fixture; no source observation"
+    },
+    "meterai": {
+      "present": null,
+      "text": null,
+      "complete": null,
+      "evidence": "Synthetic fixture; no source observation"
+    },
+    "verification_stamp": {
+      "present": null,
+      "text": null,
+      "complete": null,
+      "evidence": "Synthetic fixture; no source observation"
+    }
+  },
+  "extract_metadata": {
+    "field_metadata": {
+      "document_metadata": {
+        "customer_name": {
+          "confidence": 0.99
+        },
+        "identity_number": {
+          "confidence": 0.99
+        },
+        "identity_address": {
+          "confidence": 0.99
+        },
+        "account_number": {
+          "confidence": 0.99
+        },
+        "signature_one": {
+          "confidence": 0.99
+        },
+        "signature_two": {
+          "confidence": 0.99
+        },
+        "creation_place": {
+          "confidence": 0.99
+        },
+        "creation_date": {
+          "confidence": 0.99
+        },
+        "declarant_name": {
+          "confidence": 0.99
+        },
+        "declarant_signature": {
+          "confidence": 0.99
+        },
+        "meterai": {
+          "confidence": 0.99
+        },
+        "verification_stamp": {
+          "confidence": 0.99
+        }
+      }
+    }
+  }
+}

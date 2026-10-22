@@ -1,0 +1,392 @@
+{
+  "id": "synthetic-application",
+  "status": "COMPLETED",
+  "extract_result": {
+    "branch": "KCP Test",
+    "transaction_date": "05/08/2025",
+    "payment_type": {
+      "selected": [
+        "DEBIT REKENING"
+      ],
+      "options_complete": true,
+      "options": [
+        {
+          "label": "Cek/BG",
+          "state": "unselected",
+          "local_mark_present": false,
+          "mark_type": "none",
+          "tail_overlap_only": false,
+          "evidence": "empty checkbox, no selection mark"
+        },
+        {
+          "label": "Tunai",
+          "state": "unselected",
+          "local_mark_present": false,
+          "mark_type": "none",
+          "tail_overlap_only": false,
+          "evidence": "empty checkbox, no selection mark"
+        },
+        {
+          "label": "DEBIT REKENING",
+          "state": "selected",
+          "local_mark_present": true,
+          "mark_type": "tick",
+          "tail_overlap_only": false,
+          "evidence": "distinct short tick body in this checkbox"
+        }
+      ]
+    },
+    "transaction_type": {
+      "selected": [
+        "SWIFT"
+      ],
+      "options_complete": true,
+      "options": [
+        {
+          "label": "LLG",
+          "state": "unselected",
+          "local_mark_present": false,
+          "mark_type": "none",
+          "tail_overlap_only": false,
+          "evidence": "empty checkbox, no selection mark"
+        },
+        {
+          "label": "INKASI",
+          "state": "unselected",
+          "local_mark_present": false,
+          "mark_type": "none",
+          "tail_overlap_only": false,
+          "evidence": "empty checkbox, no selection mark"
+        },
+        {
+          "label": "RTGS",
+          "state": "unselected",
+          "local_mark_present": false,
+          "mark_type": "none",
+          "tail_overlap_only": false,
+          "evidence": "empty checkbox, no selection mark"
+        },
+        {
+          "label": "SWIFT",
+          "state": "selected",
+          "local_mark_present": true,
+          "mark_type": "tick",
+          "tail_overlap_only": false,
+          "evidence": "distinct short tick body in this checkbox"
+        },
+        {
+          "label": "Pemindahbukuan",
+          "state": "unselected",
+          "local_mark_present": false,
+          "mark_type": "none",
+          "tail_overlap_only": false,
+          "evidence": "empty checkbox, no selection mark"
+        },
+        {
+          "label": "Wessel",
+          "state": "unselected",
+          "local_mark_present": false,
+          "mark_type": "none",
+          "tail_overlap_only": false,
+          "evidence": "empty checkbox, no selection mark"
+        },
+        {
+          "label": "Lainnya",
+          "state": "unselected",
+          "local_mark_present": false,
+          "mark_type": "none",
+          "tail_overlap_only": false,
+          "evidence": "empty checkbox, no selection mark"
+        }
+      ],
+      "other_description": null
+    },
+    "beneficiary": {
+      "full_text": "Test Person\nTest Street\n+62-123",
+      "name": "Test Person",
+      "address": "Test Street",
+      "phone": "+62-123"
+    },
+    "beneficiary_bank": {
+      "name": "Test Bank",
+      "branch": "Test City"
+    },
+    "swift_code": "TESTUS33XXX",
+    "beneficiary_account_number": "001234-AB",
+    "remitter": {
+      "full_text": "Test Person\nTest Street\n+62-123",
+      "name": "Test Person",
+      "address": "Test Street",
+      "phone": "+62-123"
+    },
+    "remitter_account_number": "000123",
+    "source_of_funds": "Gaji",
+    "transaction_purpose": "Pembayaran jasa",
+    "transaction_account_number": "000987",
+    "transaction_bank_name": null,
+    "currency": "USD",
+    "exchange_rate": "16.000",
+    "amount": {
+      "raw": "150.000",
+      "currency": "USD"
+    },
+    "charges": {
+      "selected": [
+        "Tunai"
+      ],
+      "options_complete": true,
+      "options": [
+        {
+          "label": "Tunai",
+          "state": "selected",
+          "local_mark_present": true,
+          "mark_type": "tick",
+          "tail_overlap_only": false,
+          "evidence": "distinct short tick body in this checkbox"
+        },
+        {
+          "label": "Debet Rekening",
+          "state": "unselected",
+          "local_mark_present": false,
+          "mark_type": "none",
+          "tail_overlap_only": false,
+          "evidence": "empty checkbox, no selection mark"
+        }
+      ],
+      "raw": "25",
+      "currency": "USD"
+    },
+    "total_amount": {
+      "raw": "150.025",
+      "currency": "USD"
+    },
+    "amount_in_words": {
+      "raw": "Seratus lima puluh ribu dua puluh lima dolar Amerika Serikat",
+      "complete": true,
+      "language": "id"
+    },
+    "notes": "Reference 123",
+    "customer_signature": {
+      "present": true,
+      "handwritten": true
+    },
+    "bank_approval": {
+      "present": true,
+      "stamp_present": true,
+      "stamp_text": "TEST BANK"
+    }
+  },
+  "extract_metadata": {
+    "field_metadata": {
+      "document_metadata": {
+        "branch": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "transaction_date": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "payment_type": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "transaction_type": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "beneficiary": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "beneficiary_bank": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "swift_code": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "beneficiary_account_number": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "remitter": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "remitter_account_number": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "source_of_funds": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "transaction_purpose": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "transaction_account_number": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "transaction_bank_name": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "currency": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "exchange_rate": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "amount": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "charges": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "total_amount": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "amount_in_words": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "notes": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "customer_signature": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        },
+        "bank_approval": {
+          "confidence": 0.99,
+          "citation": [
+            {
+              "page": 1,
+              "matching_text": "Synthetic fixture; not OCR"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

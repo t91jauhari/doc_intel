@@ -1,0 +1,33 @@
+pack,filename,document_type,field_path,expected_value,expected_sop_result,verified_by,notes
+01-Langit-R.zip,Surat Pernyataan Pembelian Valas-Langit R.pdf,,,,,,Fill verified answers; no synthetic ground truth
+01-Langit-R.zip,(Compressed)Form LLD-Langit R.pdf,,,,,,Fill verified answers; no synthetic ground truth
+01-Langit-R.zip,(Compressed)Form Riplay-Langit R.pdf,,,,,,Fill verified answers; no synthetic ground truth
+01-Langit-R.zip,(Compressed)Slip Aplikasi Transaksi-Langit R.pdf,,,,,,Fill verified answers; no synthetic ground truth
+01-Langit-R.zip,Dokumen Underlying-Langit R.pdf,,,,,,Fill verified answers; no synthetic ground truth
+01-Langit-R.zip,EKTP Langit Raharja.pdf,,,,,,Fill verified answers; no synthetic ground truth
+01-Sri.zip,Surat Pernyataan Pembelian Valas-Sri P.pdf,,,,,,Fill verified answers; no synthetic ground truth
+01-Sri.zip,EKTP-Sri Pujianty.png,,,,,,Fill verified answers; no synthetic ground truth
+01-Sri.zip,Form Riplay-Sri P.pdf,,,,,,Fill verified answers; no synthetic ground truth
+01-Sri.zip,Invoice-Sri P.pdf,,,,,,Fill verified answers; no synthetic ground truth
+01-Sri.zip,Slip Aplikasi Transaksi-Sri P.pdf,,,,,,Fill verified answers; no synthetic ground truth
+02-Indah-Laruna.zip,EKTP-Indah Laruna.png,,,,,,Fill verified answers; no synthetic ground truth
+02-Indah-Laruna.zip,(Compressed)Form Riplay-Indah Laruna.pdf,,,,,,Fill verified answers; no synthetic ground truth
+02-Indah-Laruna.zip,(Compressed)Slip Aplikasi Transaksi-Indah Laruna.pdf,,,,,,Fill verified answers; no synthetic ground truth
+02-Indah-Laruna.zip,(Compressed)Surat Pernyataan Pembelian Valas-Indah Laruna.pdf,,,,,,Fill verified answers; no synthetic ground truth
+02-Steve.zip,Forex - Steve Captain - Surat Pernyataan Valas.pdf,,,,,,Fill verified answers; no synthetic ground truth
+02-Steve.zip,Forex - Steve Captain - Aplikasi Transaksi.pdf,,,,,,Fill verified answers; no synthetic ground truth
+02-Steve.zip,Forex - Steve Captain - EKTP.pdf,,,,,,Fill verified answers; no synthetic ground truth
+02-Steve.zip,Forex - Steve Captain - Invoice.pdf,,,,,,Fill verified answers; no synthetic ground truth
+02-Steve.zip,Forex - Steve Captain - LLD.pdf,,,,,,Fill verified answers; no synthetic ground truth
+02-Steve.zip,Forex - Steve Captain - Riplay.pdf,,,,,,Fill verified answers; no synthetic ground truth
+03-Bayu-B.zip,Forex - Bayu Birdless - Surat Pernyataan Valas.pdf,,,,,,Fill verified answers; no synthetic ground truth
+03-Bayu-B.zip,Forex - Bayu Birdless - Aplikasi Transaksi.pdf,,,,,,Fill verified answers; no synthetic ground truth
+03-Bayu-B.zip,Forex - Bayu Birdless - EKTP.pdf,,,,,,Fill verified answers; no synthetic ground truth
+03-Bayu-B.zip,Forex - Bayu Birdless - Invoice.pdf,,,,,,Fill verified answers; no synthetic ground truth
+03-Bayu-B.zip,Forex - Bayu Birdless - LLD.pdf,,,,,,Fill verified answers; no synthetic ground truth
+03-Bayu-B.zip,Forex - Bayu Birdless - Riplay.pdf,,,,,,Fill verified answers; no synthetic ground truth
+03-Stuart.zip,Forex - Stuart Starshine - Surat Pernyataan Valas.pdf,,,,,,Fill verified answers; no synthetic ground truth
+03-Stuart.zip,Forex - Stuart Starshine - Aplikasi Transaksi.pdf,,,,,,Fill verified answers; no synthetic ground truth
+03-Stuart.zip,Forex - Stuart Starshine - EKTP.pdf,,,,,,Fill verified answers; no synthetic ground truth
+03-Stuart.zip,Forex - Stuart Starshine - Invoice.pdf,,,,,,Fill verified answers; no synthetic ground truth
+03-Stuart.zip,Forex - Stuart Starshine - Riplay.pdf,,,,,,Fill verified answers; no synthetic ground truth

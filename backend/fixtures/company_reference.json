@@ -1,0 +1,102 @@
+{
+  "id": "ext-synthetic-company_reference",
+  "status": "COMPLETED",
+  "extract_result": {
+    "company_name": null,
+    "letter_date": null,
+    "letter_number": null,
+    "letter_purpose": null,
+    "subject": null,
+    "customer_name": "Synthetic Account Customer",
+    "customer_position": null,
+    "partnership_date": null,
+    "signatory_name": null,
+    "signatory_position": null,
+    "signatory_phone": null,
+    "signatory_signature": {
+      "present": null,
+      "text": null,
+      "complete": null,
+      "evidence": "Synthetic fixture; no source observation"
+    },
+    "branch_address": null,
+    "confirmation_customer_name": null,
+    "confirmation_phone": null,
+    "confirmation_result": null,
+    "confirmation_date": null,
+    "confirmation_time": null,
+    "confirmation_officer": null,
+    "confirmation_stamp": {
+      "present": null,
+      "text": null,
+      "complete": null,
+      "evidence": "Synthetic fixture; no source observation"
+    }
+  },
+  "extract_metadata": {
+    "field_metadata": {
+      "document_metadata": {
+        "company_name": {
+          "confidence": 0.99
+        },
+        "letter_date": {
+          "confidence": 0.99
+        },
+        "letter_number": {
+          "confidence": 0.99
+        },
+        "letter_purpose": {
+          "confidence": 0.99
+        },
+        "subject": {
+          "confidence": 0.99
+        },
+        "customer_name": {
+          "confidence": 0.99
+        },
+        "customer_position": {
+          "confidence": 0.99
+        },
+        "partnership_date": {
+          "confidence": 0.99
+        },
+        "signatory_name": {
+          "confidence": 0.99
+        },
+        "signatory_position": {
+          "confidence": 0.99
+        },
+        "signatory_phone": {
+          "confidence": 0.99
+        },
+        "signatory_signature": {
+          "confidence": 0.99
+        },
+        "branch_address": {
+          "confidence": 0.99
+        },
+        "confirmation_customer_name": {
+          "confidence": 0.99
+        },
+        "confirmation_phone": {
+          "confidence": 0.99
+        },
+        "confirmation_result": {
+          "confidence": 0.99
+        },
+        "confirmation_date": {
+          "confidence": 0.99
+        },
+        "confirmation_time": {
+          "confidence": 0.99
+        },
+        "confirmation_officer": {
+          "confidence": 0.99
+        },
+        "confirmation_stamp": {
+          "confidence": 0.99
+        }
+      }
+    }
+  }
+}

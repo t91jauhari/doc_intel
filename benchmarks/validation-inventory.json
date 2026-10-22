@@ -1,0 +1,938 @@
+[
+  {
+    "sheet": "Artha",
+    "row": 18,
+    "document": "Surat Penyataan Valas",
+    "label": "Stamp verification",
+    "profile": "valas_declaration_1",
+    "field": "stamp_verification",
+    "status": "Invalid (missing field)"
+  },
+  {
+    "sheet": "Artha",
+    "row": 35,
+    "document": "Form LLD",
+    "label": "Alamat Pembayar, Pengirim",
+    "profile": "lld",
+    "field": "payer_address",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Artha",
+    "row": 76,
+    "document": "Form Riplay",
+    "label": "Tanggal Dokumen Dibuat",
+    "profile": "riplay",
+    "field": "document_date",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Artha",
+    "row": 77,
+    "document": "Form Riplay",
+    "label": "Petugas Bank (Nama)",
+    "profile": "riplay",
+    "field": "bank_officer_name",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Artha",
+    "row": 79,
+    "document": "Form Riplay",
+    "label": "Nasabah (Nama)",
+    "profile": "riplay",
+    "field": "customer_name",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Artha",
+    "row": 84,
+    "document": "Form Riplay",
+    "label": "Stempel CS",
+    "profile": "riplay",
+    "field": "cs_stamp",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Sri P",
+    "row": 4,
+    "document": "Form Riplay",
+    "label": "Petugas Bank (Nama)",
+    "profile": "riplay",
+    "field": "bank_officer_name",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Sri P",
+    "row": 6,
+    "document": "Form Riplay",
+    "label": "Nasabah (Nama)",
+    "profile": "riplay",
+    "field": "customer_name",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Sri P",
+    "row": 9,
+    "document": "Form Riplay",
+    "label": "Paraf/sign on every page",
+    "profile": "riplay",
+    "field": "page_initials",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Sri P",
+    "row": 19,
+    "document": "Invoice",
+    "label": "SWIFT Code",
+    "profile": "invoice",
+    "field": "swift_code",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Sri P",
+    "row": 31,
+    "document": "Invoice",
+    "label": "Ship To Name",
+    "profile": "invoice",
+    "field": "ship_to_name",
+    "status": "Invalid (missing field)"
+  },
+  {
+    "sheet": "Sri P",
+    "row": 32,
+    "document": "Invoice",
+    "label": "Ship To Address",
+    "profile": "invoice",
+    "field": "ship_to_address",
+    "status": "Invalid (missing field)"
+  },
+  {
+    "sheet": "Sri P",
+    "row": 33,
+    "document": "Invoice",
+    "label": "Ship To Phone",
+    "profile": "invoice",
+    "field": "ship_to_phone",
+    "status": "Invalid (missing field)"
+  },
+  {
+    "sheet": "Sri P",
+    "row": 34,
+    "document": "Invoice",
+    "label": "Discount",
+    "profile": "invoice",
+    "field": "discount",
+    "status": "Invalid (missing field)"
+  },
+  {
+    "sheet": "Sri P",
+    "row": 35,
+    "document": "Invoice",
+    "label": "Subtotal Less Discount",
+    "profile": "invoice",
+    "field": "subtotal_less_discount",
+    "status": "Invalid (missing field)"
+  },
+  {
+    "sheet": "Sri P",
+    "row": 36,
+    "document": "Invoice",
+    "label": "Shipping/Handling",
+    "profile": "invoice",
+    "field": "shipping_handling",
+    "status": "Invalid (missing field)"
+  },
+  {
+    "sheet": "Sri P",
+    "row": 37,
+    "document": "Invoice",
+    "label": "Beneficiary Name",
+    "profile": "invoice",
+    "field": "beneficiary_name",
+    "status": "Invalid (missing field)"
+  },
+  {
+    "sheet": "Sri P",
+    "row": 38,
+    "document": "Invoice",
+    "label": "Address Bank",
+    "profile": "invoice",
+    "field": "bank_address",
+    "status": "Invalid (missing field)"
+  },
+  {
+    "sheet": "Sri P",
+    "row": 45,
+    "document": "Aplikasi Transaksi",
+    "label": "Swift Code Bank Penerima (Optional)",
+    "profile": "application",
+    "field": "swift_code",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Sri P",
+    "row": 47,
+    "document": "Aplikasi Transaksi",
+    "label": "Nama, Alamat & Telepon Penyetor",
+    "profile": "application",
+    "field": "remitter",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Sri P",
+    "row": 53,
+    "document": "Aplikasi Transaksi",
+    "label": "Valuta / Currency",
+    "profile": "application",
+    "field": "currency",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Sri P",
+    "row": 55,
+    "document": "Aplikasi Transaksi",
+    "label": "Jumlah / Amount",
+    "profile": "application",
+    "field": "amount",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Sri P",
+    "row": 56,
+    "document": "Aplikasi Transaksi",
+    "label": "Biaya/Jumlah biaya",
+    "profile": "application",
+    "field": "charges",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Sri P",
+    "row": 58,
+    "document": "Aplikasi Transaksi",
+    "label": "Terbilang (amount in words)",
+    "profile": "application",
+    "field": "amount_in_words",
+    "status": "InValid (Different value)"
+  },
+  {
+    "sheet": "Sri P",
+    "row": 67,
+    "document": "Surat Pernyataan Valas 2",
+    "label": "Nama dan Jabatan Penandatangan",
+    "profile": "valas_declaration_2",
+    "field": "signatory",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Indah",
+    "row": 4,
+    "document": "Form Riplay",
+    "label": "Petugas Bank (Nama)",
+    "profile": "riplay",
+    "field": "bank_officer_name",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Indah",
+    "row": 6,
+    "document": "Form Riplay",
+    "label": "Nasabah (Nama)",
+    "profile": "riplay",
+    "field": "customer_name",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Indah",
+    "row": 10,
+    "document": "Form Riplay",
+    "label": "Stamp verification (tanda tangan nasabah)",
+    "profile": "riplay",
+    "field": "customer_stamp",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Indah",
+    "row": 11,
+    "document": "Form Riplay",
+    "label": "Stempel CS",
+    "profile": "riplay",
+    "field": "cs_stamp",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Indah",
+    "row": 21,
+    "document": "Aplikasi Transaksi",
+    "label": "A/C no (Penyetor)",
+    "profile": "application",
+    "field": "remitter_account_number",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Indah",
+    "row": 37,
+    "document": "Surat Pernyataan Valas 2",
+    "label": "Valuta / Currency",
+    "profile": "valas_declaration_2",
+    "field": "currency",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Indah",
+    "row": 40,
+    "document": "Surat Pernyataan Valas 2",
+    "label": "Nama dan Jabatan Penandatangan",
+    "profile": "valas_declaration_2",
+    "field": "signatory",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Poko",
+    "row": 6,
+    "document": "Aplikasi Transaksi",
+    "label": "Nama, Alamat & Telepon Penerima",
+    "profile": "application",
+    "field": "beneficiary",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Poko",
+    "row": 9,
+    "document": "Aplikasi Transaksi",
+    "label": "A/C no (Penerima)",
+    "profile": "application",
+    "field": "beneficiary_account_number",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Poko",
+    "row": 18,
+    "document": "Aplikasi Transaksi",
+    "label": "Jumlah / Amount",
+    "profile": "application",
+    "field": "amount",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Poko",
+    "row": 19,
+    "document": "Aplikasi Transaksi",
+    "label": "Biaya/Jumlah biaya",
+    "profile": "application",
+    "field": "charges",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Poko",
+    "row": 49,
+    "document": "Invoice",
+    "label": "From Address",
+    "profile": "invoice",
+    "field": "from_address",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Poko",
+    "row": 59,
+    "document": "Invoice",
+    "label": "Unit Price",
+    "profile": "invoice",
+    "field": "unit_price",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Poko",
+    "row": 61,
+    "document": "Invoice",
+    "label": "Subtotal (All Items)",
+    "profile": "invoice",
+    "field": "subtotal_all_items",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Poko",
+    "row": 64,
+    "document": "Invoice",
+    "label": "Ship To Name",
+    "profile": "invoice",
+    "field": "ship_to_name",
+    "status": "Invalid (missing field)"
+  },
+  {
+    "sheet": "Poko",
+    "row": 65,
+    "document": "Invoice",
+    "label": "Ship To Address",
+    "profile": "invoice",
+    "field": "ship_to_address",
+    "status": "Invalid (missing field)"
+  },
+  {
+    "sheet": "Poko",
+    "row": 66,
+    "document": "Invoice",
+    "label": "Ship To Phone",
+    "profile": "invoice",
+    "field": "ship_to_phone",
+    "status": "Invalid (missing field)"
+  },
+  {
+    "sheet": "Poko",
+    "row": 67,
+    "document": "Invoice",
+    "label": "Discount",
+    "profile": "invoice",
+    "field": "discount",
+    "status": "Invalid (missing field)"
+  },
+  {
+    "sheet": "Poko",
+    "row": 68,
+    "document": "Invoice",
+    "label": "Subtotal Less Discount",
+    "profile": "invoice",
+    "field": "subtotal_less_discount",
+    "status": "Invalid (missing field)"
+  },
+  {
+    "sheet": "Poko",
+    "row": 69,
+    "document": "Invoice",
+    "label": "Shipping/Handling",
+    "profile": "invoice",
+    "field": "shipping_handling",
+    "status": "Invalid (missing field)"
+  },
+  {
+    "sheet": "Poko",
+    "row": 70,
+    "document": "Invoice",
+    "label": "Beneficiary Name",
+    "profile": "invoice",
+    "field": "beneficiary_name",
+    "status": "Invalid (missing field)"
+  },
+  {
+    "sheet": "Poko",
+    "row": 71,
+    "document": "Invoice",
+    "label": "Address Bank",
+    "profile": "invoice",
+    "field": "bank_address",
+    "status": "Invalid (missing field)"
+  },
+  {
+    "sheet": "Poko",
+    "row": 76,
+    "document": "Form LLD",
+    "label": "Alamat Penerima Dana",
+    "profile": "lld",
+    "field": "beneficiary_address",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Poko",
+    "row": 99,
+    "document": "Form LLD",
+    "label": "Nomor Identifikasi Pembayar, Pengirim",
+    "profile": "lld",
+    "field": "payer_identification_number",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Poko",
+    "row": 106,
+    "document": "Form LLD",
+    "label": "Pengesahan Bank - tanda tangan petugas",
+    "profile": "lld",
+    "field": "bank_officer_signature",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Poko",
+    "row": 109,
+    "document": "Form Riplay",
+    "label": "Tanggal Dokumen Dibuat",
+    "profile": "riplay",
+    "field": "document_date",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Poko",
+    "row": 116,
+    "document": "Form Riplay",
+    "label": "Stamp verification (tanda tangan nasabah)",
+    "profile": "riplay",
+    "field": "customer_stamp",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Poko",
+    "row": 117,
+    "document": "Form Riplay",
+    "label": "Stempel CS",
+    "profile": "riplay",
+    "field": "cs_stamp",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Poko",
+    "row": 122,
+    "document": "Surat Pernyataan Valas 2",
+    "label": "Tanggal Surat Dibuat",
+    "profile": "valas_declaration_2",
+    "field": "creation_date",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Bayu",
+    "row": 6,
+    "document": "Aplikasi Transaksi",
+    "label": "Nama, Alamat & Telepon Penerima",
+    "profile": "application",
+    "field": "beneficiary",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Bayu",
+    "row": 7,
+    "document": "Aplikasi Transaksi",
+    "label": "Nama & Cabang Bank Penerima",
+    "profile": "application",
+    "field": "beneficiary_bank",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Bayu",
+    "row": 16,
+    "document": "Aplikasi Transaksi",
+    "label": "Valuta / Currency",
+    "profile": "application",
+    "field": "currency",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Bayu",
+    "row": 18,
+    "document": "Aplikasi Transaksi",
+    "label": "Jumlah / Amount",
+    "profile": "application",
+    "field": "amount",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Bayu",
+    "row": 19,
+    "document": "Aplikasi Transaksi",
+    "label": "Biaya/Jumlah biaya",
+    "profile": "application",
+    "field": "charges",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Bayu",
+    "row": 46,
+    "document": "Invoice",
+    "label": "To Address",
+    "profile": "invoice",
+    "field": "to_address",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Bayu",
+    "row": 61,
+    "document": "Invoice",
+    "label": "Subtotal (All Items)",
+    "profile": "invoice",
+    "field": "subtotal_all_items",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Bayu",
+    "row": 62,
+    "document": "Invoice",
+    "label": "Final Total Amount",
+    "profile": "invoice",
+    "field": "final_total_amount",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Bayu",
+    "row": 64,
+    "document": "Invoice",
+    "label": "Ship To Name",
+    "profile": "invoice",
+    "field": "ship_to_name",
+    "status": "Invalid (missing field)"
+  },
+  {
+    "sheet": "Bayu",
+    "row": 65,
+    "document": "Invoice",
+    "label": "Ship To Address",
+    "profile": "invoice",
+    "field": "ship_to_address",
+    "status": "Invalid (missing field)"
+  },
+  {
+    "sheet": "Bayu",
+    "row": 66,
+    "document": "Invoice",
+    "label": "Ship To Phone",
+    "profile": "invoice",
+    "field": "ship_to_phone",
+    "status": "Invalid (missing field)"
+  },
+  {
+    "sheet": "Bayu",
+    "row": 67,
+    "document": "Invoice",
+    "label": "Discount",
+    "profile": "invoice",
+    "field": "discount",
+    "status": "Invalid (missing field)"
+  },
+  {
+    "sheet": "Bayu",
+    "row": 68,
+    "document": "Invoice",
+    "label": "Subtotal Less Discount",
+    "profile": "invoice",
+    "field": "subtotal_less_discount",
+    "status": "Invalid (missing field)"
+  },
+  {
+    "sheet": "Bayu",
+    "row": 69,
+    "document": "Invoice",
+    "label": "Shipping/Handling",
+    "profile": "invoice",
+    "field": "shipping_handling",
+    "status": "Invalid (missing field)"
+  },
+  {
+    "sheet": "Bayu",
+    "row": 70,
+    "document": "Invoice",
+    "label": "Beneficiary Name",
+    "profile": "invoice",
+    "field": "beneficiary_name",
+    "status": "Invalid (missing field)"
+  },
+  {
+    "sheet": "Bayu",
+    "row": 71,
+    "document": "Invoice",
+    "label": "Address Bank",
+    "profile": "invoice",
+    "field": "bank_address",
+    "status": "Invalid (missing field)"
+  },
+  {
+    "sheet": "Bayu",
+    "row": 97,
+    "document": "Form LLD",
+    "label": "Depository correspondent Bank",
+    "profile": "lld",
+    "field": "depository_correspondent_bank_country_code",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Bayu",
+    "row": 106,
+    "document": "Form LLD",
+    "label": "Pengesahan Bank - tanda tangan petugas",
+    "profile": "lld",
+    "field": "bank_officer_signature",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Bayu",
+    "row": 116,
+    "document": "Form Riplay",
+    "label": "Stamp verification (tanda tangan nasabah)",
+    "profile": "riplay",
+    "field": "customer_stamp",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Bayu",
+    "row": 117,
+    "document": "Form Riplay",
+    "label": "Stempel CS",
+    "profile": "riplay",
+    "field": "cs_stamp",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Bayu",
+    "row": 119,
+    "document": "Surat Pernyataan Valas 1",
+    "label": "Alamat Individu / Perusahaan",
+    "profile": "valas_declaration_1",
+    "field": "customer_address",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Bayu",
+    "row": 132,
+    "document": "Surat Pernyataan Valas 1",
+    "label": "Nama dan Jabatan Penandatangan",
+    "profile": "valas_declaration_1",
+    "field": "signatory",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Bayu",
+    "row": 134,
+    "document": "Surat Pernyataan Valas 1",
+    "label": "Stamp verification",
+    "profile": "valas_declaration_1",
+    "field": "stamp_verification",
+    "status": "Invalid (missing field)"
+  },
+  {
+    "sheet": "Steve",
+    "row": 16,
+    "document": "Aplikasi Transaksi",
+    "label": "Valuta / Currency",
+    "profile": "application",
+    "field": "currency",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Steve",
+    "row": 22,
+    "document": "Aplikasi Transaksi",
+    "label": "Keterangan / Notes",
+    "profile": "application",
+    "field": "notes",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Steve",
+    "row": 46,
+    "document": "Invoice",
+    "label": "To Address",
+    "profile": "invoice",
+    "field": "to_address",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Steve",
+    "row": 57,
+    "document": "Invoice",
+    "label": "Item Name",
+    "profile": "invoice",
+    "field": "item_name",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Steve",
+    "row": 64,
+    "document": "Invoice",
+    "label": "Ship To Name",
+    "profile": "invoice",
+    "field": "ship_to_name",
+    "status": "Invalid (missing field)"
+  },
+  {
+    "sheet": "Steve",
+    "row": 65,
+    "document": "Invoice",
+    "label": "Ship To Address",
+    "profile": "invoice",
+    "field": "ship_to_address",
+    "status": "Invalid (missing field)"
+  },
+  {
+    "sheet": "Steve",
+    "row": 66,
+    "document": "Invoice",
+    "label": "Ship To Phone",
+    "profile": "invoice",
+    "field": "ship_to_phone",
+    "status": "Invalid (missing field)"
+  },
+  {
+    "sheet": "Steve",
+    "row": 67,
+    "document": "Invoice",
+    "label": "Discount",
+    "profile": "invoice",
+    "field": "discount",
+    "status": "Invalid (missing field)"
+  },
+  {
+    "sheet": "Steve",
+    "row": 68,
+    "document": "Invoice",
+    "label": "Subtotal Less Discount",
+    "profile": "invoice",
+    "field": "subtotal_less_discount",
+    "status": "Invalid (missing field)"
+  },
+  {
+    "sheet": "Steve",
+    "row": 69,
+    "document": "Invoice",
+    "label": "Shipping/Handling",
+    "profile": "invoice",
+    "field": "shipping_handling",
+    "status": "Invalid (missing field)"
+  },
+  {
+    "sheet": "Steve",
+    "row": 70,
+    "document": "Invoice",
+    "label": "Beneficiary Name",
+    "profile": "invoice",
+    "field": "beneficiary_name",
+    "status": "Invalid (missing field)"
+  },
+  {
+    "sheet": "Steve",
+    "row": 71,
+    "document": "Invoice",
+    "label": "Address Bank",
+    "profile": "invoice",
+    "field": "bank_address",
+    "status": "Invalid (missing field)"
+  },
+  {
+    "sheet": "Steve",
+    "row": 96,
+    "document": "Form LLD",
+    "label": "Hubungan keuangan antar pelaku transaksi",
+    "profile": "lld",
+    "field": "financial_relationship",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Steve",
+    "row": 97,
+    "document": "Form LLD",
+    "label": "Depository correspondent Bank",
+    "profile": "lld",
+    "field": "depository_correspondent_bank_country_code",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Steve",
+    "row": 98,
+    "document": "Form LLD",
+    "label": "Jenis Identifikasi Pembayar, Pengirim",
+    "profile": "lld",
+    "field": "payer_identification_type",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Steve",
+    "row": 101,
+    "document": "Form LLD",
+    "label": "Tujuan / Purpose",
+    "profile": "lld",
+    "field": "purpose",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Steve",
+    "row": 106,
+    "document": "Form LLD",
+    "label": "Pengesahan Bank - tanda tangan petugas",
+    "profile": "lld",
+    "field": "bank_officer_signature",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Steve",
+    "row": 112,
+    "document": "Form Riplay",
+    "label": "Nasabah (Nama)",
+    "profile": "riplay",
+    "field": "customer_name",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Steve",
+    "row": 116,
+    "document": "Form Riplay",
+    "label": "Stamp verification (tanda tangan nasabah)",
+    "profile": "riplay",
+    "field": "customer_stamp",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Steve",
+    "row": 117,
+    "document": "Form Riplay",
+    "label": "Stempel CS",
+    "profile": "riplay",
+    "field": "cs_stamp",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Dirman",
+    "row": 31,
+    "document": "Form LLD",
+    "label": "Tujuan / Purpose",
+    "profile": "lld",
+    "field": "purpose",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Dirman",
+    "row": 33,
+    "document": "Form LLD",
+    "label": "Sandi transaksi",
+    "profile": "lld",
+    "field": "transaction_code",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Dirman",
+    "row": 41,
+    "document": "Aplikasi Transaksi",
+    "label": "Jenis Transaksi",
+    "profile": "application",
+    "field": "transaction_type",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Dirman",
+    "row": 75,
+    "document": "Surat Pernyataan Valas 1",
+    "label": "Nama dan Jabatan Penandatangan",
+    "profile": "valas_declaration_1",
+    "field": "signatory",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Dirman",
+    "row": 77,
+    "document": "Surat Pernyataan Valas 1",
+    "label": "Stamp verification",
+    "profile": "valas_declaration_1",
+    "field": "stamp_verification",
+    "status": "Invalid (missing field)"
+  },
+  {
+    "sheet": "Dirman",
+    "row": 94,
+    "document": "Invoice",
+    "label": "Subtotal (All Items)",
+    "profile": "invoice",
+    "field": "subtotal_all_items",
+    "status": "Invalid (different value)"
+  },
+  {
+    "sheet": "Dirman",
+    "row": 100,
+    "document": "EKTP",
+    "label": "Tanggal Lahir",
+    "profile": "ektp",
+    "field": "birth_date",
+    "status": "Invalid (different value)"
+  }
+]

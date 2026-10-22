@@ -1,0 +1,57 @@
+{
+  "ektp_identity": {
+    "name": "Rina Putri",
+    "reference_id": "ektp-synthetic",
+    "verified_by": "test-reviewer"
+  },
+  "signature_comparisons": [
+    {
+      "field": "bank_officer_signature",
+      "signer_name": "Tari O’Neil.",
+      "extract_job_id": "ext-synthetic-riplay",
+      "status": "matched",
+      "reference_id": "synthetic-reference",
+      "verified_by": "test-reviewer"
+    },
+    {
+      "field": "customer_signature",
+      "signer_name": "Rina Putri",
+      "extract_job_id": "ext-synthetic-riplay",
+      "status": "matched",
+      "reference_id": "synthetic-reference",
+      "verified_by": "test-reviewer"
+    },
+    {
+      "field": "page_initials.1",
+      "signer_name": "Rina Putri",
+      "extract_job_id": "ext-synthetic-riplay",
+      "status": "matched",
+      "reference_id": "synthetic-reference",
+      "verified_by": "test-reviewer"
+    },
+    {
+      "field": "page_initials.2",
+      "signer_name": "Rina Putri",
+      "extract_job_id": "ext-synthetic-riplay",
+      "status": "matched",
+      "reference_id": "synthetic-reference",
+      "verified_by": "test-reviewer"
+    },
+    {
+      "field": "page_initials.3",
+      "signer_name": "Rina Putri",
+      "extract_job_id": "ext-synthetic-riplay",
+      "status": "matched",
+      "reference_id": "synthetic-reference",
+      "verified_by": "test-reviewer"
+    },
+    {
+      "field": "page_initials.4",
+      "signer_name": "Rina Putri",
+      "extract_job_id": "ext-synthetic-riplay",
+      "status": "matched",
+      "reference_id": "synthetic-reference",
+      "verified_by": "test-reviewer"
+    }
+  ]
+}
