@@ -7,6 +7,40 @@ DEFAULTS = {'religion': {'KATHOLIK': 'Katolik', 'BUDHA': 'Buddha'}}
 RELEASE = 'enum-raw-fallback-v1'
 
 
+def apply_requested_aliases(report, doc, profile):
+    """Honor an audited, explicit revalidation request without another extraction."""
+    state = getattr(doc, 'provider_state', {})
+    if 'normalization_enum_aliases' not in state:
+        return report
+    policy = copy.deepcopy(profile['policy'])
+    policy['enum_aliases'] = copy.deepcopy(state['normalization_enum_aliases'])
+    policy['enum_raw_fallback_fields'] = copy.deepcopy(state.get('normalization_enum_raw_fallback_fields', []))
+    validate_aliases(policy)
+    aliases = policy['enum_aliases']
+    fallback = policy['enum_raw_fallback_fields']
+    for key in sorted(set(aliases) | set(fallback)):
+        if key not in report['fields']:
+            raise ValueError('Requested enum policy references a field absent from the extraction report.')
+        before = report['normalized'].get(key)
+        value = before.strip() if isinstance(before, str) else None
+        canonical = next((choice for choice in policy.get(key + '_values', []) if value and choice.strip().casefold() == value.casefold()), None)
+        alias = next((target for spelling, target in aliases.get(key, {}).items() if value and spelling.strip().casefold() == value.casefold()), None) if canonical is None else None
+        normalized = canonical or alias or (value if value and key in fallback else None)
+        status = 'PASS' if canonical or alias else 'REVIEW' if value else 'FAIL'
+        field = report['fields'][key]
+        field['normalized_value'] = normalized
+        field['status'] = status
+        field['issues'] = [] if status == 'PASS' else [{'code': 'UNRECOGNIZED_ENUM' if value else 'MISSING_ENUM', 'severity': status}]
+        report['normalized'][key] = normalized
+        if normalized != before or (value and not (canonical or alias)):
+            report['corrections'].append({'field': key, 'before': before, 'after': normalized,
+                'method': 'approved_enum_alias' if alias else 'case_insensitive_exact_enum' if canonical else 'unrecognized_enum_raw_fallback',
+                'review_required': status != 'PASS'})
+    report['normalization'] = {'status': 'EXPLICIT_ENUM_ALIAS_POLICY', 'handled_by': 'audited_revalidation',
+                               'source_config_id': state.get('normalization_source_config_id')}
+    return report
+
+
 def validate_aliases(policy):
     fallback = policy.get('enum_raw_fallback_fields', ['religion'])
     if not isinstance(fallback, list) or any(v not in {'gender', 'blood_type', 'religion', 'marital_status', 'citizenship'} for v in fallback):

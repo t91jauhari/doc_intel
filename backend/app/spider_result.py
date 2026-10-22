@@ -34,4 +34,6 @@ def extraction_report(doc, cfg, response):
         },
     }
     from .configuration.field_checks import apply_field_checks
+    from .enum_aliases import apply_requested_aliases
+    report = apply_requested_aliases(report, doc, cfg['profiles'][doc.doc_type])
     return apply_field_checks(report, cfg['profiles'][doc.doc_type])

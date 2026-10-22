@@ -2815,6 +2815,9 @@ def revalidate_enum_aliases(
         )
         try:
             validate_aliases(policy)
+            targets_in_policy = set(policy['enum_aliases']) | set(policy['enum_raw_fallback_fields'])
+            if not targets_in_policy or targets_in_policy - set(payload['profiles']['ektp']['schema']['properties']):
+                raise ValueError('Choose an approved enum policy for fields present in this document profile before revalidation.')
         except ValueError as exc:
             raise HTTPException(422, str(exc))
         aliases = copy.deepcopy(policy["enum_aliases"])

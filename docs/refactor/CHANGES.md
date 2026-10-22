@@ -369,3 +369,18 @@ Files:
 
 Changes: audit-first allowlist export, no Git history/private fixtures/workbook values/screenshots; generated empty synthetic references; hashes/size manifest; new output directory only; bounded credential/identifier-shape blockers without echoing values; batched Git blob reads. Dynamic dataset test now rejects malformed IDs rather than all new IDs; publication tests enforce registered-only binding and unchanged revision after rejection.
 Verification:4 exporter unit tests passed; first audit284 files/2.22MB/192 excluded/no blockers, no output written.20 family/dataset API tests passed51.32s. Full backend first segment177 passed/7 PG skips then outdated fixed-family assertion failed; corrected fixture and reran affected tests. Remaining files from test_document_families onward running in session98361; do not claim full suite green yet. Conditional rehearsal with compatibility:54 cases/7049 findings/162 conversions/18 compatibility cases/0 mismatches/0 blocked; read-only. No public push or live activation.
+
+## Step29 — honor explicitly requested Spider enum revalidation
+Commit message: Apply audited enum aliases during Spider revalidation.
+Files:
+- backend/app/enum_aliases.py
+- backend/app/spider_result.py
+- backend/app/main.py
+- backend/tests/test_enum_display.py
+- backend/tests/test_spider_enum_revalidation.py (created)
+- docs/refactor/CHANGES.md
+- docs/refactor/CHECKPOINT.md
+- docs/refactor/VERIFICATION.md
+
+Changes: explicit enum-revalidation receipts now apply approved canonical/alias spelling and raw fallback to Spider reports, preserve original raw/other fields, record transformations/source configuration and keep uncertainty. Unrequested extraction unchanged; configured field checks still run afterward. Reject requests without applicable profile fields. Native-only tests choose native provider explicitly instead of assuming default Spider normalizes.
+Verification:40 enum/Spider/field tests passed12.37s; broader remaining suite from test_enum_display running session7895, currently past45percent; do not claim final green. Separate PostgreSQL migration7 tests passed1.24s. Exported previous-head synthetic suite76 passed35.15s. Frontend production build compiled/TypeScript/static pages successfully. Automatic approval review rejected production preview start with only blocked-by-policy/no detailed reason; new conditional editor browser acceptance remains pending. Preview stopped/cache removed after dry-run. No live/model calls.
