@@ -57,6 +57,7 @@ def test_uncertain_sources_fail_without_visual_queue():
 @pytest.mark.parametrize("context,status,possible", [({}, "FAIL", 1), ({"required": "NO"}, "NOT_APPLICABLE", 0), ({"required": "YES"}, "PASS", 1)])
 def test_explicit_applicability(context, status, possible):
     cfg, flow = configured()
+    cfg["context_definitions"]["required"] = {"label": "Required", "kind": "enum", "options": ["YES", "NO", "UNKNOWN"]}
     cfg["generic_sop_rules"][0]["applicability"] = {"context_key": "required", "equals": "YES"}
     result = run(cfg, flow, context=context)
     assert result[0]["result"] == status

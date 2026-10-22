@@ -476,14 +476,21 @@ def test_config(data: ConfigInput, user=Depends(ADMIN)):
 
 
 @app.get("/api/config/catalog")
-def configuration_catalog(user=Depends(current_user)):
-    from .sop import CATEGORIES, CONTEXT, OPERATORS, fields, approved_scope
-
+def configuration_catalog(case_id: str | None = None, user=Depends(current_user)):
+    from .sop import CATEGORIES, OPERATORS, fields, approved_scope
+    from .configuration.contexts import definitions, enum_options
+    with SessionLocal() as db:
+        case = authorized(db, Case, case_id, user) if case_id else None
+        config = get_revision(db, case.config_id) if case else latest_config(db, user.org)
+        family = config.payload["templates"][case.template].get("document_family", "forex") if case else None
+        context_definitions = definitions(config.payload, family)
     return {
         "fields": fields(),
         "scope": approved_scope(),
         "operators": {k: sorted(v) if v else None for k, v in OPERATORS.items()},
-        "context": CONTEXT,
+        "context": enum_options(config.payload, family),
+        "context_definitions": {key: value.model_dump(mode="json") for key, value in context_definitions.items()},
+        "config_version": config.version,
         "categories": (*CATEGORIES, "DOCUMENT_VERIFICATION", "OBSERVATIONS"),
     }
 
@@ -1495,32 +1502,16 @@ class ContextInput(BaseModel):
 
 @app.put("/api/cases/{case_id}/context")
 def edit_case_context(case_id: str, data: ContextInput, user=Depends(WRITE)):
-    from .sop import CONTEXT
-
-    from .forex_sop import CONTEXT_FIELDS
-    allowed = {
-        **{key:None for key in CONTEXT_FIELDS},
-        **CONTEXT,
-        "transaction_inputter": None,
-        "transaction_approver": None,
-        "new_account_number": None,
-    }
-    if any(
-        k not in allowed
-        or not isinstance(v, str)
-        or len(v) > 200
-        or (allowed[k] and v not in allowed[k])
-        for k, v in data.values.items()
-    ):
-        raise HTTPException(422, "Unknown case context field or invalid option.")
-    account_number = data.values.get("new_account_number", "")
-    if account_number and not re.fullmatch(r"[0-9]{1,40}", account_number):
-        raise HTTPException(
-            422,
-            "New account number must contain 1–40 digits, preserving leading zeros.",
-        )
+    from .configuration.contexts import validate_values
     with SessionLocal.begin() as db:
         case = authorized(db, Case, case_id, user)
+        config = get_revision(db, case.config_id)
+        family = config.payload["templates"][case.template].get("document_family", "forex")
+        try:
+            validate_values(config.payload, data.values, family=family,
+                            document_lookup=lambda identifier: db.get(Document, identifier), case_id=case.id)
+        except ValueError as exc:
+            raise HTTPException(422, str(exc)) from exc
         item = db.scalar(
             select(CaseContext).where(CaseContext.case_id == case.id).with_for_update()
         )
@@ -1529,13 +1520,6 @@ def edit_case_context(case_id: str, data: ContextInput, user=Depends(WRITE)):
                 org=case.org, branch_id=case.branch_id, case_id=case.id, payload={}
             )
             db.add(item)
-        for key in ("application_document_id", "declaration_document_id", "invoice_document_id", "underlying_document_id"):
-            selected_id = data.values.get(key)
-            if selected_id:
-                selected_doc = db.get(Document, selected_id)
-                allowed_types = {"application_document_id":{"application"},"declaration_document_id":{"valas_declaration_1","valas_declaration_2"},"invoice_document_id":{"invoice"},"underlying_document_id":{"invoice"}}[key]
-                if not selected_doc or selected_doc.case_id != case.id or selected_doc.doc_type not in allowed_types or selected_doc.status != "COMPLETED":
-                    raise HTTPException(422, "Select a completed document of the correct type from this case.")
         previous = item.payload
         item.payload = {
             **previous,

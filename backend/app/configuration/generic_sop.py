@@ -33,10 +33,18 @@ def validate_generic_rules(payload):
     catalog = families(payload)
     ids = {rule["id"] for rule in payload.get("sop_rules", [])}
     rules = []
+    context_catalogs = {}
     if not isinstance(payload.get("generic_sop_rules", []), list) or len(payload.get("generic_sop_rules", [])) > 1000:
         raise ValueError("Configure at most 1000 generic SOP rules.")
     for value in payload.get("generic_sop_rules", []):
         rule = GenericRule.model_validate(value)
+        if rule.applicability:
+            from .contexts import enum_options
+            for family in rule.families:
+                if family not in context_catalogs:
+                    context_catalogs[family] = enum_options(payload, family)
+                if rule.applicability.equals not in context_catalogs[family].get(rule.applicability.context_key, []):
+                    raise ValueError("Generic applicability must use a registered context option available to its family.")
         if rule.id in ids:
             raise ValueError("Generic SOP rule IDs must be unique across all rules.")
         ids.add(rule.id)

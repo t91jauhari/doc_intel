@@ -16,6 +16,15 @@ class ConfigurationBase(DeclarativeBase):
     pass
 
 
+class ContextDefinitionRecord(ConfigurationBase):
+    __tablename__ = "configuration_context_definitions"
+    __table_args__ = (UniqueConstraint("publication_id", "position"),)
+    publication_id: Mapped[str] = mapped_column(ForeignKey("configuration_publications.id"), primary_key=True)
+    context_key: Mapped[str] = mapped_column(String(80), primary_key=True)
+    position: Mapped[int] = mapped_column(Integer)
+    definition: Mapped[dict] = mapped_column(JSON)
+
+
 class Publication(ConfigurationBase):
     __tablename__ = "configuration_publications"
     __table_args__ = (UniqueConstraint("organization", "revision"),)
@@ -103,6 +112,12 @@ def import_publication(
         compile_publication(session, existing)
         return existing
     extensions = copy.deepcopy(payload)
+    contexts = None
+    if "context_definitions" in payload:
+        from .contexts import validate_definitions
+        validate_definitions(payload)
+        contexts = copy.deepcopy(payload["context_definitions"])
+        extensions["context_definitions"] = {}
     if "generic_sop_rules" in payload:
         from .generic_sop import validate_generic_rules
 
@@ -143,6 +158,10 @@ def import_publication(
     )
     session.add(publication)
     session.flush()
+    if contexts is not None:
+        for position, (key, definition) in enumerate(contexts.items()):
+            session.add(ContextDefinitionRecord(publication_id=publication.id, context_key=key,
+                                                position=position, definition=definition))
     if scope is not None:
         for family in scope.family_rule_ids:
             session.add(FamilyRuleScopeRecord(publication_id=publication.id, family=family))
@@ -173,6 +192,10 @@ def import_publication(
 def compile_publication(session: Session, publication: Publication) -> dict:
     """Reconstruct the legacy contract and detect accidental persisted changes."""
     payload = copy.deepcopy(publication.extensions)
+    if "context_definitions" in payload:
+        payload["context_definitions"] = {row.context_key: copy.deepcopy(row.definition)
+            for row in session.scalars(select(ContextDefinitionRecord).where(
+                ContextDefinitionRecord.publication_id == publication.id).order_by(ContextDefinitionRecord.position))}
     scopes = session.scalars(select(FamilyRuleScopeRecord).where(
         FamilyRuleScopeRecord.publication_id == publication.id,
     )).all()

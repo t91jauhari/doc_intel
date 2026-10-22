@@ -64,3 +64,5 @@ protections; deployment must restrict schema-changing privileges to migrations.
 Rollback to the legacy application remains possible because new legacy Config
 inserts are allowed. Before returning from legacy-only writes to verified reads,
 import any additional legacy revisions explicitly and verify parity again.
+
+Migration0005 adds ordered context definitions. The contexts module validates typed enum/text/digits/document-reference fields and family/profile scope. Missing definitions use context_defaults_v1 compatibility input without persisting it; explicit empty disables contexts. New bootstrap snapshots include definitions explicitly. Settings edits stay in a draft until publication. The case catalog and annotation API use the pinned configuration. Native profile catalog, remaining complex SOP policies and report/dataset contracts remain migration work.

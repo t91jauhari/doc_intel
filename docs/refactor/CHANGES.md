@@ -133,3 +133,35 @@ Commit message: Fix legacy case refresh and correct grouping regression coverage
 Created: backend/tests/test_legacy_case_refresh.py.
 Modified: backend/app/domain.py; backend/tests/test_grouping.py; docs/refactor/CHANGES.md; docs/refactor/CHECKPOINT.md; docs/refactor/VERIFICATION.md; docs/refactor/INVENTORY.csv.
 Removed misplaced profile-upgrade code from legacy refresh; case evaluation never changes published profile policy. Grouping fixture now expects3 distinct byte streams; separate identical-content test confirms1 document/job/case.17 tests passed; strengthened legacy idempotency assertions rerun2 passed. Removed clean, obsolete baseline-regression worktree after confirming no changes; baseline commit remains reproducible in Git. No live changes.
+
+## Step18 — shared configurable case-context registry
+Commit message: Configure case context definitions across rules and review forms.
+Files:
+- backend/app/config_data/context_defaults_v1.json (created)
+- backend/app/configuration/contexts.py (created)
+- backend/app/configuration/migrations/0005_context_definitions.sql (created)
+- backend/tests/test_context_configuration.py (created)
+- frontend/components/context-editor.tsx (created)
+- frontend/components/context-inputs.tsx (created)
+- backend/app/configuration/generic_sop.py
+- backend/app/configuration/routes.py
+- backend/app/configuration/store.py
+- backend/app/domain.py
+- backend/app/main.py
+- backend/app/sop.py
+- backend/tests/test_configuration_migrations.py
+- backend/tests/test_generic_sop_runtime.py
+- frontend/app/settings/page.tsx
+- frontend/components/case-sop.tsx
+- frontend/lib/types.ts
+- backend/app/configuration/README.md
+- docs/refactor/CHANGES.md
+- docs/refactor/CHECKPOINT.md
+- docs/refactor/VERIFICATION.md
+- docs/refactor/MIGRATIONS.md
+- docs/refactor/INVENTORY.csv
+- docs/refactor/PLAN.md
+
+Behavior: typed choice/text/digits/document-reference definitions, labels, limits and family/profile bindings; dedicated immutable publication rows; explicit-empty versus absent compatibility; versioned defaults captured from legacy behavior. Default bootstrap includes definitions, existing history unchanged. Rule conditions/options, API edits and case form read one registry. Case catalog resolves the pinned config, preventing later version options from leaking into existing cases. No automatic historical rewrite or live publication.
+Verification:39 focused backend tests;43 automation/Forex/encoding regressions;6 PostgreSQL migration tests; final strengthened registry/migration/runtime selection24 passed. TypeScript passed. Isolated browser copied legacy definitions into local draft, added enum, edited choices, Test settings accepted; published version stayed7. Zero preview documents, so no extraction-result claim. Screenshot outside Git: outputs/refactor-step18/context-editor.png. Migration0005 rehearsed only on restored sqe_refactor;40 unchanged round trips, replay0; publication rollback exact.
+Cleanup: preview API/database stopped, Next dev ended, browser tab closed, generated next-env change restored, scoped ignored frontend/.next removed using git clean after dry-run. No image build; --rm test runners. Old94 MB O: cache remains after policy rejection of its recursive deletion.

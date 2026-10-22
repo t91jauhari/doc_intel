@@ -228,6 +228,7 @@ def default_config():
 
     from .spatial_grounding import append_instruction
     from .forex_sop import DEFAULT_POLICY
+    from .configuration.contexts import default_definitions
     profiles = {}
     for name in PROFILE_NAMES:
         p = get_profile(name)
@@ -281,10 +282,13 @@ def default_config():
         # Phase 3 — Multi-Page Sequential Extraction (§3.5)
         "sequential_page_extraction": True,
         "cross_page_reference": True,
+        "context_definitions": default_definitions(),
     }
 
 
 def validate_config(payload):
+    from .configuration.contexts import validate_definitions
+    validate_definitions(payload)
     if "rule_order" in payload:
         order = payload["rule_order"]
         known = {rule["id"] for rule in payload.get("sop_rules", []) + payload.get("generic_sop_rules", [])}

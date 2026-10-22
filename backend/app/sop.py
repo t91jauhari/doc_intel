@@ -13,25 +13,8 @@ CATEGORIES = (
     "DOCUMENT_COMPLETION",
     "OFFICER_REVIEW_APPROVAL",
 )
-CONTEXT = {
-    "account_signature_difference": ["YES", "NO", "UNKNOWN"],
-    "transaction_direction": [
-        "IDR_TO_FOREIGN",
-        "FOREIGN_TO_FOREIGN",
-        "OTHER",
-        "UNKNOWN",
-    ],
-    "threshold_state": ["ABOVE", "WITHIN", "UNKNOWN"],
-    "customer_type": ["INDIVIDUAL", "COMPANY", "UNKNOWN"],
-    "identity_type": ["NIK", "PASSPORT", "OTHER", "UNKNOWN"],
-    "transaction_carrier": [
-        "CUSTOMER",
-        "AUTHORIZED_REPRESENTATIVE",
-        "BANK_EMPLOYEE",
-        "UNKNOWN",
-    ],
-    "payment_basis": ["FULL_INVOICE", "PROGRESS_CLAIM", "PARTIAL_PAYMENT", "UNKNOWN"],
-}
+from .configuration.contexts import enum_options
+CONTEXT = enum_options({})  # Compatibility export for older callers.
 OPERATORS = {
     "account_check": None,
     "required": None,
@@ -285,7 +268,7 @@ def validate_business(cfg):
                 if isinstance(values, str) and condition == "in"
                 else [values]
             )
-            if key not in CONTEXT or not set(values) <= set(CONTEXT[key]):
+            if key not in enum_options(cfg) or not set(values) <= set(enum_options(cfg)[key]):
                 raise ValueError("Invalid case-context condition.")
         if condition == "document_present" and r.get("condition_value") not in {
             f["document"] for f in fields()

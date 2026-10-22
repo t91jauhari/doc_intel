@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowRight, ScanEye } from "lucide-react";
 import { useData, usePlatform } from "@/components/platform-provider";
 import { api } from "@/lib/api";
+import { ContextInputs } from "@/components/context-inputs";
 import { ForexPackageSummary } from "@/components/forex-package-summary";
 import { Badge, ErrorNotice } from "@/components/ui";
 import type { AutomationCatalog, CaseDetail } from "@/lib/types";
@@ -14,7 +15,7 @@ export function CaseSOP({
   data: CaseDetail;
   refresh: () => Promise<void>;
 }) {
-  const { data: catalog } = useData<AutomationCatalog>("/config/catalog", 0);
+  const { data: catalog } = useData<AutomationCatalog>(`/config/catalog?case_id=${encodeURIComponent(data.id)}`, 0);
   const { notify } = usePlatform();
   const [values, setValues] = useState<Record<string, string>>({});
   const [reason, setReason] = useState("");
@@ -153,95 +154,8 @@ export function CaseSOP({
         >
           <fieldset disabled={!data.can_write || pending}>
             <div className="form-grid">
-              {Object.entries(catalog?.context || {}).map(([key, options]) => (
-                <label key={key}>
-                  {key.replaceAll("_", " ")}
-                  <select
-                    aria-label={key.replaceAll("_", " ")}
-                    value={values[key] || "UNKNOWN"}
-                    onChange={(e) =>
-                      setValues({ ...values, [key]: e.target.value })
-                    }
-                  >
-                    {options.map((x) => (
-                      <option key={x}>{x}</option>
-                    ))}
-                  </select>
-                </label>
-              ))}
-              {[
-                "transaction_inputter",
-                "transaction_approver",
-                "new_account_number",
-                ...(forex
-                  ? ["partial_payment_amount", "partial_payment_currency"]
-                  : []),
-              ].map((key) => (
-                <label key={key}>
-                  {key === "new_account_number"
-                    ? "New account number (document-supported)"
-                    : key.replaceAll("_", " ")}
-                  <input
-                    value={values[key] || ""}
-                    onChange={(e) =>
-                      setValues({ ...values, [key]: e.target.value })
-                    }
-                  />
-                </label>
-              ))}
-              {forex &&
-                [
-                  [
-                    "application_document_id",
-                    "Application slip",
-                    ["application"],
-                  ],
-                  [
-                    "declaration_document_id",
-                    "Applicable Valas declaration",
-                    ["valas_declaration_1", "valas_declaration_2"],
-                  ],
-                  [
-                    "invoice_document_id",
-                    "Invoice for payment basis",
-                    ["invoice"],
-                  ],
-                  [
-                    "underlying_document_id",
-                    "Separate supporting invoice (optional)",
-                    ["invoice"],
-                  ],
-                ].map(([key, label, kinds]) => (
-                  <label key={key as string}>
-                    {label}
-                    <select
-                      value={values[key as string] || ""}
-                      onChange={(e) =>
-                        setValues({
-                          ...values,
-                          [key as string]: e.target.value,
-                        })
-                      }
-                    >
-                      <option value="">
-                        {key === "underlying_document_id"
-                          ? "No separate supporting invoice"
-                          : "Automatic when exactly one document applies"}
-                      </option>
-                      {data.documents
-                        .filter(
-                          (d) =>
-                            (kinds as string[]).includes(d.doc_type || "") &&
-                            d.status === "COMPLETED",
-                        )
-                        .map((d) => (
-                          <option key={d.id} value={d.id}>
-                            {d.filename}
-                          </option>
-                        ))}
-                    </select>
-                  </label>
-                ))}
+              <ContextInputs definitions={catalog?.context_definitions || {}} values={values}
+                onChange={setValues} documents={data.documents} />
             </div>
             {forex && (
               <p className="subtext">

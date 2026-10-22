@@ -7,6 +7,7 @@ import {
   type DocumentFamily,
 } from "@/lib/document-family";
 import { ForexSOPPolicyEditor } from "@/components/forex-sop-policy";
+import { ContextEditor } from "@/components/context-editor";
 import { ComparisonUpgrade } from "@/components/comparison-upgrade";
 import { ProfileVersionComparison } from "@/components/profile-version-comparison";
 import { SpiderConnectorForm } from "@/components/spider-connector";
@@ -1118,6 +1119,7 @@ export default function Settings() {
               )}
               {tab === "rules" && (
                 <>
+                  <ContextEditor configuration={draft} family={family} editable={canEdit} onChange={update} />
                   <ComparisonUpgrade configuration={draft} version={version} editable={canEdit} onApply={update} family={family} />
                   {family === "forex" && (
                     <ForexSOPPolicyEditor

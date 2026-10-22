@@ -69,13 +69,14 @@ def test_identity_bindings_round_trip_in_postgres(isolated_engine):
     from app.configuration.store import compile_publication, import_publication
 
     assert migrate.apply_migrations(isolated_engine, expected_database="sqe_refactor") == [
-        "0001_publications", "0002_identity_bindings", "0003_family_rule_membership", "0004_revision_immutability",
+        "0001_publications", "0002_identity_bindings", "0003_family_rule_membership", "0004_revision_immutability", "0005_context_definitions",
     ]
     payload = {
         "profiles": {"custom": {"schema": {"type": "object", "properties": {
             "name": {"type": "string"},
         }}}},
         "identity_policy": {"bindings": [{"profile": "custom", "field_path": "name"}]},
+        "context_definitions": {"review_choice": {"label": "Review choice", "kind": "enum", "options": ["YES", "NO"]}},
         "sop_rules": [{"id": "sample_rule"}],
         "rule_scope": {"family_rule_ids": {"forex": ["sample_rule"], "account_opening": []}},
     }
@@ -85,6 +86,7 @@ def test_identity_bindings_round_trip_in_postgres(isolated_engine):
         assert compile_publication(session, publication) == payload
         assert session.scalar(text("SELECT count(*) FROM configuration_identity_bindings")) == 1
         assert session.scalar(text("SELECT count(*) FROM configuration_family_rule_members")) == 1
+        assert session.scalar(text("SELECT count(*) FROM configuration_context_definitions")) == 1
 
 
 def test_publication_requires_intact_migration_history(isolated_engine):
@@ -132,6 +134,7 @@ def test_committed_revision_tables_reject_rewrites_and_late_entries(isolated_eng
         "INSERT INTO configuration_identity_bindings(publication_id,profile,position,definition) VALUES (:publication,'late',99,'{}')",
         "INSERT INTO configuration_family_rule_scopes(publication_id,family) VALUES (:publication,'late')",
         "INSERT INTO configuration_family_rule_members(publication_id,family,rule_id,position) VALUES (:publication,'forex','late',99)",
+        "INSERT INTO configuration_context_definitions(publication_id,context_key,position,definition) VALUES (:publication,'late',99,'{}')",
     ]
     for statement in late_inserts:
         with pytest.raises(DBAPIError, match="transaction creating"):

@@ -72,7 +72,16 @@ export type SOPPackages = {
     }[];
   };
 };
+export type ContextDefinition = {
+  label: string;
+  kind: "enum" | "text" | "digits" | "document_reference";
+  options?: string[];
+  profiles?: string[];
+  families?: string[];
+  max_length?: number;
+};
 export type Configuration = {
+  context_definitions?: Record<string, ContextDefinition>;
   generic_sop_rules?: {
     id: string; label: string; enabled?: boolean; families: string[];
     report_category: string; source_ref?: string;
@@ -360,6 +369,7 @@ export type FieldCatalog = {
   type: string;
 };
 export type AutomationCatalog = {
+  context_definitions?: Record<string, ContextDefinition>;
   fields: FieldCatalog[];
   scope: {
     source_ref: string;

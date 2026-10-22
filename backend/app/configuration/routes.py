@@ -36,7 +36,7 @@ class FieldOptionsInput(BaseModel):
 @router.post("/fields")
 def field_options(data: FieldOptionsInput, user=Depends(administrator)):
     from .field_options import text_field_options
-    from app.sop import CONTEXT
+    from .contexts import enum_options
 
     with SessionLocal() as session:
         current = latest_config(session, user.org)
@@ -44,7 +44,7 @@ def field_options(data: FieldOptionsInput, user=Depends(administrator)):
             raise HTTPException(409, "Configuration changed. Reload field options.")
         try:
             return {"fields": text_field_options(current.payload if data.payload is None else data.payload, data.family),
-                    "context_options": CONTEXT}
+                    "context_options": enum_options(current.payload if data.payload is None else data.payload, data.family)}
         except (ValueError, KeyError, TypeError) as exc:
             raise HTTPException(422, str(exc)) from exc
 
