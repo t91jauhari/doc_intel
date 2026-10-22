@@ -281,6 +281,10 @@ def default_config():
 
 
 def validate_config(payload):
+    if "rule_scope" in payload:
+        from .configuration.rule_scope import validate_rule_scope
+
+        validate_rule_scope(payload)
     if "identity_policy" in payload:
         from .configuration.identity import IdentityPolicy, validate_bindings
 

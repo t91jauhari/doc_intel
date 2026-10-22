@@ -12,3 +12,5 @@
 - [ ] C1: reviewed cutover, health verification and rollback rehearsal
 
 A step is complete only with linked evidence. Distinguish implemented, tested, migrated and activated. Never mark all hard coding removed without inventory closure.
+
+Current implementation milestones (2026-10-22): configuration compatibility persistence and two additive migrations rehearsed; configurable identity policy tested against 67 cases; explicit SOP membership compiled identically across 40 revisions/112 flows. Remaining: typed SOP runtime integration, family-rule tables/UI, service boundaries, datasets/reporting, full regression, public sanitization and cutover. No activation.

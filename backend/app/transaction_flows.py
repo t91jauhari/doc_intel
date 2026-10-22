@@ -86,6 +86,10 @@ def scope_configuration(cfg, flow_id):
     family_id=flow.get('document_family','forex')
     family=families(result)[family_id]
     selected = flow.get("sop_rule_ids")
+    if selected is None and "rule_scope" in cfg:
+        from .configuration.rule_scope import validate_rule_scope
+
+        selected = validate_rule_scope(cfg).family_rule_ids[family_id]
     if selected is None:
         result["sop_rules"] = [
             r
