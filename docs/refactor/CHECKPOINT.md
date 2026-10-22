@@ -24,3 +24,11 @@ Remote origin: https://github.com/t91jauhari/sqe-bic-docplatform.git
 Remote inspection: reachable; ls-remote returned no refs (appears empty).
 No push performed. Local baseline history contains customer datasets, PDFs, workbook and screenshots. Do not push this history to a public remote. Prepare a clean publication history excluding customer artifacts and replace required fixtures with synthetic equivalents. Scan source literals and operational scripts too; excluding files alone is insufficient.
 Next action: public-export inventory and synthetic dataset compatibility, then isolated regression baseline and configuration contracts. GitHub CLI unavailable; Git remote reads work. Write authentication remains unverified.
+
+## Implementation checkpoint — 2026-10-22
+Status: FIRST_STORAGE_SLICE_TESTED; not migrated or activated.
+Implemented: app/configuration/store.py (separate publication/entry tables, caller-owned transactions, idempotent revision import, digest-checked compatibility reconstruction); offline verify_snapshot command. This is transitional persistence, not final normalized entities or typed policy implementation.
+Verification: 10 focused tests passed. Selected existing regression suite plus first 9 new tests: 79 passed in 143.79s. All 40 historical configuration revisions exported from restored backup: checked=40, mismatches=0, activated=false. Live health remains ok.
+Private snapshot: work/refactor/private/configurations.json; never commit or publish. Restored database container stopped again.
+Next: explicit versioned additive migration tested on isolated PostgreSQL, typed identity/rule policy contracts and read-only shadow evaluation. Public export sanitization remains unfinished; no push.
+Important: no background process remains after these completed checks. Resume from this checkpoint, not from an assumption that the full refactor is complete.
