@@ -1,6 +1,8 @@
 # Refactor plan and current position
 
-Current position: **M1 - validated import and publication integration (Step 12)**.
+Current position: **M1 - validated import and publication integration (Step 13)**.
+Execution blocker: C: disk pressure; Docker control unresponsive. Free 5–10 GB and reconcile Docker state before further container verification. Live API healthy; no activation.
+
 No live cutover. Status refers to isolated implementation, not activation.
 
 | Point | Status | Completed | Remaining |
@@ -9,7 +11,7 @@ No live cutover. Status refers to isolated implementation, not activation.
 | B1 Inventory and regression | Partial | Initial inventory, saved history, baseline failure recorded | Complete all business configuration locations |
 | D1 Configuration schema | Partial | Publications, entries, identity bindings, family-rule membership; 3 migrations | Remaining entities and database immutability |
 | D2 Typed contracts/compiler | Partial | Lossless history, identity/text comparison contracts | Full configuration typing and policy types |
-| **M1 Import/publication** | **Current - partial** | 40 historical imports; opt-in atomic publication | Other writers, normalized reads, rollout |
+| **M1 Import/publication** | **Current - partial** | 40 historical imports; all writers use atomic persistence; explicit initialization | Normalized reads, rollout |
 | R1 Grouping and SOP | Partial | Identity, text comparisons, applicability, editor | Complex/visual policies, dynamic profiles and contexts |
 | R2 Services/providers | Partial | Preview/publication services, upgrade router | Remaining API services and provider/prompt boundaries |
 | R3 Datasets/reports | Pending | Existing report compatibility retained | Dataset registry and report read models |

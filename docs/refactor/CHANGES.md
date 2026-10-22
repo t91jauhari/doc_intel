@@ -78,3 +78,30 @@ Created: backend/app/configuration/publication.py; backend/app/configuration/ver
 Modified: backend/app/main.py; backend/app/settings.py; backend/tests/test_configuration_migrations.py; docs/refactor/PLAN.md; docs/refactor/CHECKPOINT.md; docs/refactor/CHANGES.md; docs/refactor/MIGRATIONS.md; docs/refactor/VERIFICATION.md.
 Change: publish endpoint delegates to application service; explicit legacy(default)/dual infrastructure rollout mode; requires migrated tables/checksums; Config, normalized publication and audit share transaction. Source request not mutated, historical case pins preserved. No startup table creation.
 Verification: 17 API/publication/flow tests passed;5 PostgreSQL migration tests passed; final1 input-copy/prompt-compilation test passed. PostgreSQL rehearsal proposed41 and rolled back, round trip equal, original config/case/publication/audit rows unchanged. Live health ok; restored DB stopped. Other direct writers/normalized reads still pending; M1 partial, no activation or push.
+
+## Step 13 — all configuration writers and explicit initialization
+Commit message: Centralize configuration writers and remove startup policy upgrades.
+Files:
+- backend/app/configuration/initialize.py (created)
+- backend/tests/test_configuration_writers.py (created)
+- backend/app/configuration/publication.py
+- backend/app/account_opening_official.py
+- backend/app/account_opening_seed.py
+- backend/app/domain.py
+- backend/app/enum_aliases.py
+- backend/app/extraction_quality.py
+- backend/app/main.py
+- backend/app/profile_guidance.py
+- backend/app/profile_variants.py
+- backend/app/spider_config.py
+- backend/app/transaction_flows.py
+- backend/app/worker.py
+- backend/tests/conftest.py
+- docs/refactor/PUBLICATION_SERVICE.md
+- docs/refactor/PLAN.md
+- docs/refactor/CHECKPOINT.md
+- docs/refactor/CHANGES.md
+- docs/refactor/VERIFICATION.md
+
+Additional modified file: backend/tests/test_profile_guidance.py (compiled prompt-length fixture).
+Verification: 4 new tests passed; broader run 26 passed/1 outdated fixture failed, fixture corrected but Docker rerun blocked. All backend Python parsed. This is implemented with final regression pending, not completed rollout. See CHECKPOINT for disk incident and preserved state.

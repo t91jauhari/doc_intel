@@ -1,4 +1,6 @@
 """Versioned, profile-scoped guidance saved from field reprocessing."""
+from .configuration.publication import persist_revision
+
 import copy
 import hashlib
 from sqlalchemy import text
@@ -27,8 +29,7 @@ def append_profile_guidance(db, config, doc, fields, instruction, user):
     profile['system_instruction'] = existing + '\n\n' + block
     validate_config(payload)
     saved = Config(org=user.org, version=config.version + 1, payload=payload, published_by=user.id)
-    db.add(saved)
-    db.flush()
+    persist_revision(db, saved)
     audit(db, user.org, user.id, 'config.profile_guidance_appended', doc.branch_id, doc.case_id,
           document_id=doc.id, profile=doc.doc_type, fields=fields,
           version=saved.version, previous_version=config.version)

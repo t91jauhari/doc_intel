@@ -1,6 +1,6 @@
 # Refactor recovery checkpoint
 
-Status: BASELINE_COMPLETE; configuration schema proposed. No refactored runtime code activated.
+Current status: STEP_13_IMPLEMENTED; final Docker verification blocked by host disk pressure. No refactored runtime activated. See final checkpoint below.
 Canonical tracking: this directory. Sibling tracking directory contains only a pointer after baseline setup.
 
 Live application: work/sourcecode/document-platform; ports 3000/8000; API health ok. Never deploy isolated code to this stack during development.
@@ -102,3 +102,11 @@ All preview processes stopped, live API healthy. Changed files in CHANGES.md Ste
 Interactive publish endpoint now uses transactional application service. CONFIGURATION_STORAGE_MODE defaults legacy; explicit dual writes Config+normalized rows+audit atomically after migrated-table/history checks. No deployment env changed. Historical config IDs/case pins retained and request data copied before instruction compilation.
 Tests:17 publication/API/flow passed (142.54s);5 PostgreSQL migration tests passed (0.72s); final1 source-immutability/prompt compilation test passed. Restored PostgreSQL rehearsal proposed41, exact round trip then rollback; original config/cases/publications/audit unchanged. Live health ok. DB stopped; all commands finished.
 Plan table rewritten in PLAN.md so status is visible. M1 remains partial: startup seeds, profile guidance and other writers bypass service; normalized read authority/DB immutability pending. Next: inventory/migrate remaining configuration writers and add normalized read verification, without startup overwrite. R1 complex policies, R2 provider boundaries, R3 datasets/reports, full V1/C1 and public export remain outstanding. Per-file list: CHANGES.md Step12.
+
+## Step 13 recovery checkpoint — host resource blocker
+All production configuration inserts now use persist_revision, preserving caller transactions and per-upgrade validation. Guidance append, bootstrap and all legacy seeds honor dual mode. API and worker startup no longer seed business configuration. Explicit development initializer with expected-database guard replaces startup upgrades. Test setup explicitly initializes its isolated state.
+Verification completed: 4 new writer/startup/dual-guidance tests passed; broader publication/guidance/account suite 26 passed and 1 outdated prompt-length fixture failed. Fixture corrected to account for spatial instruction compilation; final targeted rerun could not finish because Docker control stopped responding. Do not claim final suite green. Full backend AST parse passed.
+Storage incident: C: filled during a read-only logical MinIO backup (233175040-byte incomplete archive). Incomplete archive removed; no live storage writes. Failed file edit restored from Git before applying intended fixture correction. Isolated frontend .next cache moved reversibly to O:/CodexBackups/document-platform/preview-next-cache, recovering about 300 MB. Source and database archive unchanged. Live API /api/health returned ok/version0.3.0 after incident.
+Docker clients for targeted rerun/backup/inspection were terminated after stalling. Docker ps still timed out after 8 seconds. No Docker daemon restart attempted. An isolated test container may remain; reconcile Docker inventory after recovery before launching more tests. No background completion is implied.
+User asked asynchronously to free 5–10 GB on C:. O: is a local fixed DATA drive with about 8 GB free; backup retry did not pass inventory, so no completed object backup exists. Do not cut over.
+Resume: recover host/Docker responsiveness without disturbing live app; rerun corrected prompt-length test and full affected suite, verify startup initialization CLI, then normalized read authority, remaining policy/provider/report refactor and full acceptance. Every earlier pending plan item remains pending; do not mark all steps complete. No public push or live activation.

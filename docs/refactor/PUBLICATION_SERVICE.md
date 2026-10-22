@@ -35,3 +35,8 @@ profile-guidance append and other direct Config writers still need integration.
 Normalized read authority and database-enforced immutability are also pending.
 Do not turn dual storage into the application-wide source of truth yet. The live
 environment has not been changed; rollout flag remains at its legacy default.
+
+## Every writer and explicit initialization
+All existing Config inserts now call persist_revision, including guidance, legacy upgrades and initial bootstrap. Revision ordering, optional normalized writes and integrity verification share the caller transaction. Legacy upgrade-specific validation is retained. API and worker startup no longer publish configuration or initialize development users.
+
+For a new development environment, run `python -m app.configuration.initialize --expected-database <database-name-or-SQLite-path>` explicitly before starting services. APP_ENV must be development; DEV_PASSWORD must be supplied through the existing secure environment. Dual mode requires explicit schema migrations first. Initializer upgrades are separate transactions and can be safely resumed using existing release markers; initialization is not one atomic multi-release transaction. Production provisioning still requires a separate workflow.

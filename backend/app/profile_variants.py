@@ -1,4 +1,6 @@
 """Named prompt candidates; stored snapshots never replace active customer settings."""
+from .configuration.publication import persist_revision
+
 import copy
 import json
 from pathlib import Path
@@ -42,5 +44,5 @@ def seed_profile_variants():
             payload = add_variants(previous.payload)
             if payload == previous.payload:
                 continue
-            db.add(Config(org=org, version=previous.version + 1, payload=payload, published_by='system.enhanced-v1'))
+            persist_revision(db, Config(org=org, version=previous.version + 1, payload=payload, published_by='system.enhanced-v1'))
             audit(db, org, 'system', 'configuration.prompt_variants_seeded', None, release=RELEASE, previous_version=previous.version)

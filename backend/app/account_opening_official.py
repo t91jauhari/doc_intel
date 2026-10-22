@@ -1,4 +1,6 @@
 """Publish the confirmed official cross-document rules without mutating case pins."""
+from .configuration.publication import persist_revision
+
 
 import copy
 import json
@@ -40,7 +42,7 @@ def seed_official_account_rules():
                 continue
             payload.setdefault("seed_releases", []).append(RELEASE)
             validate_config(payload)
-            db.add(Config(org=org, version=old.version + 1, payload=payload, published_by="system.account-official-v2"))
+            persist_revision(db, Config(org=org, version=old.version + 1, payload=payload, published_by="system.account-official-v2"))
             audit(db, org, "system", "configuration.account_opening_official_rules_aligned", None,
                   previous_version=old.version, changed_rule_ids=changed, excluded=EXCLUDED,
                   external_cbs_verification=False)

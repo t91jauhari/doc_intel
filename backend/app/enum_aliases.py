@@ -1,4 +1,6 @@
 """Seed approved spellings without changing canonical bank choices or prompts."""
+from .configuration.publication import persist_revision
+
 import copy
 
 DEFAULTS = {'religion': {'KATHOLIK': 'Katolik', 'BUDHA': 'Buddha'}}
@@ -51,5 +53,5 @@ def seed_enum_aliases():
             old = latest_config(db, org)
             if RELEASE in old.payload.get('seed_releases', []):
                 continue
-            db.add(Config(org=org, version=old.version+1, payload=upgrade_payload(old.payload), published_by='system.enum-aliases-v1'))
+            persist_revision(db, Config(org=org, version=old.version+1, payload=upgrade_payload(old.payload), published_by='system.enum-aliases-v1'))
             audit(db, org, 'system', 'configuration.enum_aliases_seeded', None, previous_version=old.version)

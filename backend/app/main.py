@@ -88,27 +88,6 @@ DUMMY_PASSWORD = hash_password(secrets.token_urlsafe(24))
 
 @asynccontextmanager
 async def lifespan(_):
-    seed()
-    from .profile_variants import seed_profile_variants
-
-    seed_profile_variants()
-    from .enum_aliases import seed_enum_aliases
-
-    seed_enum_aliases()
-    from .transaction_flows import seed_transaction_flows
-
-    seed_transaction_flows()
-    from .account_opening_seed import seed_account_opening
-
-    seed_account_opening()
-    from .account_opening_official import seed_official_account_rules
-
-    seed_official_account_rules()
-    from .spider_config import seed_spider
-
-    seed_spider()
-    from .extraction_quality import seed_quality
-    seed_quality()
     from .worker_capacity import initialize_slots
 
     initialize_slots()

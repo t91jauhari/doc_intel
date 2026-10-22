@@ -74,7 +74,10 @@ def test_shared_guidance_requires_config_publish_permission(signed):
 def test_profile_length_limit_rolls_back_publication(signed):
     doc=completed(signed)
     current=signed.get('/api/config').json()
-    current['payload']['profiles']['ektp']['system_instruction']='x'*29995
+    from app.extraction_prompts import system_instruction
+    # Include the mandatory spatial instruction in the published length budget.
+    compiled=system_instruction({'system_instruction':'x'})
+    current['payload']['profiles']['ektp']['system_instruction']='x'*(29995-len(compiled)+1)
     saved=signed.post('/api/config/publish',json={'expected_version':current['version'],'payload':current['payload']})
     assert saved.status_code==200,saved.text
     response=signed.post(f'/api/documents/{doc.id}/reprocess-fields',json={'fields':['name'],'reason':'Inspect field','instruction':'Inspect the entire printed name line'})

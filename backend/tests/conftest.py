@@ -19,7 +19,7 @@ os.environ.update(
 )
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from app.db import Base, engine  # noqa: E402 — isolated environment must be set first.
-from app.domain import seed  # noqa: E402
+from app.configuration.initialize import initialize_development  # noqa: E402
 from app.main import app  # noqa: E402
 from fastapi.testclient import TestClient  # noqa: E402
 
@@ -27,7 +27,7 @@ from fastapi.testclient import TestClient  # noqa: E402
 @pytest.fixture
 def client():
     Base.metadata.drop_all(engine)
-    seed()
+    initialize_development()
     with TestClient(app) as client:
         yield client
 

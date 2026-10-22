@@ -1,4 +1,6 @@
 """Versioned business configuration, conservative filename routing and SOP evaluation."""
+from .configuration.publication import persist_revision
+
 
 import copy
 import hashlib
@@ -515,7 +517,7 @@ def seed():
             cfg = Config(
                 org=org, version=1, payload=default_config(), published_by=user.id
             )
-            db.add(cfg)
+            persist_revision(db, cfg)
             db.add(Connector(org=org, encrypted="", options={}))
             audit(db, org, user.id, "development.bootstrap", branch.id, email=email)
 
@@ -598,8 +600,7 @@ def upgrade_profiles(db, org):
     payload.setdefault("sop_review_bypass_result", "PASS")
     payload.setdefault("sequential_page_extraction", True)
     payload.setdefault("cross_page_reference", True)
-    db.add(
-        Config(
+    persist_revision(db, Config(
             org=org,
             version=previous.version + 1,
             payload=payload,

@@ -1,4 +1,6 @@
 """User-managed transaction flows reuse registered extraction document profiles."""
+from .configuration.publication import persist_revision
+
 
 import copy
 import re
@@ -167,8 +169,7 @@ def seed_transaction_flows():
                 }
             payload.setdefault("seed_releases", []).append(RELEASE)
             validate_flows(payload)
-            db.add(
-                Config(
+            persist_revision(db, Config(
                     org=org,
                     version=old.version + 1,
                     payload=payload,

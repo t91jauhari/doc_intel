@@ -1,4 +1,6 @@
 """Evidence-led prompt refinements and optional schema extensions for Forex profiles."""
+from .configuration.publication import persist_revision
+
 import copy
 import hashlib
 import json
@@ -87,5 +89,5 @@ def seed_quality():
             old=latest_config(db,org)
             if old.payload.get('extraction_quality_release')==RELEASE:continue
             payload=apply_quality(old.payload)
-            db.add(Config(org=org,version=old.version+1,payload=payload,published_by='system.field-quality'))
+            persist_revision(db, Config(org=org,version=old.version+1,payload=payload,published_by='system.field-quality'))
             audit(db,org,'system','configuration.field_quality_seeded',release=RELEASE,previous_version=old.version)
