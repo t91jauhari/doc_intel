@@ -40,6 +40,32 @@ def test_nonadministrator_cannot_preview(signed):
         user = db.scalar(select(User).where(User.email == "sqe@bic.local"))
         user.role = "reviewer"
     assert signed.get("/api/config/upgrades/comparisons").status_code == 403
+    assert signed.get("/api/config/upgrades/compatibility").status_code == 403
+    assert signed.post("/api/config/upgrades/compatibility/preview", json={
+        "expected_version": 1, "selected_keys": ["sop_review_bypass"],
+    }).status_code == 403
     assert signed.post("/api/config/upgrades/comparisons/preview", json={
         "expected_version": 1, "rule_ids": ["anything"],
     }).status_code == 403
+
+
+def test_compatibility_preview_is_explicit_and_read_only(signed):
+    from app.configuration.compatibility import release_definition
+
+    current = signed.get("/api/config").json()
+    assert signed.get("/api/config/upgrades/compatibility").status_code == 200
+    legacy = current["payload"]
+    keys = list(release_definition()["defaults"])
+    for key in keys:
+        legacy.pop(key)
+    before = signed.get("/api/config").json()
+    result = signed.post("/api/config/upgrades/compatibility/preview", json={
+        "expected_version": current["version"], "selected_keys": keys, "payload": legacy,
+    })
+    assert result.status_code == 200, result.text
+    assert result.json()["activated"] is False
+    assert result.json()["payload"]["sop_review_bypass"] is False
+    assert signed.get("/api/config").json() == before
+    assert signed.post("/api/config/upgrades/compatibility/preview", json={
+        "expected_version": current["version"] + 1, "selected_keys": keys, "payload": legacy,
+    }).status_code == 409

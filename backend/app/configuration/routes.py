@@ -5,9 +5,10 @@ from pydantic import BaseModel, ConfigDict, Field
 from app.db import SessionLocal
 from app.domain import latest_config
 from app.security import require_roles
-from .service import StaleConfiguration, comparison_candidates, preview_comparison_upgrade
+from .service import StaleConfiguration, comparison_candidates, preview_comparison_upgrade, preview_compatibility_upgrade
 
 router = APIRouter(prefix="/api/config/upgrades/comparisons", tags=["Configuration upgrades"])
+compatibility_router = APIRouter(prefix="/api/config/upgrades/compatibility", tags=["Configuration upgrades"])
 administrator = require_roles("bank_admin")
 
 
@@ -16,6 +17,38 @@ class PreviewInput(BaseModel):
     expected_version: int = Field(ge=1)
     rule_ids: list[str] = Field(min_length=1, max_length=1000)
     payload: dict | None = None
+
+
+class CompatibilityInput(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    expected_version: int = Field(ge=1)
+    selected_keys: list[str] = Field(min_length=1, max_length=30)
+    payload: dict | None = None
+
+
+@compatibility_router.get("")
+def compatibility_candidates(user=Depends(administrator)):
+    from .compatibility import missing_settings
+
+    with SessionLocal() as session:
+        current = latest_config(session, user.org)
+        return {"version": current.version, **missing_settings(current.payload)}
+
+
+@compatibility_router.post("/preview")
+def compatibility_preview(data: CompatibilityInput, user=Depends(administrator)):
+    with SessionLocal() as session:
+        current = latest_config(session, user.org)
+        try:
+            return preview_compatibility_upgrade(
+                current_version=current.version, expected_version=data.expected_version,
+                payload=current.payload if data.payload is None else data.payload,
+                selected_keys=data.selected_keys,
+            )
+        except StaleConfiguration as exc:
+            raise HTTPException(409, str(exc)) from exc
+        except (ValueError, TypeError, KeyError) as exc:
+            raise HTTPException(422, str(exc)) from exc
 
 
 @router.get("")

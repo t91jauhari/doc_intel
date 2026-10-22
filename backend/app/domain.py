@@ -325,7 +325,7 @@ def validate_config(payload):
     if payload["provider"] == "fixture" and settings.environment != "development":
         raise ValueError("Fixture mode is development-only.")
     # Phase 2 — Configurable SOP Review Bypass (§3.2.1)
-    if payload.get("sop_review_bypass") not in (True, False):
+    if type(payload.get("sop_review_bypass")) is not bool:
         raise ValueError("sop_review_bypass must be true or false.")
     if payload.get("sop_review_bypass_result") not in {"PASS", "REVIEW", "NOT_APPLICABLE"}:
         raise ValueError(
@@ -351,7 +351,7 @@ def validate_config(payload):
         raise ValueError("sop_message_templates must map keys to message strings.")
     # Phase 3 — Sequential extraction settings (§3.5.4)
     for flag in ["sequential_page_extraction", "cross_page_reference"]:
-        if payload.get(flag) not in (True, False):
+        if type(payload.get(flag)) is not bool:
             raise ValueError(f"{flag} must be true or false.")
     for tier in ["parse_tier", "extract_tier"]:
         if payload.get(tier) not in {"agentic", "agentic_plus", "cost_effective"}:

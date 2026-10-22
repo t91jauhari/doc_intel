@@ -27,3 +27,11 @@ def preview_comparison_upgrade(*, current_version, expected_version, payload, se
     if not selected_ids or len(selected_ids) != len(set(selected_ids)):
         raise ValueError("Select distinct comparison rules to preview.")
     return {**propose_upgrade(payload, selected_ids), "source_version": current_version}
+
+
+def preview_compatibility_upgrade(*, current_version, expected_version, payload, selected_keys):
+    from .compatibility import propose_compatibility
+
+    if current_version != expected_version:
+        raise StaleConfiguration("Configuration changed. Reload before previewing compatibility updates.")
+    return {**propose_compatibility(payload, selected_keys), "source_version": current_version}
