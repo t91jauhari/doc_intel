@@ -35,6 +35,12 @@ fuzzy acceptance, arbitrary expressions or arbitrary regex are supported.
 
 This comparison component is not yet dispatched from existing SOP rules. Typed
 condition policies, evidence binding, scoring integration and saved-result
-comparison are next acceptance gates. The scope policy currently persists as a
-versioned publication extension; dedicated family-rule membership rows and the
-configuration editor are pending.
+comparison are next acceptance gates. New scope policies now persist in dedicated
+publication-scoped family and membership tables through migration 0003. Empty
+family selections and rule order survive reconstruction. The editor is pending.
+
+The read-only `shadow_comparisons` command loaded 67 restored cases and verified
+61 decisive plain-text match outcomes with zero differences. It explicitly skipped
+5,858 unsupported rule occurrences and 55 unresolved outcomes. This is subset
+coverage only: identifiers, companion fields, optional-document applicability,
+visual evidence and complex rules still require separate acceptance checks.

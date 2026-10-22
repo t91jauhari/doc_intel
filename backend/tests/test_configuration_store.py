@@ -7,7 +7,8 @@ from sqlalchemy.orm import Session
 
 from app.configuration.store import (
     ConfigurationBase, ConfigurationEntry, Publication,
-    IdentityBindingRecord, IdentityPolicyRecord, compile_publication, import_publication,
+    FamilyRuleMemberRecord, FamilyRuleScopeRecord, IdentityBindingRecord, IdentityPolicyRecord,
+    compile_publication, import_publication,
 )
 
 
@@ -120,6 +121,32 @@ def test_identity_binding_corruption_detected(db):
     publication = load(db, payload)
     binding = db.scalar(select(IdentityBindingRecord))
     binding.definition = {"profile": "custom", "field_path": "supplier"}
+    db.flush()
+    with pytest.raises(ValueError, match="integrity"):
+        compile_publication(db, publication)
+
+
+def test_family_rule_membership_is_stored_separately(db):
+    payload = sample()
+    payload["rule_scope"] = {"family_rule_ids": {
+        "forex": ["first", "second"], "account_opening": [],
+        "new_family": ["second"],
+    }}
+    publication = load(db, payload)
+    assert "rule_scope" not in publication.extensions
+    assert len(db.scalars(select(FamilyRuleScopeRecord)).all()) == 3
+    assert len(db.scalars(select(FamilyRuleMemberRecord)).all()) == 3
+    assert compile_publication(db, publication) == payload
+    assert load(db, payload).id == publication.id
+
+
+def test_family_membership_tampering_detected(db):
+    payload = sample()
+    payload["rule_scope"] = {"family_rule_ids": {
+        "forex": ["first"], "account_opening": [], "new_family": [],
+    }}
+    publication = load(db, payload)
+    db.delete(db.scalar(select(FamilyRuleMemberRecord)))
     db.flush()
     with pytest.raises(ValueError, match="integrity"):
         compile_publication(db, publication)

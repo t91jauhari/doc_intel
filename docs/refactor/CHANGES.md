@@ -31,3 +31,9 @@ Modified: backend/app/domain.py; backend/app/transaction_flows.py; docs/refactor
 Commit message: Add explicit SOP family membership and typed comparison contracts.
 Scope: new optional rule_scope controls family membership without prefix selection; flow overrides and historical fallback retained. Pure typed comparison component added but not wired to SOP runtime. Forex evaluator dispatch prefixes, final rule tables and UI remain pending.
 Step 5 verification: 44 focused tests, 18 transaction-flow/contracts tests, and one added publication test passed in their respective runs (overlapping selections). Scope comparison: 40 revisions/112 flows, zero differences. Not activated.
+
+## Step 6 — family-rule persistence and saved comparison outcomes
+Commit message: Persist SOP family memberships and verify saved comparison outcomes.
+Created: backend/app/configuration/migrations/0003_family_rule_membership.sql; backend/app/configuration/shadow_comparisons.py.
+Modified: backend/app/configuration/store.py; backend/app/configuration/README.md; backend/tests/test_configuration_store.py; backend/tests/test_configuration_migrations.py; docs/refactor/SOP_CONFIGURATION.md; docs/refactor/CHECKPOINT.md; docs/refactor/CHANGES.md; docs/refactor/MIGRATIONS.md; docs/refactor/VERIFICATION.md.
+Verification: 51 tests passed including PostgreSQL persistence/migration. Restored migration applied once/replay empty; 40 revisions reconstructed exactly; original config/case rows unchanged. Saved comparison subset: 67 cases loaded, 61 decisive text-match outcomes checked, 0 mismatches; 5858 unsupported rule occurrences and 55 unresolved outcomes skipped explicitly. No activation or push.

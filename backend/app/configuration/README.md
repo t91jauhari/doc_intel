@@ -44,3 +44,12 @@ identity paths before writing. Compatibility reconstruction preserves explicit
 empty bindings and detects tampering through the publication digest. The read-only
 shadow command verified 67 restored cases with no changes in findings. Dedicated
 UI editing, remaining business-policy tables and activation are still pending.
+
+Migration 0003 adds family rule scopes and ordered memberships. New imports remove
+`rule_scope` from extension JSON and reconstruct it from those rows. Imports
+validate registered families and rule IDs first; publication integrity checks
+detect deleted memberships. Historical imports without scope remain untouched.
+
+`shadow_comparisons` verifies the supported plain-text match subset against the
+existing evaluator on restored extraction values. It reports skipped cases/rules
+explicitly; zero differences in that subset does not certify complex SOP logic.

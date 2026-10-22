@@ -69,16 +69,19 @@ def test_identity_bindings_round_trip_in_postgres(isolated_engine):
     from app.configuration.store import compile_publication, import_publication
 
     assert migrate.apply_migrations(isolated_engine, expected_database="sqe_refactor") == [
-        "0001_publications", "0002_identity_bindings",
+        "0001_publications", "0002_identity_bindings", "0003_family_rule_membership",
     ]
     payload = {
         "profiles": {"custom": {"schema": {"type": "object", "properties": {
             "name": {"type": "string"},
         }}}},
         "identity_policy": {"bindings": [{"profile": "custom", "field_path": "name"}]},
+        "sop_rules": [{"id": "sample_rule"}],
+        "rule_scope": {"family_rule_ids": {"forex": ["sample_rule"], "account_opening": []}},
     }
     with Session(isolated_engine) as session, session.begin():
         publication = import_publication(session, organization="test", revision=1,
                                          source_config_id="synthetic", payload=payload)
         assert compile_publication(session, publication) == payload
         assert session.scalar(text("SELECT count(*) FROM configuration_identity_bindings")) == 1
+        assert session.scalar(text("SELECT count(*) FROM configuration_family_rule_members")) == 1

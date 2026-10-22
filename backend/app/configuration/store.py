@@ -8,7 +8,7 @@ import hashlib
 import json
 import uuid
 
-from sqlalchemy import JSON, ForeignKey, Integer, String, UniqueConstraint, select
+from sqlalchemy import JSON, ForeignKey, ForeignKeyConstraint, Integer, String, UniqueConstraint, select
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column
 
 
@@ -56,6 +56,24 @@ class IdentityBindingRecord(ConfigurationBase):
     definition: Mapped[dict] = mapped_column(JSON)
 
 
+class FamilyRuleScopeRecord(ConfigurationBase):
+    __tablename__ = "configuration_family_rule_scopes"
+    publication_id: Mapped[str] = mapped_column(ForeignKey("configuration_publications.id"), primary_key=True)
+    family: Mapped[str] = mapped_column(String(80), primary_key=True)
+
+
+class FamilyRuleMemberRecord(ConfigurationBase):
+    __tablename__ = "configuration_family_rule_members"
+    __table_args__ = (
+        ForeignKeyConstraint(["publication_id", "family"], ["configuration_family_rule_scopes.publication_id", "configuration_family_rule_scopes.family"]),
+        UniqueConstraint("publication_id", "family", "position"),
+    )
+    publication_id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    family: Mapped[str] = mapped_column(String(80), primary_key=True)
+    rule_id: Mapped[str] = mapped_column(String(100), primary_key=True)
+    position: Mapped[int] = mapped_column(Integer)
+
+
 # Structural sections only: no family names, field paths or business rules.
 MAPPING_SECTIONS = ("document_families", "profiles", "profile_variants", "templates")
 LIST_SECTIONS = ("sop_rules",)
@@ -85,6 +103,12 @@ def import_publication(
         compile_publication(session, existing)
         return existing
     extensions = copy.deepcopy(payload)
+    scope = None
+    if "rule_scope" in payload:
+        from .rule_scope import validate_rule_scope
+
+        scope = validate_rule_scope(payload)
+        extensions.pop("rule_scope")
     identity = extensions.pop("identity_policy", None)
     if "identity_policy" in payload:
         from .identity import IdentityPolicy, validate_bindings
@@ -115,6 +139,14 @@ def import_publication(
     )
     session.add(publication)
     session.flush()
+    if scope is not None:
+        for family in scope.family_rule_ids:
+            session.add(FamilyRuleScopeRecord(publication_id=publication.id, family=family))
+        session.flush()
+        for family, rule_ids in scope.family_rule_ids.items():
+            for position, rule_id in enumerate(rule_ids):
+                session.add(FamilyRuleMemberRecord(publication_id=publication.id, family=family,
+                                                  rule_id=rule_id, position=position))
     if identity is not None:
         settings = {key: copy.deepcopy(value) for key, value in identity.items() if key != "bindings"}
         session.add(IdentityPolicyRecord(publication_id=publication.id, settings=settings))
@@ -137,6 +169,16 @@ def import_publication(
 def compile_publication(session: Session, publication: Publication) -> dict:
     """Reconstruct the legacy contract and detect accidental persisted changes."""
     payload = copy.deepcopy(publication.extensions)
+    scopes = session.scalars(select(FamilyRuleScopeRecord).where(
+        FamilyRuleScopeRecord.publication_id == publication.id,
+    )).all()
+    if scopes:
+        membership = {row.family: [] for row in scopes}
+        for row in session.scalars(select(FamilyRuleMemberRecord).where(
+            FamilyRuleMemberRecord.publication_id == publication.id,
+        ).order_by(FamilyRuleMemberRecord.family, FamilyRuleMemberRecord.position)):
+            membership[row.family].append(row.rule_id)
+        payload["rule_scope"] = {"family_rule_ids": membership}
     identity = session.get(IdentityPolicyRecord, publication.id)
     if identity is not None:
         settings = copy.deepcopy(identity.settings)

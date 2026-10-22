@@ -65,3 +65,9 @@ Next highest priority: generic SOP policy contracts/evaluators and explicit fami
 
 Step 5 progress: optional rule_scope validated at publication and used for explicit family membership. Generic comparison contracts implemented without runtime dispatch. Focused tests 44 passed; added publication-path test separately 1 passed. Restored read-only scope comparison: 40 config revisions, 112 flows, zero differences. Current transaction-flow regression run pending final result at time of this entry. Isolated DB stopped, live API health ok.
 Final Step 5 result: transaction-flow regression + initial comparison/scope contracts 18 passed in 73.15s; added publish-validation test 1 passed separately. Combined identity/storage/contracts selection 44 passed. No new failures. No pending commands. Next: dedicated membership persistence and generic evaluator integration with saved-SOP result checks. No live publish/deployment.
+
+## Step 6 recovery checkpoint
+Status: dedicated family-rule tables implemented and tested on isolated PostgreSQL only.
+0003 applied/replayed with no changes on replay. All 40 original revisions match; case/config rows unchanged. 51 focused tests passed. Read-only generic-vs-current comparison: 67 cases, 61 supported decisive text outcomes, zero differences. Unsupported 5858/unresolved 55 occurrences skipped, not certified. Remaining evaluator integration must preserve uncertainty/applicability/review and scoring; do not replace complex rules on this subset evidence.
+Created/modified file list: CHANGES.md Step 6. Live health ok. Isolated DB stopped, all commands complete. No background work, live migration, publication, deployment or push.
+Next: wire explicit generic policies into evaluator with typed applicability and uncertainty handling, add outcome/report integration tests, then expand shadow coverage. UI, final configuration tables and public sanitization still pending. Pre-existing upload dedup assertion remains unresolved.
