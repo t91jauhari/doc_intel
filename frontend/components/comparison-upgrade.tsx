@@ -23,16 +23,20 @@ export function ComparisonUpgrade({ configuration, version, editable, onApply, f
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [fieldOptions, setFieldOptions] = useState<FieldOptions | null>(null);
-  const hasConfigured = !!configuration.generic_sop_rules?.some(rule => rule.families.includes(family));
+  const [newId, setNewId] = useState("");
+  const [newLabel, setNewLabel] = useState("");
+  const [newLeft, setNewLeft] = useState("");
+  const [newRight, setNewRight] = useState("");
   useEffect(() => {
     let cancelled = false;
     setFieldOptions(null);
-    if (editable && hasConfigured) api<FieldOptions>("/config/upgrades/comparisons/fields", {
+    const timer = setTimeout(() => { if (editable) api<FieldOptions>("/config/upgrades/comparisons/fields", {
       method: "POST", body: JSON.stringify({ expected_version: version, family, payload: configuration }),
     }).then(result => { if (!cancelled) setFieldOptions(result); })
-      .catch(error => { if (!cancelled) setError(error instanceof Error ? error.message : "Could not load fields."); });
-    return () => { cancelled = true; };
-  }, [configuration.profiles, configuration.document_families, version, family, editable, hasConfigured]);
+      .catch(error => { if (!cancelled) setError(error instanceof Error ? error.message : "Could not load fields."); }); }, 250);
+    return () => { cancelled = true; clearTimeout(timer); };
+  }, [configuration.profiles, configuration.document_families, configuration.context_definitions, version, family, editable]);
+  useEffect(() => { setNewLeft(""); setNewRight(""); }, [family]);
   useEffect(() => {
     let cancelled = false;
     setLoadingCandidates(true);
@@ -57,7 +61,41 @@ export function ComparisonUpgrade({ configuration, version, editable, onApply, f
     } catch (error) { setError(error instanceof Error ? error.message : "Preview failed."); }
     finally { setBusy(false); }
   }
-  return <><section className="panel settings-card" aria-labelledby="comparison-upgrade-title">
+  return <><section className="panel settings-card" aria-labelledby="new-comparison-title">
+    <h2 id="new-comparison-title">Add a text comparison</h2>
+    <p>Compare two configured fields in this family. Matching values pass for one point; missing, unclear or different values fail. This check does not perform visual verification.</p>
+    <div className="form-grid">
+      <label>New comparison ID<input value={newId} placeholder="customer_name_consistency" onChange={event => setNewId(event.target.value)} /></label>
+      <label>Check description<input value={newLabel} placeholder="Customer names must match" onChange={event => setNewLabel(event.target.value)} /></label>
+      <label>First text field<select value={newLeft} onChange={event => { setNewLeft(event.target.value); if (newRight === event.target.value) setNewRight(""); }}>
+        <option value="">Choose a field</option>
+        {fieldOptions?.fields.map(field => <option key={field.path} value={field.path}>{field.profile_label} · {field.label} ({field.path})</option>)}
+      </select></label>
+      <label>Compared text field<select value={newRight} onChange={event => setNewRight(event.target.value)}>
+        <option value="">Choose a different field</option>
+        {fieldOptions?.fields.filter(field => field.path !== newLeft).map(field => <option key={field.path} value={field.path}>{field.profile_label} · {field.label} ({field.path})</option>)}
+      </select></label>
+    </div>
+    <button type="button" className="secondary" disabled={!fieldOptions || fieldOptions.fields.length < 2} onClick={() => {
+      if (!fieldOptions) return;
+      if (!/^[A-Za-z0-9_.-]{1,100}$/.test(newId) || [...(configuration.sop_rules || []), ...(configuration.generic_sop_rules || [])].some(rule => rule.id === newId)) {
+        setError("Enter a unique comparison ID using letters, digits, dots, underscores or hyphens."); return;
+      }
+      const left = fieldOptions.fields.find(field => field.path === newLeft);
+      const right = fieldOptions.fields.find(field => field.path === newRight);
+      if (!newLabel.trim() || !left || !right || left.path === right.path) { setError("Enter a description and choose two different text fields."); return; }
+      const rule = { id: newId, label: newLabel.trim(), enabled: true, families: [family], report_category: "DATA_COMPLETION",
+        source_ref: "Configured SOP rule", policy: { left: left.path, right: right.path, normalization: "casefold_whitespace" as const },
+        schema_paths: { [left.path]: left.schema_path, [right.path]: right.schema_path } };
+      onApply({ ...configuration, generic_sop_rules: [...(configuration.generic_sop_rules || []), rule],
+        ...(configuration.rule_order ? { rule_order: [...configuration.rule_order, newId] } : {}),
+        ...(configuration.rule_scope ? { rule_scope: { family_rule_ids: { ...configuration.rule_scope.family_rule_ids,
+          [family]: [...(configuration.rule_scope.family_rule_ids[family] || []), newId] } } } : {}) });
+      setNewId(""); setNewLabel(""); setNewLeft(""); setNewRight(""); setError("");
+    }}>Add comparison to draft</button>
+    <p className="subtext">New comparisons start with case and whitespace matching. Edit their fields, matching behavior and applicability below. Select the check in the relevant transaction flow before publishing.</p>
+    {error && <p role="alert">{error}</p>}
+  </section><section className="panel settings-card" aria-labelledby="comparison-upgrade-title">
     <h2 id="comparison-upgrade-title"><ArrowRightLeft size={20} aria-hidden="true" /> Upgrade comparison rules</h2>
     <p>Move supported checks into editable comparison policies. Rule IDs, scoring and order are preserved. Review first, then add the changes to your draft.</p>
     {error && <p role="alert">{error}</p>}

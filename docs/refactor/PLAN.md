@@ -1,6 +1,6 @@
 # Refactor plan and current position
 
-Current position: **M1 completed in isolation (Step 15); Step19 custom profiles verified; current R1 new comparisons and complex policy coverage**.
+Current position: **M1 completed in isolation (Step 15); Step20 new comparison creation verified; current R1 complex policies and R2 provider boundaries**.
 
 No live cutover. Status refers to isolated implementation, not activation.
 
