@@ -355,3 +355,17 @@ Files:
 
 Changes: strict policy grammar rejects unknown/unused settings and unbounded format regex; captured account policies retain identical JSON. Explicit source/true-values/false-values conditional predicates require unique completed verified source; unknown data never excludes a requirement. Existing legacy conditional branch retained for historical profiles. Three established criteria captured separately as bootstrap proposal data; undefined survey/signature criteria not invented. Draft editor provides explicit requirement configuration; pure proposal and read-only streaming rehearsal do not publish.
 Verification:30 focused account tests passed66.29s;45 official/SOP/point/generic tests passed41.94s; TypeScript passed;6180 policies across40 histories validate unchanged. First conditional rehearsal36 cases/5623 findings/108 conversions0 score/outcome differences,18 histories require compatibility defaults; compatibility rehearsal still running.503-test full backend suite started against frozen runtime; no final result yet. New conditional editor awaits final browser acceptance.
+
+## Step28 — public-source export guard and final regression progress
+Commit message: Guard clean source exports and verify dynamic dataset publication.
+Files:
+- scripts/export_public_source.py (created)
+- scripts/test_export_public_source.py (created)
+- backend/tests/test_document_families.py
+- backend/tests/test_dataset_registry.py
+- docs/refactor/CHANGES.md
+- docs/refactor/CHECKPOINT.md
+- docs/refactor/VERIFICATION.md
+
+Changes: audit-first allowlist export, no Git history/private fixtures/workbook values/screenshots; generated empty synthetic references; hashes/size manifest; new output directory only; bounded credential/identifier-shape blockers without echoing values; batched Git blob reads. Dynamic dataset test now rejects malformed IDs rather than all new IDs; publication tests enforce registered-only binding and unchanged revision after rejection.
+Verification:4 exporter unit tests passed; first audit284 files/2.22MB/192 excluded/no blockers, no output written.20 family/dataset API tests passed51.32s. Full backend first segment177 passed/7 PG skips then outdated fixed-family assertion failed; corrected fixture and reran affected tests. Remaining files from test_document_families onward running in session98361; do not claim full suite green yet. Conditional rehearsal with compatibility:54 cases/7049 findings/162 conversions/18 compatibility cases/0 mismatches/0 blocked; read-only. No public push or live activation.

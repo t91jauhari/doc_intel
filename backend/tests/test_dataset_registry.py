@@ -82,6 +82,34 @@ def test_dataset_catalog_endpoint_and_immutable_import(signed, monkeypatch):
     assert signed.post('/api/reference-datasets', json=changed).status_code == 409
 
 
+def test_publication_rejects_unregistered_dataset_without_changing_version(signed):
+    current = signed.get('/api/config').json()
+    payload = copy.deepcopy(current['payload'])
+    payload['templates']['forex']['dataset_id'] = 'unregistered-reference'
+    response = signed.post('/api/config/publish', json={'expected_version': current['version'], 'payload': payload})
+    assert response.status_code == 422
+    assert 'no fallback' in response.json()['detail']
+    assert signed.get('/api/config').json()['version'] == current['version']
+
+
+def test_registered_dataset_can_be_published(signed, monkeypatch):
+    from dataclasses import replace
+    from app.db import engine, SessionLocal
+    from app import settings as settings_module
+    from app.configuration.dataset_sources import import_bundled
+    DatasetRecord.__table__.create(engine, checkfirst=True)
+    with SessionLocal.begin() as session:
+        import_bundled(session, 'sqe')
+        register_dataset(session, 'sqe', reference())
+    monkeypatch.setattr(settings_module, 'settings', replace(settings_module.settings, dataset_read_mode='registry'))
+    current = signed.get('/api/config').json()
+    payload = copy.deepcopy(current['payload'])
+    payload['templates']['forex']['dataset_id'] = 'synthetic-v1'
+    response = signed.post('/api/config/publish', json={'expected_version': current['version'], 'payload': payload})
+    assert response.status_code == 200
+    assert response.json()['payload']['templates']['forex']['dataset_id'] == 'synthetic-v1'
+
+
 @pytest.mark.parametrize('change', ['duplicate_sample', 'duplicate_row', 'unknown_sample', 'nonfinite'])
 def test_invalid_reference_bindings_are_rejected(change):
     payload = reference()

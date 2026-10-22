@@ -32,7 +32,7 @@ def test_family_scope_and_defaults_are_non_mutating():
 
 @pytest.mark.parametrize('patch',[
  {'label':'Forex'}, {'profiles':[]}, {'profiles':['unknown']}, {'required':['invoice']},
- {'sop_rule_ids':['not-a-rule']},{'dataset_id':'unknown'},{'cross_page_reference':'yes'},
+ {'sop_rule_ids':['not-a-rule']},{'dataset_id':'invalid dataset id'},{'cross_page_reference':'yes'},
 ])
 def test_bad_family_configuration_is_rejected(patch):
     cfg=configured(default_config());cfg['document_families']['loans'].update(patch)
