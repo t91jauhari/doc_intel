@@ -21,3 +21,4 @@ C19,reference dataset registry,backend/app/configuration/datasets.py,implemented
 C20,report source bindings,backend/app/configuration/reporting.py,implemented_tested,typed versioned report projections and draft editor
 C21,configured field validation,backend/app/configuration/field_checks.py,implemented_tested,explicit data outcomes across providers without weakening native results
 C22,Excel settings truncation,backend/app/config_workbook.py,fixed_tested,reject oversized cell settings with JSON export guidance
+C23,account SOP policy contracts,backend/app/configuration/account_policies.py,implemented_tested,typed grammar and explicit applicability with legacy compatibility

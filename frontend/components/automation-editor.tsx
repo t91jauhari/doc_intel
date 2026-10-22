@@ -4,6 +4,7 @@ import {
   ruleInFamily,
   type DocumentFamily,
 } from "@/lib/document-family";
+import { AccountCondition } from "./account-condition";
 import { useState } from "react";
 import { useData, usePlatform } from "@/components/platform-provider";
 import { api } from "@/lib/api";
@@ -791,6 +792,8 @@ export function SOPBuilder({
                     </select>
                   </label>
                 )}
+                {editing.operator==="account_check"&&<AccountCondition value={editing.comparison_policy||"{}"}
+                  onChange={value=>patch({comparison_policy:value})} fields={catalog.fields}/>}
                 <label>
                   Comparison policy / rationale
                   <input

@@ -1,6 +1,6 @@
 # Refactor plan and current position
 
-Current position: **M1 completed in isolation (Step 15); Step23 provider connectors verified; Step24 dataset registry verified; Step26 field validation verified; explicit policy migration and remaining SOP contracts next**.
+Current position: **M1 completed in isolation (Step 15); Step23 provider connectors verified; Step24 dataset registry verified; Step27 typed account conditions implemented; full suite and migration rehearsal running**.
 
 No live cutover. Status refers to isolated implementation, not activation.
 

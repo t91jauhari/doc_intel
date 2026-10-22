@@ -333,3 +333,25 @@ Files:
 
 Changes: typed text/identifier/date/number/choice/boolean field policies in immutable profiles; exact digit counts, explicit numeric separators/currency, required/optional and incomplete-observation handling. Visual-region fields excluded. Spider configured fields receive real check outcomes while unchecked fields/native normalization remain SKIPPED. Native/custom providers use same additional checks and cannot weaken pre-existing failure/uncertainty. Values remain unchanged. Profile UI configures draft checks; configuration workbook imports/exports field checks and report definitions, preserves old templates, rejects oversized Excel cells instead of truncating; API returns clear422.
 Verification:32 initial field/Spider checks passed141.33s;39 native/custom/reread checks passed156.95s;69 field/workbook/Forex/account tests passed100.26s; final25 field tests passed3.53s including direct SOP points1/0. TypeScript passed. Browser NIK16-digit draft Test settings succeeded0 documents; discarded/publishedv7 unchanged. Screenshot outputs/refactor-step26/field-validation.png. Preview/cache cleaned, no model/live calls. Existing pinned profiles have not been silently assigned new checks: explicit policy proposal/import and acceptance still required before cutover.
+
+## Step27 — typed account SOP policies and explicit applicability
+Commit message: Validate account policy contracts and configure requirement triggers.
+Files:
+- backend/app/configuration/account_policies.py
+- backend/app/configuration/account_policy_routes.py
+- backend/app/configuration/shadow_conditions.py
+- backend/app/config_data/account_conditions_v1.json
+- backend/app/account_opening_sop.py
+- backend/app/sop.py
+- backend/app/main.py
+- backend/tests/test_account_policy_contracts.py
+- frontend/components/account-condition.tsx
+- frontend/components/automation-editor.tsx
+- docs/refactor/CHANGES.md
+- docs/refactor/CHECKPOINT.md
+- docs/refactor/VERIFICATION.md
+- docs/refactor/PLAN.md
+- docs/refactor/INVENTORY.csv
+
+Changes: strict policy grammar rejects unknown/unused settings and unbounded format regex; captured account policies retain identical JSON. Explicit source/true-values/false-values conditional predicates require unique completed verified source; unknown data never excludes a requirement. Existing legacy conditional branch retained for historical profiles. Three established criteria captured separately as bootstrap proposal data; undefined survey/signature criteria not invented. Draft editor provides explicit requirement configuration; pure proposal and read-only streaming rehearsal do not publish.
+Verification:30 focused account tests passed66.29s;45 official/SOP/point/generic tests passed41.94s; TypeScript passed;6180 policies across40 histories validate unchanged. First conditional rehearsal36 cases/5623 findings/108 conversions0 score/outcome differences,18 histories require compatibility defaults; compatibility rehearsal still running.503-test full backend suite started against frozen runtime; no final result yet. New conditional editor awaits final browser acceptance.

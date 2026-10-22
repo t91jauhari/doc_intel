@@ -110,7 +110,8 @@ def fields():
 
 
 def evaluate_rule(rule, documents, cfg, context):
-    settings = json.loads(rule["comparison_policy"])
+    from .configuration.account_policies import parse_policy
+    settings = parse_policy(rule["comparison_policy"])
     kind = settings["kind"]
     actual, left = value_at(documents, rule["path"])
     expected, right = value_at(documents, rule.get("other_path") or rule["path"])
@@ -136,6 +137,15 @@ def evaluate_rule(rule, documents, cfg, context):
             )
             else "FAIL"
         )
+    elif settings.get('trigger'):
+        from .configuration.account_policies import condition_result
+        trigger = condition_result(documents, settings['trigger'])
+        if trigger is False:
+            result = 'NOT_APPLICABLE'
+        elif trigger is True:
+            result = 'PASS' if any(document['doc_type'] == settings['target'] and document['status'] == 'COMPLETED' for document in documents) else 'FAIL'
+        else:
+            message += ' ' + tpl('ao.conditional_unresolved')
     elif kind in {
         "conditional_edd",
         "conditional_bo",

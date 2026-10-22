@@ -216,7 +216,10 @@ def validate_business(cfg):
                     raise ValueError(f"{r['id']}: currency companion is required.")
         if op == "account_check":
             try:
-                account_policy = json.loads(r["comparison_policy"])
+                from .configuration.account_policies import parse_policy
+                account_policy = parse_policy(r["comparison_policy"])
+                if account_policy.get('trigger') and account_policy['trigger']['path'] not in registry:
+                    raise ValueError('Unknown conditional source field')
                 if (
                     not isinstance(account_policy, dict)
                     or not r["source_ref"].startswith("AO:")
