@@ -36,6 +36,7 @@ import { useData, usePlatform } from "@/components/platform-provider";
 import { Busy, ErrorNotice, Modal, Badge } from "@/components/ui";
 import { AutomationEditor, SOPBuilder } from "@/components/automation-editor";
 import { LocationLearningHistory } from "@/components/location-learning-history";
+import { FieldChecks } from "@/components/field-checks";
 import { FieldDescriptionEditor } from "@/components/field-description-editor";
 import { ProfileCreate } from "@/components/profile-create";
 import { ProfileSchemaEditor } from "@/components/profile-schema-editor";
@@ -1082,6 +1083,11 @@ export default function Settings() {
                         })
                       }
                     />
+                    <fieldset disabled={!canEdit}><FieldChecks
+                      key={`${selectedProfile}-checks-${version}-${draftEpoch}`}
+                      profile={draft.profiles[selectedProfile]}
+                      onChange={profile=>update({...draft,profiles:{...draft.profiles,[selectedProfile]:profile}})}
+                    /></fieldset>
                     <FieldDescriptionEditor
                       key={`${selectedProfile}-instructions-${version}-${draftEpoch}`}
                       schema={draft.profiles[selectedProfile].schema}

@@ -342,8 +342,9 @@ def run_llama(doc, cfg, heartbeat):
 
 
 def validate_extraction(doc, cfg, response, authoritative=None):
+    from .configuration.field_checks import apply_field_checks
     if cfg["profiles"][doc.doc_type].get("validation_adapter") == "schema":
-        return schema_report(doc, cfg, response)
+        return apply_field_checks(schema_report(doc, cfg, response), cfg['profiles'][doc.doc_type])
     if cfg.get("provider") == "spider-ai":
         from .spider_result import extraction_report
 
@@ -397,4 +398,4 @@ def validate_extraction(doc, cfg, response, authoritative=None):
         report['normalized'][key] = value
         report.setdefault('fields', {})[key] = {'raw_value':raw.get(key),'normalized_value':value,
             'status':'REVIEW' if value is None else 'PASS','issues':[]}
-    return serial(report)
+    return serial(apply_field_checks(report, cfg['profiles'][doc.doc_type]))

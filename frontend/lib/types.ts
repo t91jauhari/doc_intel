@@ -17,6 +17,10 @@ export type SchemaNode = {
   [key: string]: unknown;
 };
 export type Profile = {
+  field_checks?: Record<string, {kind: "text" | "identifier" | "date" | "number" | "choice" | "boolean";
+    required?: boolean; minimum_length?: number; maximum_length?: number; digits?: number | null;
+    choices?: string[]; normalization?: "literal" | "casefold_whitespace";
+    decimal_separator?: "." | ","; thousands_separator?: "." | "," | " " | null; currency?: string | null}>;
   validation_adapter?: "native" | "schema";
   schema?: SchemaNode;
   label: string;

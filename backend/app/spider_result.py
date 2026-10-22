@@ -12,7 +12,7 @@ def extraction_report(doc, cfg, response):
     keys = dict.fromkeys(
         [key for key, _ in cfg["profiles"][doc.doc_type]["columns"]] + list(effective)
     )
-    return {
+    report = {
         "document_type": doc.doc_type,
         "status": "SKIPPED",
         "processing_mode": "spider_extraction_formatted",
@@ -33,3 +33,5 @@ def extraction_report(doc, cfg, response):
             for key in keys
         },
     }
+    from .configuration.field_checks import apply_field_checks
+    return apply_field_checks(report, cfg['profiles'][doc.doc_type])

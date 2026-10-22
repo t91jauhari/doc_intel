@@ -399,6 +399,8 @@ def validate_config(payload):
 
             validate_aliases(p.get("policy", {}))
         validate_profile_schema(p, baseline, payload['provider'])
+        from .configuration.field_checks import validate_field_checks
+        validate_field_checks(p)
         if not native:
             from .configuration.profiles import validate_schema_adapter
             validate_schema_adapter(p)

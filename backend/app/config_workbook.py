@@ -44,8 +44,7 @@ def export_config(cfg):
         s = w.create_sheet(name)
         s.append(headers)
         for row in rows:
-            s.append(
-                [
+            values = [
                     json.dumps(v, ensure_ascii=False)
                     if isinstance(v, (dict, list))
                     else "YES"
@@ -55,7 +54,9 @@ def export_config(cfg):
                     else v
                     for v in row
                 ]
-            )
+            if any(isinstance(value, str) and len(value) > 32767 for value in values):
+                raise ValueError(f'{name}: a setting exceeds the Excel cell limit; use configuration JSON export.')
+            s.append(values)
         for c in s[1]:
             c.font = Font(color="FFFFFF", bold=True)
             c.fill = PatternFill("solid", fgColor="17344A")
@@ -119,7 +120,7 @@ def export_config(cfg):
                 "suffix_aliases",
                 "sop_message_templates",
                 "forex_sop_policy",
-            ]
+            ] + (['report_definitions'] if 'report_definitions' in cfg else [])
         ],
     )
     family_rows=[]
@@ -169,6 +170,7 @@ def export_config(cfg):
             "system_prompt",
             "policy_json",
             "system_instruction",
+            "field_checks_json",
         ],
         [
             [
@@ -179,6 +181,7 @@ def export_config(cfg):
                 p["system_prompt"],
                 p["policy"],
                 p.get("system_instruction", ""),
+                p.get("field_checks"),
             ]
             for name, p in cfg["profiles"].items()
         ],
@@ -377,6 +380,7 @@ def import_config(data, base):
                 "minimum_confidence"
             )
     general_keys = {
+        "report_definitions",
         "document_families",
         "provider",
         "maker_checker",
@@ -400,7 +404,7 @@ def import_config(data, base):
             fail("General Settings", n, 1, "Unknown or duplicate setting.")
             continue
         general_seen.add(key)
-        if key in {"document_families", "name_directory", "customer_aliases", "suffix_aliases", "sop_message_templates", "forex_sop_policy"}:
+        if key in {"report_definitions", "document_families", "name_directory", "customer_aliases", "suffix_aliases", "sop_message_templates", "forex_sop_policy"}:
             cfg[key] = parse("General Settings", n, r, "value", {})
         elif key == "grouping_prefixes":
             cfg[key] = parse("General Settings", n, r, "value", [])
@@ -414,7 +418,7 @@ def import_config(data, base):
             cfg[key] = r["value"]
         else:
             cfg[key] = r["value"]
-    required_general = general_keys - {"document_families", "customer_aliases", "sop_review_bypass", "sop_review_bypass_result",
+    required_general = general_keys - {"report_definitions", "document_families", "customer_aliases", "sop_review_bypass", "sop_review_bypass_result",
                                         "sequential_page_extraction", "cross_page_reference",
                                         "grouping_prefixes", "suffix_aliases", "sop_message_templates", "forex_sop_policy"}
     if general_seen - {"customer_aliases"} != general_keys - {"customer_aliases"}:
@@ -431,11 +435,11 @@ def import_config(data, base):
         "system_prompt",
         "policy_json",
     ]
-    if (
-        "Document Profiles" in w
-        and w["Document Profiles"].cell(1, 7).value == "system_instruction"
-    ):
-        profile_headers.append("system_instruction")
+    if 'Document Profiles' in w:
+        for column in range(7, w['Document Profiles'].max_column + 1):
+            header = w['Document Profiles'].cell(1, column).value
+            if header in {'system_instruction', 'field_checks_json'} and header not in profile_headers:
+                profile_headers.append(header)
     for n, r in rows("Document Profiles", profile_headers):
         name = r["document_type"]
         if name not in cfg["profiles"] or name in seen:
@@ -444,6 +448,8 @@ def import_config(data, base):
         seen.add(name)
         if "system_instruction" in r:
             cfg["profiles"][name]["system_instruction"] = r["system_instruction"]
+        if 'field_checks_json' in r and r['field_checks_json'] is not None:
+            cfg['profiles'][name]['field_checks'] = parse('Document Profiles', n, r, 'field_checks_json', {})
         cfg["profiles"][name].update(
             label=r["label"],
             suffixes=parse("Document Profiles", n, r, "suffixes_json", []),

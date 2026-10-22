@@ -514,7 +514,10 @@ def configuration_export(user=Depends(ADMIN)):
 
     with SessionLocal() as db:
         cfg = latest_config(db, user.org)
-        data = export_config({**defaults(), **cfg.payload})
+        try:
+            data = export_config({**defaults(), **cfg.payload})
+        except ValueError as exc:
+            raise HTTPException(422, str(exc)) from exc
     return Response(
         data,
         media_type=MIME,

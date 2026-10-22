@@ -19,3 +19,5 @@ C17,provider state persistence,backend/app/extraction/state_repository.py,implem
 C18,provider connector configuration,backend/app/extraction/connector_contracts.py,implemented_tested,typed shared repository and metadata-derived controls
 C19,reference dataset registry,backend/app/configuration/datasets.py,implemented_tested,immutable org-scoped IDs and explicit rollout
 C20,report source bindings,backend/app/configuration/reporting.py,implemented_tested,typed versioned report projections and draft editor
+C21,configured field validation,backend/app/configuration/field_checks.py,implemented_tested,explicit data outcomes across providers without weakening native results
+C22,Excel settings truncation,backend/app/config_workbook.py,fixed_tested,reject oversized cell settings with JSON export guidance

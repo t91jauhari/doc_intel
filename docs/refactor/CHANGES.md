@@ -311,3 +311,25 @@ Files:
 
 Changes: versioned compatible report binding defaults; typed source/document/context/customer/literal mappings and timezone; schema/context existence validation; explicit customer fallback; immutable configuration entries for report_definitions. Forex/account-opening renderers consume pure projections, retaining layout/scoring. Family report settings exposes draft editor and validates before publication.
 Verification:14 initial report checks; extended run31 passed/1 fixture failure (Python tuple vs stored JSON array), fixture canonicalized; final25 report/storage checks passed8.96s. TypeScript passed.449 saved report rows identical to previous implementation in read-only comparison. Browser edited UTC draft, Test settings succeeded0 documents; discarded draft, publishedv7 unchanged. Screenshot outputs/refactor-step25/report-mappings.png. Preview stopped/cache cleaned; temporary baseline helper removed. No live/model calls. Other report presentation/category defaults and full acceptance remain pending.
+
+## Step26 — explicit provider-independent field validation
+Commit message: Apply configurable data checks without weakening native validation.
+Files:
+- backend/app/configuration/field_checks.py
+- backend/app/domain.py
+- backend/app/provider.py
+- backend/app/spider_result.py
+- backend/app/config_workbook.py
+- backend/app/main.py
+- backend/tests/test_field_checks.py
+- frontend/components/field-checks.tsx
+- frontend/app/settings/page.tsx
+- frontend/lib/types.ts
+- docs/refactor/CHANGES.md
+- docs/refactor/CHECKPOINT.md
+- docs/refactor/VERIFICATION.md
+- docs/refactor/PLAN.md
+- docs/refactor/INVENTORY.csv
+
+Changes: typed text/identifier/date/number/choice/boolean field policies in immutable profiles; exact digit counts, explicit numeric separators/currency, required/optional and incomplete-observation handling. Visual-region fields excluded. Spider configured fields receive real check outcomes while unchecked fields/native normalization remain SKIPPED. Native/custom providers use same additional checks and cannot weaken pre-existing failure/uncertainty. Values remain unchanged. Profile UI configures draft checks; configuration workbook imports/exports field checks and report definitions, preserves old templates, rejects oversized Excel cells instead of truncating; API returns clear422.
+Verification:32 initial field/Spider checks passed141.33s;39 native/custom/reread checks passed156.95s;69 field/workbook/Forex/account tests passed100.26s; final25 field tests passed3.53s including direct SOP points1/0. TypeScript passed. Browser NIK16-digit draft Test settings succeeded0 documents; discarded/publishedv7 unchanged. Screenshot outputs/refactor-step26/field-validation.png. Preview/cache cleaned, no model/live calls. Existing pinned profiles have not been silently assigned new checks: explicit policy proposal/import and acceptance still required before cutover.

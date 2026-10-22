@@ -1,6 +1,6 @@
 # Refactor plan and current position
 
-Current position: **M1 completed in isolation (Step 15); Step23 provider connectors verified; Step24 dataset registry verified; Step25 report bindings verified; remaining native validation/SOP contracts next**.
+Current position: **M1 completed in isolation (Step 15); Step23 provider connectors verified; Step24 dataset registry verified; Step26 field validation verified; explicit policy migration and remaining SOP contracts next**.
 
 No live cutover. Status refers to isolated implementation, not activation.
 
@@ -14,7 +14,7 @@ No live cutover. Status refers to isolated implementation, not activation.
 | R1 Grouping and SOP | Partial | Identity, comparisons, applicability, context registry; custom profiles and editors | Complex/visual policies; reserved native compatibility catalog |
 | R2 Services/providers | Partial | Preview/publication; extraction service and adapters | Remaining API services and provider internals; final browser acceptance |
 | R3 Datasets/reports | Partial | Immutable dataset registry, explicit import, 67 saved-case parity checks | Comparison policy configuration and remaining report presentation defaults |
-| V1 Final verification | Partial | Unit/API/browser checks, 54 cases/7049 findings | Full suite, extraction/dataset acceptance, native validation outcome issue |
+| V1 Final verification | Partial | Unit/API/browser checks, 54 cases/7049 findings | Full suite, extraction/dataset acceptance, existing profile field-policy migration and native acceptance |
 | C1 Cutover/rollback | Pending | Original app unchanged | Backups, activation, monitoring and rollback |
 
 CHANGES.md records files and commits; VERIFICATION.md records checks;
