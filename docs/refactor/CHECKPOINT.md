@@ -32,3 +32,19 @@ Verification: 10 focused tests passed. Selected existing regression suite plus f
 Private snapshot: work/refactor/private/configurations.json; never commit or publish. Restored database container stopped again.
 Next: explicit versioned additive migration tested on isolated PostgreSQL, typed identity/rule policy contracts and read-only shadow evaluation. Public export sanitization remains unfinished; no push.
 Important: no background process remains after these completed checks. Resume from this checkpoint, not from an assumption that the full refactor is complete.
+
+## Step 2 — explicit PostgreSQL migration (2026-10-22)
+Implemented and tested on isolated restored database only; live schema/runtime unchanged.
+Created:
+- backend/app/configuration/migrate.py — target guard, transaction, advisory lock, checksum journal.
+- backend/app/configuration/migrations/0001_publications.sql — additive publication/entry tables.
+- backend/app/configuration/verify_postgres.py — repeated import and source-row integrity checks.
+- backend/tests/test_configuration_migrations.py — PostgreSQL wrong-target, transactional rollback and changed-checksum tests.
+Modified:
+- backend/app/configuration/README.md — migration operations and limitations.
+- docs/refactor/CHECKPOINT.md — recovery state.
+- docs/refactor/MIGRATIONS.md — isolated execution record.
+- docs/refactor/VERIFICATION.md — test evidence.
+- docs/refactor/CHANGES.md — per-step file inventory (created this step).
+Verification: 13 focused tests passed; tightened exception assertion rerun 3 passed. 40 historical revisions imported/reconstructed twice; zero differences; original configurations/cases unchanged. Live health ok. Isolated database stopped. No push/activation.
+Next: typed configurable identity bindings and generic rule policy contracts; test config-controlled behavior before replacing grouping paths.
