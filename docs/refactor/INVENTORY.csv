@@ -15,3 +15,4 @@ C13,pinned configuration reads,backend/app/configuration/repository.py,verificat
 C14,case context registry,backend/app/configuration/contexts.py,implemented_tested,versioned typed definitions and shared UI API validation
 C15,dynamic profile registration,backend/app/configuration/profiles.py,implemented_tested,explicit schema adapter with saved profile definitions
 C16,provider dispatch boundary,backend/app/extraction/service.py,implemented_tested,typed service and code-owned adapters
+C17,provider state persistence,backend/app/extraction/state_repository.py,implemented_tested,explicit durable transactions and serialized receipt merges

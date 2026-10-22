@@ -369,8 +369,8 @@ def validate_config(payload):
     if len(payload["profiles"]) > 200:
         raise ValueError("Configure at most 200 document profiles.")
     for name, p in payload["profiles"].items():
-        if not re.fullmatch(r"[a-z][a-z0-9_]{0,79}", name) or not isinstance(p, dict):
-            raise ValueError("Profile IDs must use lowercase identifiers and object definitions.")
+        if not re.fullmatch(r"[a-z][a-z0-9_]{0,49}", name) or not isinstance(p, dict):
+            raise ValueError("Profile IDs must use lowercase identifiers of at most 50 characters and object definitions.")
         if not isinstance(p.get("label"), str) or not 1 <= len(p["label"].strip()) <= 200:
             raise ValueError(f"{name}: a display label is required.")
         native = name in base["profiles"]

@@ -20,16 +20,13 @@ from .extraction.contracts import ProcessingIssue
 
 
 def checkpoint(doc_id, status=None, **state):
-    with SessionLocal.begin() as db:
-        doc = db.get(Document, doc_id)
-        doc.provider_state = {**doc.provider_state, **state}
-        if status:
-            doc.status = status
+    from .extraction.state_repository import SqlProviderState
+    SqlProviderState(SessionLocal).checkpoint(doc_id, status, **state)
 
 
 def state_of(doc_id):
-    with SessionLocal() as db:
-        return dict(db.get(Document, doc_id).provider_state)
+    from .extraction.state_repository import SqlProviderState
+    return SqlProviderState(SessionLocal).read(doc_id)
 
 
 def fixture_response(doc_type):

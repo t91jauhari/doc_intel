@@ -217,3 +217,22 @@ Files:
 
 Behavior: typed request/result and adapter protocol, explicit code-owned registry, deep-copied pinned configuration with canonical fingerprint, fail-closed unsupported providers/malformed results. Legacy run_provider facade delegates through application service. Existing Llama pipeline and fixture implementation retain checkpoints, classification and reuse behavior. Service adds no retries or hidden paid calls. ProcessingIssue remains import-compatible. Canonical hashing moved to framework-independent codec with old store import preserved.
 Verification:47 service/provider/field-recovery/config-store tests passed204.05s;3 focused Llama classification/parse-reuse/uncertainty tests passed33.77s. All providers mocked/fixture, no paid model requests. No live change, new images or large artifacts. State/connector persistence and remaining provider internals still need separation.
+
+## Step22 — explicit durable provider-state repository
+Commit message: Serialize durable provider checkpoints through a state repository.
+Files:
+- backend/app/extraction/state_repository.py (created)
+- backend/tests/test_provider_state_repository.py (created)
+- backend/app/extraction/contracts.py
+- backend/app/provider.py
+- backend/app/domain.py
+- backend/tests/test_custom_profiles.py
+- frontend/components/profile-create.tsx
+- docs/refactor/CHANGES.md
+- docs/refactor/CHECKPOINT.md
+- docs/refactor/VERIFICATION.md
+- docs/refactor/INVENTORY.csv
+- docs/refactor/PLAN.md
+
+Changes: ProviderStateStore protocol and SQL implementation; checkpoint transactions explicitly commit before external effects; FOR UPDATE serializes state merges; nested state copied; missing-document and invalid-serialization paths fail without losing prior receipts. Legacy helper APIs delegate to repository. Custom profile ID limit aligned to Document.doc_type VARCHAR(50), including UI guard.
+Verification:10 repository/custom-profile tests passed23.70s including real PostgreSQL blocked-writer merge;8 recovery/native reuse tests passed82.67s; TypeScript passed. Temporary PostgreSQL schema removed; no public data modified. --rm runners; isolated database stopped. No model calls/images/large artifacts. Atomic submission claiming across concurrent jobs remains a distinct responsibility; this change guarantees merge integrity, not a full lifecycle rewrite.

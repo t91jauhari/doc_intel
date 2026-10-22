@@ -57,6 +57,13 @@ def test_custom_profiles_reject_ignored_policy_and_nonfinite_values():
     validate_shape(7, {"type": "integer"})
 
 
+def test_custom_profile_id_matches_document_storage_length():
+    cfg = configured()
+    cfg["profiles"]["c" * 51] = copy.deepcopy(cfg["profiles"]["custom_note"])
+    with pytest.raises(ValueError, match="at most 50"):
+        validate_config(cfg)
+
+
 def test_schema_projection_checks_types_missing_values_and_unexpected_keys():
     cfg = configured()
     doc = SimpleNamespace(doc_type="custom_note", overrides={})
