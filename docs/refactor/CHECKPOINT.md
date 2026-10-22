@@ -18,3 +18,9 @@ Restore rehearsal: passed pg_restore --exit-on-error in network-isolated sqe-ref
 5. Preserve all original Config revisions/case pins; test semantic import/compile round trip before runtime replacement.
 
 Update this file after each verified unit. Distinguish implemented, tested, migrated and activated. No live schema/data changes have been made.
+
+## Repository checkpoint
+Remote origin: https://github.com/t91jauhari/sqe-bic-docplatform.git
+Remote inspection: reachable; ls-remote returned no refs (appears empty).
+No push performed. Local baseline history contains customer datasets, PDFs, workbook and screenshots. Do not push this history to a public remote. Prepare a clean publication history excluding customer artifacts and replace required fixtures with synthetic equivalents. Scan source literals and operational scripts too; excluding files alone is insufficient.
+Next action: public-export inventory and synthetic dataset compatibility, then isolated regression baseline and configuration contracts. GitHub CLI unavailable; Git remote reads work. Write authentication remains unverified.
