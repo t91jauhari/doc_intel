@@ -116,6 +116,9 @@ async def lifespan(_):
 
 
 app = FastAPI(title="SQE Document Automation API", version="0.2.0", lifespan=lifespan)
+from .configuration.routes import router as configuration_upgrade_router
+
+app.include_router(configuration_upgrade_router)
 
 
 @app.exception_handler(S3Error)

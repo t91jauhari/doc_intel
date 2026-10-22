@@ -32,10 +32,16 @@ export const inFamily = (type: string, family: DocumentFamily, cfg?: Configurati
   (familyCatalog(cfg)[family]?.profiles || []).includes(type as ProfileName);
 // Same discriminator as backend transaction_flows.scoped_config.
 export const ruleInFamily = (
-  rule: { source_ref?: string; id?: string },
+  rule: { source_ref?: string; id?: string; families?: string[] },
   family: DocumentFamily,
   cfg?: Configuration | null,
 ) =>
+  rule.families ? rule.families.includes(family) :
+  cfg?.rule_scope ? !!rule.id && !!cfg.rule_scope.family_rule_ids[family]?.includes(rule.id) :
   family === "forex" || family === "account_opening"
     ? (rule.source_ref || "").startsWith("AO:") === (family === "account_opening")
     : !!rule.id && !!familyCatalog(cfg)[family]?.sop_rule_ids?.includes(rule.id);
+
+export const selectableRules = (cfg: Configuration) => [
+  ...(cfg.sop_rules || []), ...(cfg.generic_sop_rules || []),
+];

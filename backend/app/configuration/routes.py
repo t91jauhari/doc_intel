@@ -1,0 +1,41 @@
+"""Read-only upgrade preview endpoints; publication remains a separate action."""
+from fastapi import APIRouter, Depends, HTTPException
+from pydantic import BaseModel, ConfigDict, Field
+
+from app.db import SessionLocal
+from app.domain import latest_config
+from app.security import require_roles
+from .service import StaleConfiguration, comparison_candidates, preview_comparison_upgrade
+
+router = APIRouter(prefix="/api/config/upgrades/comparisons", tags=["Configuration upgrades"])
+administrator = require_roles("bank_admin")
+
+
+class PreviewInput(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    expected_version: int = Field(ge=1)
+    rule_ids: list[str] = Field(min_length=1, max_length=1000)
+    payload: dict | None = None
+
+
+@router.get("")
+def candidates(user=Depends(administrator)):
+    with SessionLocal() as session:
+        current = latest_config(session, user.org)
+        return {"version": current.version, "candidates": comparison_candidates(current.payload)}
+
+
+@router.post("/preview")
+def preview(data: PreviewInput, user=Depends(administrator)):
+    with SessionLocal() as session:
+        current = latest_config(session, user.org)
+        try:
+            return preview_comparison_upgrade(
+                current_version=current.version, expected_version=data.expected_version,
+                payload=current.payload if data.payload is None else data.payload,
+                selected_ids=data.rule_ids,
+            )
+        except StaleConfiguration as exc:
+            raise HTTPException(409, str(exc)) from exc
+        except (ValueError, TypeError, KeyError) as exc:
+            raise HTTPException(422, str(exc)) from exc

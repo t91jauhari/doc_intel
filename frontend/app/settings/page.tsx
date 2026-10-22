@@ -7,6 +7,7 @@ import {
   type DocumentFamily,
 } from "@/lib/document-family";
 import { ForexSOPPolicyEditor } from "@/components/forex-sop-policy";
+import { ComparisonUpgrade } from "@/components/comparison-upgrade";
 import { ProfileVersionComparison } from "@/components/profile-version-comparison";
 import { SpiderConnectorForm } from "@/components/spider-connector";
 import { TransactionFlows } from "@/components/transaction-flows";
@@ -190,6 +191,12 @@ export default function Settings() {
     };
   }, [dirty]);
   const update = (next: Configuration) => {
+    if (next.rule_order) {
+      const ids = [...(next.sop_rules || []), ...(next.generic_sop_rules || [])].map(rule => rule.id);
+      const known = new Set(ids);
+      const ordered = next.rule_order.filter(id => known.has(id));
+      next = { ...next, rule_order: [...ordered, ...ids.filter(id => !ordered.includes(id))] };
+    }
     if (next.workflow && draft) {
       if (next.parse_tier !== draft.parse_tier)
         next.workflow = next.workflow.map((s) =>
@@ -1111,6 +1118,7 @@ export default function Settings() {
               )}
               {tab === "rules" && (
                 <>
+                  <ComparisonUpgrade configuration={draft} version={version} editable={canEdit} onApply={update} family={family} />
                   {family === "forex" && (
                     <ForexSOPPolicyEditor
                       draft={draft}

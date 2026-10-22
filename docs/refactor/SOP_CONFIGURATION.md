@@ -56,7 +56,9 @@ eligible cases and 5,623 ordered findings with no state or score differences;
 
 New scope policies persist in dedicated
 publication-scoped family and membership tables through migration 0003. Empty
-family selections and rule order survive reconstruction. The editor is pending.
+family selections and rule order survive reconstruction. The settings upgrade
+preview and basic comparison editor are now implemented in isolation; advanced
+field-binding and condition editing remain pending. See UPGRADE_PREVIEW.md.
 
 The read-only `shadow_comparisons` command loaded 67 restored cases and verified
 61 decisive plain-text match outcomes through the integrated runtime with zero differences in status, eligibility and category. It explicitly skipped

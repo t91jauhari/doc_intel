@@ -4,6 +4,7 @@ import { Plus, Copy, Archive, RotateCcw, Layers } from "lucide-react";
 import {
   inFamily,
   ruleInFamily,
+  selectableRules,
   familyLabels,
   familyCatalog,
   type DocumentFamily,
@@ -214,7 +215,7 @@ export function TransactionFlows({
                         flow.sop_rule_ids == null
                           ? null
                           : flow.sop_rule_ids.filter((ruleId) =>
-                              (draft.sop_rules || []).some(
+                              selectableRules(draft).some(
                                 (r) => r.id === ruleId && ruleInFamily(r, next, draft),
                               ),
                             ),
@@ -308,7 +309,7 @@ export function TransactionFlows({
                   <summary>
                     {flow.sop_rule_ids.length} selected checks · edit selection
                   </summary>
-                  {(draft.sop_rules || [])
+                  {selectableRules(draft)
                     .filter((rule) => ruleInFamily(rule, family, draft))
                     .map((rule) => (
                       <label className="checkbox-label compact" key={rule.id}>

@@ -73,6 +73,15 @@ export type SOPPackages = {
   };
 };
 export type Configuration = {
+  generic_sop_rules?: {
+    id: string; label: string; enabled?: boolean; families: string[];
+    report_category: string; source_ref?: string;
+    policy: { type?: "compare"; left: string; right: string; normalization?: "literal" | "casefold_whitespace"; pattern?: string | null };
+    schema_paths?: Record<string, string>;
+    applicability?: { context_key: string; equals: string } | null;
+  }[];
+  rule_order?: string[];
+  rule_scope?: { family_rule_ids: Record<string, string[]> };
   forex_sop_policy?: ForexSOPPolicy;
   document_families?: Record<string, DocumentFamilyConfig>;
   profile_variants?: Partial<
