@@ -12,6 +12,7 @@ load_dotenv(ROOT / ".env")
 
 @dataclass(frozen=True)
 class Settings:
+    dataset_read_mode: str = os.getenv("DATASET_READ_MODE", "bundled")
     configuration_storage_mode: str = os.getenv("CONFIGURATION_STORAGE_MODE", "legacy")
     configuration_read_mode: str = os.getenv("CONFIGURATION_READ_MODE", "legacy")
     environment: str = os.getenv("APP_ENV", "development")
@@ -42,6 +43,8 @@ class Settings:
 
 
 settings = Settings()
+if settings.dataset_read_mode not in {"bundled", "verify", "registry"}:
+    raise RuntimeError("DATASET_READ_MODE must be bundled, verify or registry.")
 if settings.configuration_storage_mode not in {"legacy", "dual"}:
     raise RuntimeError("CONFIGURATION_STORAGE_MODE must be legacy or dual.")
 if settings.configuration_read_mode not in {"legacy", "verify", "normalized"}:

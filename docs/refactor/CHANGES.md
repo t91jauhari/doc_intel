@@ -258,3 +258,32 @@ Files:
 
 Changes: shared organization-scoped connector repository; encrypted credentials excluded from responses/repr; typed URL/key/numeric contracts; versioned compatible defaults; key-only updates merge submitted options instead of resetting model/scope; unknown legacy storage options preserved but not exposed or executed. Invalid saved options fail closed for extraction and show a repair warning in settings. Normal/selected-field providers use the same options, including timeouts and image budgets. Advanced UI controls derive limits from backend metadata.
 Verification:48 connector/Spider/prompt-delivery/field-reprocessing tests passed373.81s; TypeScript passed; both restored connector rows validated without reading credentials. No real model calls or live changes. Browser validation of new advanced controls remains part of final UI acceptance.
+
+## Step24 — immutable dataset registry and explicit reference resolution
+Commit message: Register immutable reference datasets and reject unknown bindings.
+Files:
+- backend/app/configuration/datasets.py
+- backend/app/configuration/dataset_sources.py
+- backend/app/configuration/dataset_routes.py
+- backend/app/configuration/import_datasets.py
+- backend/app/configuration/migrations/0006_reference_datasets.sql
+- backend/app/configuration/publication.py
+- backend/app/dataset_comparison.py
+- backend/app/document_families.py
+- backend/app/main.py
+- backend/app/settings.py
+- backend/app/transaction_flows.py
+- backend/tests/test_configuration_migrations.py
+- backend/tests/test_dataset_registry.py
+- frontend/components/dataset-select.tsx
+- frontend/components/document-families.tsx
+- frontend/components/transaction-flows.tsx
+- docs/refactor/CHANGES.md
+- docs/refactor/CHECKPOINT.md
+- docs/refactor/VERIFICATION.md
+- docs/refactor/MIGRATIONS.md
+- docs/refactor/INVENTORY.csv
+- docs/refactor/PLAN.md
+
+Changes: typed private reference import, organization-scoped immutable dataset IDs/content hashes, migration0006 and PostgreSQL mutation guards; explicit baseline importer with expected-database check; bundled/verify/registry rollout; lazy compatibility sources rather than module-load private workbook data. Unknown dataset IDs fail without Forex fallback. Interactive publication resolves dataset bindings. Admin registry imports audited by ID/digest; catalog omits values. Family/flow dataset selectors use server catalog.
+Verification:22 dataset/API/migration tests passed17.73s; TypeScript passed.40 configuration histories unchanged after migration; baseline2 datasets imported to isolated DB.67 case comparison results exactly equal between bundled and registry modes in read-only rehearsal. Browser selector shows real catalog; Step23 advanced control saved/reloaded/restored in synthetic preview, publishedv7 unchanged. Screenshot outputs/refactor-step24/connector-controls.png. Preview stopped and cache cleaned. No live writes or external model calls. Registry activation/report read models/comparison policy configuration remain pending.

@@ -102,6 +102,14 @@ from .configuration.routes import router as configuration_upgrade_router, compat
 
 app.include_router(configuration_upgrade_router)
 app.include_router(compatibility_router)
+from .configuration.dataset_routes import router as dataset_registry_router
+from .configuration.datasets import DatasetIntegrityError
+app.include_router(dataset_registry_router)
+
+
+@app.exception_handler(DatasetIntegrityError)
+async def dataset_integrity_failure(request, exc):
+    return JSONResponse(status_code=409, content={"detail": str(exc)})
 
 
 @app.exception_handler(S3Error)
@@ -1192,10 +1200,12 @@ class ComparisonInput(BaseModel):
 
 @app.get("/api/dataset-sample")
 def dataset_sample(case_id: str = "", user=Depends(current_user)):
-    from .dataset_comparison import DATASET, dataset_for_case
+    from .dataset_comparison import dataset_for_case
+    from .configuration.dataset_sources import resolve_dataset
 
     if not case_id:
-        return DATASET
+        with SessionLocal() as db:
+            return resolve_dataset(db, user.org, "forex-sample-v1")
     with SessionLocal() as db:
         case = authorized(db, Case, case_id, user)
         return dataset_for_case(db, case)

@@ -1,4 +1,5 @@
 "use client";
+import { DatasetSelect } from "./dataset-select";
 import { useEffect, useState } from "react";
 import { Plus, Copy, Archive, RotateCcw, Layers } from "lucide-react";
 import {
@@ -236,18 +237,9 @@ export function TransactionFlows({
                 <summary>Advanced: reference dataset and report layout</summary>
                 <label>
                   Reference dataset
-                  <select
-                    value={flow.dataset_id===null?"":flow.dataset_id || "forex-sample-v1"}
-                    onChange={(e) =>
-                      save(id, { ...flow, dataset_id: e.target.value || null })
-                    }
-                  >
-                    <option value="">No reference dataset</option>
-                    <option value="forex-sample-v1">Forex sample</option>
-                    <option value="account-opening-sample-v1">
-                      Account Opening workbook
-                    </option>
-                  </select>
+                  <DatasetSelect value={flow.dataset_id===null?"":flow.dataset_id || "forex-sample-v1"}
+                    onChange={value => save(id, { ...flow, dataset_id: value || null })}/>
+
                 </label>
                 <label>
                   Report layout

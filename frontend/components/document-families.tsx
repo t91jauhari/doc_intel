@@ -1,4 +1,5 @@
 "use client";
+import {DatasetSelect} from "./dataset-select";
 import {useState} from "react";
 import {Plus, Layers, ArrowRight} from "lucide-react";
 import {Modal} from "./ui";
@@ -46,7 +47,7 @@ export function DocumentFamilies({draft,update,family,select,editable,navigate}:
    <details><summary>{(f.sop_rule_ids||[]).length} checks selected · edit selection</summary><div style={{maxHeight:360,overflowY:"auto"}}>{(draft.sop_rules||[]).filter(r=>`${r.id} ${r.label}`.toLowerCase().includes(query.toLowerCase())).map(r=><label className="checkbox-label compact" key={r.id}><input type="checkbox" checked={(f.sop_rule_ids||[]).includes(r.id)} onChange={e=>patch({sop_rule_ids:e.target.checked?[...(f.sop_rule_ids||[]),r.id]:(f.sop_rule_ids||[]).filter(x=>x!==r.id)})}/>{r.id} · {r.label}</label>)}</div></details>
    <button className="secondary" onClick={()=>navigate("rules")}>Create or edit SOP checks <ArrowRight size={15}/></button>
    <h3>Reference dataset & reports</h3><p>Defaults for new flows. Select a reference workbook only when it contains the relevant customer samples.</p>
-   <label>Default reference dataset<select value={f.dataset_id===null?"":f.dataset_id||(family==="account_opening"?"account-opening-sample-v1":"forex-sample-v1")} onChange={e=>patch({dataset_id:e.target.value||null})}><option value="">No reference dataset</option><option value="forex-sample-v1">Forex sample workbook</option><option value="account-opening-sample-v1">Account Opening sample workbook</option></select></label>
+   <label>Default reference dataset<DatasetSelect value={f.dataset_id===null?"":f.dataset_id||(family==="account_opening"?"account-opening-sample-v1":"forex-sample-v1")} onChange={value=>patch({dataset_id:value||null})}/></label>
    <label>Default report layout<select value={f.report_layout||(family==="account_opening"?"account_opening":"forex")} onChange={e=>patch({report_layout:e.target.value})}><option value="forex">Forex Kertas Kerja</option><option value="account_opening">Account Opening Kertas Kerja</option></select></label>
    <details><summary>Default report headings</summary>{["region_name","category","activity","inspection_type","period"].map(key=><label key={key}>{({region_name:"Region",category:"Category",activity:"Activity",inspection_type:"Inspection type",period:"Period"} as Record<string,string>)[key]}<input value={f.report_context?.[key]||""} maxLength={500} onChange={e=>patch({report_context:{...f.report_context,[key]:e.target.value}})}/></label>)}</details>
   </div>}

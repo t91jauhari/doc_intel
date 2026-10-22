@@ -41,12 +41,9 @@ def validate_flows(cfg):
             raise ValueError("Flow descriptions must be at most 2000 characters.")
         if flow.get("document_family", "forex") not in catalog:
             raise ValueError("Unknown document family.")
-        if flow.get("dataset_id") not in {
-            None,
-            "forex-sample-v1",
-            "account-opening-sample-v1",
-        }:
-            raise ValueError("Unknown reference dataset.")
+        dataset_id = flow.get("dataset_id")
+        if dataset_id is not None and (not isinstance(dataset_id, str) or not re.fullmatch(r'[a-z][a-z0-9_-]{0,119}', dataset_id)):
+            raise ValueError("Invalid reference dataset ID.")
         if flow.get("report_layout", "forex") not in {"forex", "account_opening"}:
             raise ValueError("Unknown report layout.")
         context = flow.get("report_context", {})

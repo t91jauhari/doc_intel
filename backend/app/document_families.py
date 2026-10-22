@@ -29,7 +29,8 @@ def validate_families(cfg):
         if not isinstance(required,list) or any(p not in profiles for p in required) or len(required)!=len(set(required)):raise ValueError(f'{key}: default required documents must belong to this family.')
         selected=f.get('sop_rule_ids',[])
         if not isinstance(selected,list) or any(r not in rules for r in selected) or len(selected)!=len(set(selected)):raise ValueError(f'{key}: select distinct existing SOP checks.')
-        if f.get('dataset_id') not in {None,'forex-sample-v1','account-opening-sample-v1'}:raise ValueError(f'{key}: unknown reference dataset.')
+        dataset_id=f.get('dataset_id')
+        if dataset_id is not None and (not isinstance(dataset_id,str) or not re.fullmatch(r'[a-z][a-z0-9_-]{0,119}',dataset_id)):raise ValueError(f'{key}: invalid reference dataset ID.')
         if f.get('report_layout','forex') not in {'forex','account_opening'}:raise ValueError(f'{key}: unknown report layout.')
         for k in ['sequential_page_extraction','cross_page_reference']:
             if k in f and not isinstance(f[k],bool):raise ValueError(f'{key}: {k} must be boolean.')

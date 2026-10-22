@@ -77,6 +77,11 @@ def publish_configuration(session, *, organization, actor, expected_version, pay
     for profile in draft.get("profiles", {}).values():
         profile["system_instruction"] = system_instruction(profile)
     validate_config(draft)
+    from .dataset_sources import resolve_dataset
+    for section in (draft.get('templates', {}), draft.get('document_families', {})):
+        for entry in section.values():
+            if 'dataset_id' in entry:
+                resolve_dataset(session, organization, entry['dataset_id'])
     previous = locked_latest_config(session, organization)
     if previous.version != expected_version:
         raise StaleConfiguration("Configuration changed. Reload before publishing.")

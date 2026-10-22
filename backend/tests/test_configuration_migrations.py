@@ -41,6 +41,22 @@ def test_wrong_database_rejected(isolated_engine):
         migrate.apply_migrations(isolated_engine, expected_database="wrong_database")
 
 
+def test_reference_dataset_immutability_in_postgres(isolated_engine):
+    from sqlalchemy.exc import DBAPIError
+    from sqlalchemy.orm import Session
+    from app.configuration.datasets import register_dataset, read_dataset
+    migrate.apply_migrations(isolated_engine, expected_database='sqe_refactor')
+    payload = {'id': 'synthetic-v1', 'source_name': 'Synthetic', 'sha256': '0' * 64, 'samples': [], 'rows': []}
+    with Session(isolated_engine) as session, session.begin():
+        register_dataset(session, 'synthetic', payload)
+    for sql in ['UPDATE reference_datasets SET digest=digest', 'DELETE FROM reference_datasets', 'TRUNCATE reference_datasets']:
+        with pytest.raises(DBAPIError, match='immutable'):
+            with isolated_engine.begin() as connection:
+                connection.execute(text(sql))
+    with Session(isolated_engine) as session:
+        assert read_dataset(session, 'synthetic', 'synthetic-v1') == payload
+
+
 def test_failed_ddl_rolls_back_entire_migration(isolated_engine, tmp_path, monkeypatch):
     (tmp_path / "0001_bad.sql").write_text(
         "CREATE TABLE partial_table(id INTEGER); INVALID SQL;", encoding="utf-8"
@@ -69,7 +85,7 @@ def test_identity_bindings_round_trip_in_postgres(isolated_engine):
     from app.configuration.store import compile_publication, import_publication
 
     assert migrate.apply_migrations(isolated_engine, expected_database="sqe_refactor") == [
-        "0001_publications", "0002_identity_bindings", "0003_family_rule_membership", "0004_revision_immutability", "0005_context_definitions",
+        "0001_publications", "0002_identity_bindings", "0003_family_rule_membership", "0004_revision_immutability", "0005_context_definitions", "0006_reference_datasets",
     ]
     payload = {
         "profiles": {"custom": {"schema": {"type": "object", "properties": {

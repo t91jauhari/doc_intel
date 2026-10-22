@@ -11,30 +11,18 @@ from decimal import Decimal, InvalidOperation
 from difflib import SequenceMatcher
 from pathlib import Path
 
-DATASET = json.loads((Path(__file__).parent / "datasets/forex_sample.json").read_text())
-from .extraction_quality import INVOICE_FIELDS
-for _row in DATASET['rows']:
-    if _row['document_type']=='invoice':
-        for _field,(_label,_) in INVOICE_FIELDS.items():
-            if _row['label']==_label:_row['field']=_field
-    if _row['document_type']=='valas_declaration_1' and _row['label']=='Stamp verification':
-        _row['field']='stamp_verification'
-ACCOUNT_DATASET = json.loads(
-    (Path(__file__).parent / "datasets/account_opening_sample.json").read_text(
-        encoding="utf-8"
-    )
-)
+def __getattr__(name):
+    # Compatibility imports remain lazy. Registry mode never needs these files.
+    if name in {"DATASET", "ACCOUNT_DATASET"}:
+        from .configuration.dataset_sources import bundled_datasets
+        return bundled_datasets()["forex-sample-v1" if name == "DATASET" else "account-opening-sample-v1"]
+    raise AttributeError(name)
 
 
 def dataset_for_case(db, case):
-    from .db import Config
-
+    from .configuration.dataset_sources import resolve_dataset
     flow = get_revision(db, case.config_id).payload["templates"][case.template]
-    if 'dataset_id' in flow and flow['dataset_id'] is None:
-        return {'id':'none','source_name':'No reference dataset','sha256':'','samples':[],'rows':[]}
-    return (
-        ACCOUNT_DATASET if flow.get("dataset_id") == ACCOUNT_DATASET["id"] else DATASET
-    )
+    return resolve_dataset(db, case.org, flow.get("dataset_id", "forex-sample-v1"))
 
 
 MISSING = object()
@@ -331,7 +319,7 @@ def project(doc, field, kind):
 
 
 def compare(case, docs, state, dataset=None):
-    DATASET = dataset or globals()["DATASET"]
+    DATASET = dataset if dataset is not None else __getattr__("DATASET")
     sample = state.get("sample_id")
     if sample not in {s["id"] for s in DATASET["samples"]}:
         return {

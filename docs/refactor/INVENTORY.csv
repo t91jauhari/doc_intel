@@ -16,3 +16,5 @@ C14,case context registry,backend/app/configuration/contexts.py,implemented_test
 C15,dynamic profile registration,backend/app/configuration/profiles.py,implemented_tested,explicit schema adapter with saved profile definitions
 C16,provider dispatch boundary,backend/app/extraction/service.py,implemented_tested,typed service and code-owned adapters
 C17,provider state persistence,backend/app/extraction/state_repository.py,implemented_tested,explicit durable transactions and serialized receipt merges
+C18,provider connector configuration,backend/app/extraction/connector_contracts.py,implemented_tested,typed shared repository and metadata-derived controls
+C19,reference dataset registry,backend/app/configuration/datasets.py,implemented_tested,immutable org-scoped IDs and explicit rollout
