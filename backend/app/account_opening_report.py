@@ -43,10 +43,9 @@ def render(snapshots, legacy):
     for col, label in enumerate(HEADERS, 1):
         sheet.cell(11, col, label)
     for number, snap in enumerate(snapshots, 1):
-        docs = snap["documents"]
+        from .configuration.reporting import project_report
+        projected, timezone = project_report(snap, 'account_opening')
         scores = snap.get("scores", {})
-        form, refs = value_at(docs, "account_opening_form.customer_name")
-        fields = refs[0]["normalized"] if len(refs) == 1 else {}
         remarks = []
         for finding in snap["findings"]:
             if finding["result"] in {"FAIL", "REVIEW", "ERROR"}:
@@ -55,7 +54,7 @@ def render(snapshots, legacy):
                 )
         remarks += ["Required document missing: " + v for v in snap.get("missing", [])]
         # The supplied schema labels this as an existing account, not the new account.
-        if not snap.get("case_context", {}).get("new_account_number"):
+        if not projected['account']:
             remarks.append(
                 "New account number is not a separate field in the supplied extraction specification; provide document-supported report context rather than copying an existing account number."
             )
@@ -67,16 +66,16 @@ def render(snapshots, legacy):
             if scores.get("total") is None
             else "No",
             1,
-            snap["customer"],
-            snap.get("case_context", {}).get("new_account_number") or None,
-            "Account Opening",
-            fields.get("cs_name"),
-            fields.get("supervisor_name"),
-            snap.get("case_context", {}).get("transaction_carrier", "UNKNOWN"),
-            fields.get("transaction_date"),
+            projected['customer'],
+            projected['account'],
+            projected['transaction_type'],
+            projected['inputter'],
+            projected['approver'],
+            projected['carrier'],
+            projected['transaction_date'],
             datetime.fromtimestamp(
                 snap.get("sop_completed_at", snap["generated_at"]),
-                ZoneInfo("Asia/Jakarta"),
+                ZoneInfo(timezone),
             ).strftime("%d-%m-%Y"),
             scores.get("DATA_COMPLETION"),
             scores.get("CUSTOMER_SIGNATURE"),

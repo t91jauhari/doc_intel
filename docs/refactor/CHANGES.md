@@ -287,3 +287,27 @@ Files:
 
 Changes: typed private reference import, organization-scoped immutable dataset IDs/content hashes, migration0006 and PostgreSQL mutation guards; explicit baseline importer with expected-database check; bundled/verify/registry rollout; lazy compatibility sources rather than module-load private workbook data. Unknown dataset IDs fail without Forex fallback. Interactive publication resolves dataset bindings. Admin registry imports audited by ID/digest; catalog omits values. Family/flow dataset selectors use server catalog.
 Verification:22 dataset/API/migration tests passed17.73s; TypeScript passed.40 configuration histories unchanged after migration; baseline2 datasets imported to isolated DB.67 case comparison results exactly equal between bundled and registry modes in read-only rehearsal. Browser selector shows real catalog; Step23 advanced control saved/reloaded/restored in synthetic preview, publishedv7 unchanged. Screenshot outputs/refactor-step24/connector-controls.png. Preview stopped and cache cleaned. No live writes or external model calls. Registry activation/report read models/comparison policy configuration remain pending.
+
+## Step25 — typed report read projections and mapping editor
+Commit message: Configure report data sources through versioned bindings.
+Files:
+- backend/app/config_data/report_bindings_v1.json
+- backend/app/configuration/reporting.py
+- backend/app/configuration/report_routes.py
+- backend/app/configuration/store.py
+- backend/app/domain.py
+- backend/app/main.py
+- backend/app/kertas_kerja.py
+- backend/app/account_opening_report.py
+- backend/tests/test_report_bindings.py
+- frontend/components/report-bindings.tsx
+- frontend/components/document-families.tsx
+- frontend/lib/types.ts
+- docs/refactor/CHANGES.md
+- docs/refactor/CHECKPOINT.md
+- docs/refactor/VERIFICATION.md
+- docs/refactor/PLAN.md
+- docs/refactor/INVENTORY.csv
+
+Changes: versioned compatible report binding defaults; typed source/document/context/customer/literal mappings and timezone; schema/context existence validation; explicit customer fallback; immutable configuration entries for report_definitions. Forex/account-opening renderers consume pure projections, retaining layout/scoring. Family report settings exposes draft editor and validates before publication.
+Verification:14 initial report checks; extended run31 passed/1 fixture failure (Python tuple vs stored JSON array), fixture canonicalized; final25 report/storage checks passed8.96s. TypeScript passed.449 saved report rows identical to previous implementation in read-only comparison. Browser edited UTC draft, Test settings succeeded0 documents; discarded draft, publishedv7 unchanged. Screenshot outputs/refactor-step25/report-mappings.png. Preview stopped/cache cleaned; temporary baseline helper removed. No live/model calls. Other report presentation/category defaults and full acceptance remain pending.

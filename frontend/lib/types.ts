@@ -70,6 +70,10 @@ export type ContextDefinition = {
   max_length?: number;
 };
 export type Configuration = {
+  report_definitions?: Record<string, {timezone: string; bindings: Record<string, {
+    source: "document" | "context" | "customer" | "literal"; path?: string | null;
+    default?: string | null; fallback_customer?: boolean;
+  }>}>;
   context_definitions?: Record<string, ContextDefinition>;
   generic_sop_rules?: {
     id: string; label: string; enabled?: boolean; families: string[];

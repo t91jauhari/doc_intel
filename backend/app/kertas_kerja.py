@@ -56,12 +56,9 @@ def remarks(snapshot):
 
 
 def row(snapshot, n):
-    docs = snapshot["documents"]
-    ctx = snapshot.get("case_context", {})
+    from .configuration.reporting import project_report
+    projected, timezone = project_report(snapshot, 'forex')
     scores = snapshot.get("scores", {})
-
-    def get(path):
-        return value_at(docs, path)[0]
 
     results = [f["result"] for f in snapshot["findings"] if f.get("eligible")]
     finding = (
@@ -76,16 +73,16 @@ def row(snapshot, n):
         n,
         finding,
         1,
-        get("application.remitter.name") or snapshot["customer"],
-        get("application.remitter_account_number"),
-        get("application.transaction_type"),
-        ctx.get("transaction_inputter"),
-        ctx.get("transaction_approver"),
-        ctx.get("transaction_carrier", "UNKNOWN"),
-        get("application.transaction_date"),
+        projected['customer'],
+        projected['account'],
+        projected['transaction_type'],
+        projected['inputter'],
+        projected['approver'],
+        projected['carrier'],
+        projected['transaction_date'],
         datetime.fromtimestamp(
             snapshot.get("sop_completed_at", snapshot["generated_at"]),
-            ZoneInfo("Asia/Jakarta"),
+            ZoneInfo(timezone),
         ).strftime("%d-%m-%Y"),
         scores.get(CATEGORIES[0]),
         scores.get(CATEGORIES[1]),

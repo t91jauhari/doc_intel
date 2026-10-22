@@ -1,4 +1,5 @@
 "use client";
+import {ReportBindings} from "./report-bindings";
 import {DatasetSelect} from "./dataset-select";
 import {useState} from "react";
 import {Plus, Layers, ArrowRight} from "lucide-react";
@@ -49,6 +50,7 @@ export function DocumentFamilies({draft,update,family,select,editable,navigate}:
    <h3>Reference dataset & reports</h3><p>Defaults for new flows. Select a reference workbook only when it contains the relevant customer samples.</p>
    <label>Default reference dataset<DatasetSelect value={f.dataset_id===null?"":f.dataset_id||(family==="account_opening"?"account-opening-sample-v1":"forex-sample-v1")} onChange={value=>patch({dataset_id:value||null})}/></label>
    <label>Default report layout<select value={f.report_layout||(family==="account_opening"?"account_opening":"forex")} onChange={e=>patch({report_layout:e.target.value})}><option value="forex">Forex Kertas Kerja</option><option value="account_opening">Account Opening Kertas Kerja</option></select></label>
+   <ReportBindings draft={draft} update={update} layout={f.report_layout||(family==="account_opening"?"account_opening":"forex")}/>
    <details><summary>Default report headings</summary>{["region_name","category","activity","inspection_type","period"].map(key=><label key={key}>{({region_name:"Region",category:"Category",activity:"Activity",inspection_type:"Inspection type",period:"Period"} as Record<string,string>)[key]}<input value={f.report_context?.[key]||""} maxLength={500} onChange={e=>patch({report_context:{...f.report_context,[key]:e.target.value}})}/></label>)}</details>
   </div>}
   </fieldset>

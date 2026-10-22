@@ -105,6 +105,8 @@ app.include_router(compatibility_router)
 from .configuration.dataset_routes import router as dataset_registry_router
 from .configuration.datasets import DatasetIntegrityError
 app.include_router(dataset_registry_router)
+from .configuration.report_routes import router as report_configuration_router
+app.include_router(report_configuration_router)
 
 
 @app.exception_handler(DatasetIntegrityError)

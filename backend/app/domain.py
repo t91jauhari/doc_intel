@@ -287,6 +287,8 @@ def default_config():
 
 
 def validate_config(payload):
+    from .configuration.reporting import validate_report_definitions
+    validate_report_definitions(payload)
     from .configuration.contexts import validate_definitions
     validate_definitions(payload)
     if "rule_order" in payload:

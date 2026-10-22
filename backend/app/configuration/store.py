@@ -84,7 +84,7 @@ class FamilyRuleMemberRecord(ConfigurationBase):
 
 
 # Structural sections only: no family names, field paths or business rules.
-MAPPING_SECTIONS = ("document_families", "profiles", "profile_variants", "templates")
+MAPPING_SECTIONS = ("document_families", "profiles", "profile_variants", "templates", "report_definitions")
 LIST_SECTIONS = ("sop_rules", "generic_sop_rules")
 
 
@@ -105,6 +105,9 @@ def import_publication(
         compile_publication(session, existing)
         return existing
     extensions = copy.deepcopy(payload)
+    if 'report_definitions' in payload:
+        from .reporting import validate_report_definitions
+        validate_report_definitions(payload)
     contexts = None
     if "context_definitions" in payload:
         from .contexts import validate_definitions
