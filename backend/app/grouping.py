@@ -1,24 +1,9 @@
 """Deterministic, batch-local customer resolution; abbreviations never bridge people."""
 
 import re
-import unicodedata
 from difflib import SequenceMatcher
 from .domain import route, SOP_MESSAGE_TEMPLATES
-
-
-def tokens(value):
-    value = unicodedata.normalize("NFKC", value)
-    value = re.sub(r"(?<=[a-z])(?=[A-Z])", " ", value).casefold()
-    return tuple(re.findall(r"[^\W_]+", value, re.UNICODE))
-
-
-def expands(short, full):
-    if not short or len(short) > len(full):
-        return False
-    # A shared initial alone is insufficient identity evidence.
-    if not any(a == b and len(a) > 1 for a, b in zip(short, full)):
-        return False
-    return all(a == b or (len(a) == 1 and b.startswith(a)) for a, b in zip(short, full))
+from .configuration.identity import expands, tokens
 
 
 def plan_grouping(filenames, cfg, overrides=None):
@@ -169,6 +154,13 @@ def identity_conflicts(documents, cfg=None):
         "riplay": ("customer_name",),
         "application": ("remitter", "name"),
     }
+    policy = None
+    if cfg is not None and "identity_policy" in cfg:
+        from .configuration.identity import IdentityPolicy, conflicting_pairs, validate_bindings
+
+        policy = IdentityPolicy.model_validate(cfg["identity_policy"])
+        validate_bindings(policy, cfg["profiles"])
+        paths = {binding.profile: tuple(binding.field_path.split(".")) for binding in policy.bindings}
     for doc in documents:
         if doc.get("status") != "COMPLETED" or doc.get("doc_type") not in paths:
             continue
@@ -183,6 +175,9 @@ def identity_conflicts(documents, cfg=None):
         for b in observed[i + 1 :]
         if not expands(a[2], b[2]) and not expands(b[2], a[2])
     ]
+    # Old pins retain the original mapping; explicit policies are authoritative.
+    if policy is not None:
+        conflicts = conflicting_pairs(observed, policy)
     if not conflicts:
         return []
     return [

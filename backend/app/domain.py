@@ -281,6 +281,10 @@ def default_config():
 
 
 def validate_config(payload):
+    if "identity_policy" in payload:
+        from .configuration.identity import IdentityPolicy, validate_bindings
+
+        validate_bindings(IdentityPolicy.model_validate(payload["identity_policy"]), payload["profiles"])
     from .forex_sop import validate_policy
     validate_policy(payload)
     from .schema_descriptions import validate_profile_schema, validate_descriptions

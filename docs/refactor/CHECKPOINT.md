@@ -48,3 +48,11 @@ Modified:
 - docs/refactor/CHANGES.md — per-step file inventory (created this step).
 Verification: 13 focused tests passed; tightened exception assertion rerun 3 passed. 40 historical revisions imported/reconstructed twice; zero differences; original configurations/cases unchanged. Live health ok. Isolated database stopped. No push/activation.
 Next: typed configurable identity bindings and generic rule policy contracts; test config-controlled behavior before replacing grouping paths.
+
+## Step 3 — configurable identity policy (2026-10-22)
+Status: implemented/tested in isolated source only. No configuration or runtime activated.
+Created: backend/app/configuration/identity.py; backend/tests/test_identity_policy.py; docs/refactor/IDENTITY_CONFIGURATION.md.
+Modified: backend/app/grouping.py; backend/app/domain.py; backend/tests/test_configuration_store.py; docs/refactor/CHECKPOINT.md; docs/refactor/CHANGES.md; docs/refactor/VERIFICATION.md.
+Behavior: explicit profile+normalized-field bindings, optional extraction-schema wrapped path, exact-token/compatible-initial policy, publish validation. Missing policy preserves legacy mapping; explicit empty bindings disable check. Existing filename grouping unchanged. Policy currently persists in publication extensions; dedicated normalized binding table and UI pending.
+Tests: 42 passed, 1 deselected; added policy persistence test passed separately. Excluded test_preview_and_upload_use_same_plan failed identically on untouched baseline commit 9925098 (expected 1 document, actual 3); pre-existing issue, not resolved or hidden. Baseline-regression worktree retained for reproduction. Live health ok.
+Next: dedicated binding persistence/migration and saved-case shadow comparison, then generic SOP policy contracts. Public sanitization/push still pending. All commands finished; no background processing implied.

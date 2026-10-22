@@ -90,3 +90,13 @@ def test_existing_application_defaults_round_trip(db):
     payload = json.loads(json.dumps(default_config()))
     publication = load(db, payload)
     assert compile_publication(db, publication) == payload
+
+
+def test_identity_policy_survives_publication(db):
+    payload = sample()
+    payload["identity_policy"] = {
+        "comparison": "exact_tokens",
+        "bindings": [{"profile": "custom", "field_path": "customer"}],
+    }
+    publication = load(db, payload)
+    assert compile_publication(db, publication)["identity_policy"] == payload["identity_policy"]
