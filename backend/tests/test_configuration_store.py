@@ -150,3 +150,16 @@ def test_family_membership_tampering_detected(db):
     db.flush()
     with pytest.raises(ValueError, match="integrity"):
         compile_publication(db, publication)
+
+
+def test_generic_rules_are_stored_as_entries(db):
+    payload = sample()
+    payload["profiles"]["custom"]["schema"]["properties"] = {"name": {"type": "string"}}
+    payload["generic_sop_rules"] = [{
+        "id": "generic_rule", "label": "Configured comparison", "families": ["new_family"],
+        "policy": {"left": "custom.name", "right": "custom.name"},
+    }]
+    publication = load(db, payload)
+    assert publication.extensions["generic_sop_rules"] == []
+    assert db.scalar(select(ConfigurationEntry).where(ConfigurationEntry.section == "generic_sop_rules")) is not None
+    assert compile_publication(db, publication) == payload

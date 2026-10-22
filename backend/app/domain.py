@@ -281,6 +281,10 @@ def default_config():
 
 
 def validate_config(payload):
+    if "generic_sop_rules" in payload:
+        from .configuration.generic_sop import validate_generic_rules
+
+        validate_generic_rules(payload)
     if "rule_scope" in payload:
         from .configuration.rule_scope import validate_rule_scope
 

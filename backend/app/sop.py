@@ -330,6 +330,11 @@ def evaluate(documents, cfg, context):
     for r in cfg.get("sop_rules", []):
         if not r["enabled"]:
             continue
+        if r.get("operator") == "configured_compare":
+            from .configuration.generic_sop import evaluate_generic
+
+            findings.append(evaluate_generic(r, documents, context))
+            continue
         if r.get("source_ref", "").startswith("SOP3:"):
             from .forex_sop import evaluate_rule as evaluate_forex_rule
             findings.append(evaluate_forex_rule(r, documents, cfg, context))

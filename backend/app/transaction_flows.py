@@ -13,7 +13,7 @@ def validate_flows(cfg):
     flows = cfg.get("templates")
     if not isinstance(flows, dict) or not 1 <= len(flows) <= 100:
         raise ValueError("Configure between 1 and 100 transaction flows.")
-    rule_ids = {r["id"] for r in cfg.get("sop_rules", [])}
+    rule_ids = {r["id"] for r in cfg.get("sop_rules", []) + cfg.get("generic_sop_rules", [])}
     labels = set()
     for key, flow in flows.items():
         if not isinstance(key, str) or not re.fullmatch(r"[a-z][a-z0-9_-]{0,39}", key):
@@ -85,6 +85,11 @@ def scope_configuration(cfg, flow_id):
     from .document_families import families
     family_id=flow.get('document_family','forex')
     family=families(result)[family_id]
+    generic_rules = []
+    if "generic_sop_rules" in cfg:
+        from .configuration.generic_sop import runtime_rule, validate_generic_rules
+
+        generic_rules = [runtime_rule(rule) for rule in validate_generic_rules(cfg) if family_id in rule.families]
     selected = flow.get("sop_rule_ids")
     if selected is None and "rule_scope" in cfg:
         from .configuration.rule_scope import validate_rule_scope
@@ -100,11 +105,14 @@ def scope_configuration(cfg, flow_id):
         if family_id not in {'forex','account_opening'}:
             result['sop_rules']=[r for r in cfg.get('sop_rules',[]) if r['id'] in family.get('sop_rule_ids',[])]
     if selected is not None:
+        result["sop_rules"] += generic_rules
         result["sop_rules"] = [
             r for r in result.get("sop_rules", []) if r["id"] in selected
         ]
+    else:
+        result["sop_rules"] += generic_rules
     from .forex_sop import effective_rule, policy_for
-    result["sop_rules"] = [effective_rule(r) if r.get("source_ref", "").startswith("SOP3:") else r for r in result.get("sop_rules", [])]
+    result["sop_rules"] = [effective_rule(r) if r.get("operator") != "configured_compare" and r.get("source_ref", "").startswith("SOP3:") else r for r in result.get("sop_rules", [])]
     result["forex_sop_policy"] = policy_for(result)
     result["report_context"] = {
         **result.get("report_context", {}),

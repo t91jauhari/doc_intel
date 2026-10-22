@@ -10,7 +10,9 @@ from sqlalchemy import create_engine, text
 def compare_records(records):
     from app.account_opening_sop import evaluate_rule
     from app.transaction_flows import scope_configuration
-    from .comparison import ComparisonPolicy, evaluate_comparison
+    from .comparison import ComparisonPolicy
+    from .generic_sop import GenericRule, runtime_rule
+    from app.sop import evaluate
 
     counts = Counter()
     for record in records:
@@ -31,9 +33,12 @@ def compare_records(records):
                 continue
             policy = ComparisonPolicy(left=rule["path"], right=rule["other_path"],
                                       normalization="casefold_whitespace")
-            current = evaluate_comparison(record["documents"], policy)
+            generic = GenericRule(id=rule["id"], label=rule["label"], families=("shadow_only",),
+                                  policy=policy, report_category=rule["report_category"],
+                                  source_ref=rule["source_ref"])
+            current = evaluate(record["documents"], {"sop_rules": [runtime_rule(generic)]}, {})[0]
             counts["outcomes_checked"] += 1
-            if current.result != previous["result"]:
+            if current["result"] != previous["result"] or current["eligible"] != previous["eligible"] or current["category"] != previous["category"]:
                 counts["mismatches"] += 1
     return {"cases_loaded": len(records), "outcomes_checked": counts["outcomes_checked"],
             "mismatches": counts["mismatches"],

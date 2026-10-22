@@ -21,8 +21,11 @@ def validate_rule_scope(payload):
     catalog = families(payload)
     if set(policy.family_rule_ids) != set(catalog):
         raise ValueError("Explicit rule scope must cover every registered family.")
-    known = {rule["id"] for rule in payload.get("sop_rules", [])}
-    for rules in policy.family_rule_ids.values():
+    known = {rule["id"] for rule in payload.get("sop_rules", []) + payload.get("generic_sop_rules", [])}
+    generic = {rule["id"]: rule for rule in payload.get("generic_sop_rules", [])}
+    for family, rules in policy.family_rule_ids.items():
         if set(rules) - known:
             raise ValueError("Rule scope references unknown SOP rules.")
+        if any(rule_id in generic and family not in generic[rule_id]["families"] for rule_id in rules):
+            raise ValueError("Generic rule is not assigned to the selected family.")
     return policy

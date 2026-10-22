@@ -76,7 +76,7 @@ class FamilyRuleMemberRecord(ConfigurationBase):
 
 # Structural sections only: no family names, field paths or business rules.
 MAPPING_SECTIONS = ("document_families", "profiles", "profile_variants", "templates")
-LIST_SECTIONS = ("sop_rules",)
+LIST_SECTIONS = ("sop_rules", "generic_sop_rules")
 
 
 def fingerprint(payload: dict) -> str:
@@ -103,6 +103,10 @@ def import_publication(
         compile_publication(session, existing)
         return existing
     extensions = copy.deepcopy(payload)
+    if "generic_sop_rules" in payload:
+        from .generic_sop import validate_generic_rules
+
+        validate_generic_rules(payload)
     scope = None
     if "rule_scope" in payload:
         from .rule_scope import validate_rule_scope

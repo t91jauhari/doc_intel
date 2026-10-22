@@ -10,6 +10,8 @@ def normalize_findings(findings, rules):
     for finding in findings:
         rule = by_id.get(finding["rule_id"], {})
         visual = rule.get("operator") in VISUAL_OPERATORS or rule.get("path") in visual_paths
+        if rule.get("operator") == "configured_compare":
+            visual = False  # Typed text-only policies cannot request visual review.
         if rule.get("operator") == "account_check":
             policy = rule.get("comparison_policy") or "{}"
             settings = json.loads(policy) if isinstance(policy, str) else policy

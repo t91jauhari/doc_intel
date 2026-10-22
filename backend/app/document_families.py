@@ -14,7 +14,7 @@ def validate_families(cfg):
     raw=cfg.get('document_families',{})
     if not isinstance(raw,dict) or len(raw)>100:raise ValueError('Configure at most 100 document families.')
     labels=set()
-    rules={r['id'] for r in cfg.get('sop_rules',[])}
+    rules={r['id'] for r in cfg.get('sop_rules',[])+cfg.get('generic_sop_rules',[])}
     for key,f in families(cfg).items():
         if not re.fullmatch(r'[a-z][a-z0-9_-]{0,39}',key):raise ValueError('Family IDs must start with a lowercase letter and contain at most 40 letters, digits, underscores or hyphens.')
         if not isinstance(f,dict) or not isinstance(f.get('label'),str) or not 1<=len(f['label'].strip())<=120:raise ValueError('Document family names require 1–120 characters.')
