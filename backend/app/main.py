@@ -1,4 +1,5 @@
 from .configuration.repository import get_revision
+from .configuration.profiles import profile_schema, validate_shape
 import copy
 import csv
 import hashlib
@@ -367,7 +368,7 @@ def configuration(user=Depends(current_user)):
             "version": cfg.version,
             "payload": with_schemas(
                 cfg.payload,
-                {name: get_profile(name) for name in cfg.payload["profiles"]},
+                {name: {"schema": profile_schema(cfg.payload, name)} for name in cfg.payload["profiles"]},
             ),
             "can_edit": user.role == "bank_admin",
         }
@@ -1839,7 +1840,7 @@ def review_visual_box(doc_id: str, data: VisualBoxReview, user=Depends(REVIEW)):
             d,
             {
                 **profile,
-                "schema": profile.get("schema") or get_profile(d.doc_type)["schema"],
+                "schema": profile.get("schema") or profile_schema(cfg, d.doc_type),
             },
             data,
             user,
@@ -2001,7 +2002,7 @@ def reprocess_document_fields(doc_id: str, data: ReprocessFieldsInput, user=Depe
             raise HTTPException(422, 'Published profile is incompatible with this document provider: '+str(exc))
         profile=payload['profiles'].get(d.doc_type,{})
         fields=list(dict.fromkeys(data.fields))
-        if set(fields)-set(profile.get('schema',get_profile(d.doc_type)['schema'])['properties']):
+        if set(fields)-set(profile.get('schema',profile_schema(payload, d.doc_type))['properties']):
             raise HTTPException(422, 'Select existing fields from this document profile.')
         if set(fields)&set(d.overrides) and not data.replace_overrides:
             raise HTTPException(409, 'Selected fields have reviewer overrides; resolve those corrections before reprocessing.')
@@ -2017,7 +2018,7 @@ def reprocess_document_fields(doc_id: str, data: ReprocessFieldsInput, user=Depe
             payload['provider']=pinned.payload['provider']
             validate_config(payload)
             profile=payload['profiles'][d.doc_type]
-        profile.setdefault('schema',copy.deepcopy(get_profile(d.doc_type)['schema']))
+        profile.setdefault('schema',copy.deepcopy(profile_schema(payload, d.doc_type)))
         job=enqueue(db,d,action='reprocess_fields');db.flush()
         req=FieldReprocess(org=d.org,branch_id=d.branch_id,document_id=d.id,job_id=job.id,requested_by=user.id,
             payload={'fields':fields,'instruction':instruction,'reason':data.reason,
@@ -2219,7 +2220,10 @@ def correct_field(doc_id: str, data: CorrectionInput, user=Depends(REVIEW)):
         cfg = get_revision(db, db.get(Case, d.case_id).config_id).payload
         try:
             if cfg.get("provider") != "spider-ai":
-                check_schema(effective, get_profile(d.doc_type)["schema"])
+                if cfg["profiles"][d.doc_type].get("validation_adapter") == "schema":
+                    validate_shape(effective, profile_schema(cfg, d.doc_type))
+                else:
+                    check_schema(effective, profile_schema(cfg, d.doc_type))
         except ValueError:
             raise HTTPException(
                 422, "Value does not match this field's extraction schema."
@@ -2281,7 +2285,10 @@ def correct_effective_field(
             )
             effective = {**copy.deepcopy(d.raw), **d.overrides, data.field: replacement}
             if cfg.get("provider") != "spider-ai":
-                check_schema(effective, get_profile(d.doc_type)["schema"])
+                if cfg["profiles"][d.doc_type].get("validation_adapter") == "schema":
+                    validate_shape(effective, profile_schema(cfg, d.doc_type))
+                else:
+                    check_schema(effective, profile_schema(cfg, d.doc_type))
             from types import SimpleNamespace
 
             candidate = SimpleNamespace(

@@ -1,6 +1,6 @@
 # Refactor plan and current position
 
-Current position: **M1 completed in isolation (Step 15); Step18 context registry verified; current R1 dynamic profiles and policy coverage**.
+Current position: **M1 completed in isolation (Step 15); Step19 custom profiles verified; current R1 new comparisons and complex policy coverage**.
 
 No live cutover. Status refers to isolated implementation, not activation.
 
@@ -11,7 +11,7 @@ No live cutover. Status refers to isolated implementation, not activation.
 | D1 Configuration schema | Partial | Publications, entries, identity bindings, family-rule membership; 5 migrations; PostgreSQL immutability and context rows | Remaining entities |
 | D2 Typed contracts/compiler | Partial | Lossless history, identity/text comparison contracts | Full configuration typing and policy types |
 | M1 Import/publication | Complete in isolation | 40 imports; atomic writers; explicit initialization; verified/normalized reads; 67 pins checked | Activation tracked under C1 |
-| R1 Grouping and SOP | Partial | Identity, comparisons, applicability, context registry and editor | Complex/visual policies and dynamic profiles |
+| R1 Grouping and SOP | Partial | Identity, comparisons, applicability, context registry; custom profiles and editors | Complex/visual policies; reserved native compatibility catalog |
 | R2 Services/providers | Partial | Preview/publication services, upgrade router | Remaining API services and provider/prompt boundaries |
 | R3 Datasets/reports | Pending | Existing report compatibility retained | Dataset registry and report read models |
 | V1 Final verification | Partial | Unit/API/browser checks, 54 cases/7049 findings | Full suite, extraction/dataset acceptance, baseline bugs |

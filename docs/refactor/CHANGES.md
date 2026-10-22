@@ -165,3 +165,27 @@ Files:
 Behavior: typed choice/text/digits/document-reference definitions, labels, limits and family/profile bindings; dedicated immutable publication rows; explicit-empty versus absent compatibility; versioned defaults captured from legacy behavior. Default bootstrap includes definitions, existing history unchanged. Rule conditions/options, API edits and case form read one registry. Case catalog resolves the pinned config, preventing later version options from leaking into existing cases. No automatic historical rewrite or live publication.
 Verification:39 focused backend tests;43 automation/Forex/encoding regressions;6 PostgreSQL migration tests; final strengthened registry/migration/runtime selection24 passed. TypeScript passed. Isolated browser copied legacy definitions into local draft, added enum, edited choices, Test settings accepted; published version stayed7. Zero preview documents, so no extraction-result claim. Screenshot outside Git: outputs/refactor-step18/context-editor.png. Migration0005 rehearsed only on restored sqe_refactor;40 unchanged round trips, replay0; publication rollback exact.
 Cleanup: preview API/database stopped, Next dev ended, browser tab closed, generated next-env change restored, scoped ignored frontend/.next removed using git clean after dry-run. No image build; --rm test runners. Old94 MB O: cache remains after policy rejection of its recursive deletion.
+
+## Step19 — custom profile contracts and runtime adapter
+Commit message: Support configured document profiles through extraction and review.
+Files:
+- backend/app/configuration/profiles.py (created)
+- backend/tests/test_custom_profiles.py (created)
+- frontend/components/profile-create.tsx (created)
+- backend/app/domain.py
+- backend/app/extraction_quality.py
+- backend/app/main.py
+- backend/app/processor.py
+- backend/app/provider.py
+- frontend/app/settings/page.tsx
+- frontend/lib/types.ts
+- backend/app/configuration/README.md
+- docs/refactor/CHANGES.md
+- docs/refactor/CHECKPOINT.md
+- docs/refactor/VERIFICATION.md
+- docs/refactor/INVENTORY.csv
+- docs/refactor/PLAN.md
+
+Behavior: custom profile IDs/schemas/labels/classification descriptions/suffixes/family membership can be published; explicit schema adapter validates structural shapes and missing required data. Native adapters cannot be replaced. Unenforced constraints/policy keys and nonfinite values rejected. Schema lookup uses saved definitions throughout configuration reads, extraction, review corrections and field reprocessing. UI creation adds an editable starter profile to the selected family draft. Fixture mode rejects new profiles without fixture files. Native compatibility catalog remains required; arbitrary removal of built-in profiles is not implemented.
+Verification:20 custom/guidance/reprocessing tests passed;5 final contract tests;10 schema/reusable-profile/variant regressions; extended custom upload/extract/SOP/report/selected-field-reprocess test passed24.18s. External provider mocked; no paid extraction. TypeScript passed. Browser created supporting_note, selected it, Test settings accepted0-document draft, published version7 unchanged. Screenshot outside Git: outputs/refactor-step19/custom-profile.png.
+Cleanup: preview servers/tab stopped, generated next-env restored, scoped ignored .next removed after dry-run. No image build or extra backup. Live API remained healthy. Remaining generic rule creation UI follows next.

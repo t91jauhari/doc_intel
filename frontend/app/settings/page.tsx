@@ -36,6 +36,7 @@ import { Busy, ErrorNotice, Modal, Badge } from "@/components/ui";
 import { AutomationEditor, SOPBuilder } from "@/components/automation-editor";
 import { LocationLearningHistory } from "@/components/location-learning-history";
 import { FieldDescriptionEditor } from "@/components/field-description-editor";
+import { ProfileCreate } from "@/components/profile-create";
 import { ProfileSchemaEditor } from "@/components/profile-schema-editor";
 import { ProfileExtractionControls } from "@/components/profile-extraction-controls";
 import { api } from "@/lib/api";
@@ -773,6 +774,8 @@ export default function Settings() {
               )}
               {tab === "profiles" && (
                 <section className="panel settings-card">
+                  <ProfileCreate configuration={draft} family={family} editable={canEdit}
+                    onCreate={(configuration, id) => { update(configuration); setProfile(id); }} />
                   <div className="profile-selector">
                     <label>
                       Document profile

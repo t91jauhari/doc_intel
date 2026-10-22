@@ -8,6 +8,7 @@ import time
 from llama_cloud import APIError, LlamaCloud
 from sqlalchemy import select
 
+from .configuration.profiles import profile_schema, schema_report
 from .db import Connector, Document, SessionLocal
 from .domain import LABELS, get_profile, serial
 from .security import decrypt
@@ -178,7 +179,7 @@ def run_provider(doc, cfg, heartbeat):
                             {
                                 "type": name,
                                 "description": cfg["profiles"][name].get(
-                                    "classification_description", LABELS[name]
+                                    "classification_description", cfg["profiles"][name].get("label", name)
                                 ),
                             }
                             for name in cfg["profiles"]
@@ -230,7 +231,7 @@ def run_provider(doc, cfg, heartbeat):
                         {
                             **profile,
                             "schema": profile.get("schema")
-                            or get_profile(doc.doc_type)["schema"],
+                            or profile_schema(cfg, doc.doc_type),
                         },
                     )
                     if not state.get("parse_job_id")
@@ -341,6 +342,8 @@ def run_provider(doc, cfg, heartbeat):
 
 
 def validate_extraction(doc, cfg, response, authoritative=None):
+    if cfg["profiles"][doc.doc_type].get("validation_adapter") == "schema":
+        return schema_report(doc, cfg, response)
     if cfg.get("provider") == "spider-ai":
         from .spider_result import extraction_report
 

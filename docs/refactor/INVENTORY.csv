@@ -13,3 +13,4 @@ C11,legacy refresh defect,backend/app/domain.py,fixed_tested,compatibility regre
 C12,validation status propagation,backend/app/sop.py,identified,typed validation outcomes
 C13,pinned configuration reads,backend/app/configuration/repository.py,verification_in_progress,explicit legacy verify normalized rollout
 C14,case context registry,backend/app/configuration/contexts.py,implemented_tested,versioned typed definitions and shared UI API validation
+C15,dynamic profile registration,backend/app/configuration/profiles.py,implemented_tested,explicit schema adapter with saved profile definitions

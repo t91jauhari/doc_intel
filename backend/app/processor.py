@@ -72,7 +72,7 @@ def process_job(job_id, heartbeat=lambda: None):
                 stored.metadata_json = serial(response.get("extract_metadata") or {})
                 stored.classification = classification
             # Save raw extraction before validation so invalid schemas never cause another paid job.
-            if cfg.get("provider") == "spider-ai":
+            if cfg.get("provider") == "spider-ai" and cfg["profiles"][doc.doc_type].get("validation_adapter") != "schema":
                 from .spider_result import extraction_report
 
                 report = extraction_report(doc, cfg, response)

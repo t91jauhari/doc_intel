@@ -53,7 +53,7 @@ def apply_quality(payload, targets=None):
     profiles=result['profiles']
     from .domain import get_profile
     for name,profile in profiles.items():
-        profile.setdefault('schema',copy.deepcopy(get_profile(name)['schema']))
+        if 'schema' not in profile: profile['schema']=copy.deepcopy(get_profile(name)['schema'])
     for key,(label,instruction) in INVOICE_FIELDS.items():
         profile=profiles['invoice']
         profile['schema']['properties'].setdefault(key,{'type':['string','null'],'description':instruction})

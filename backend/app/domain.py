@@ -312,7 +312,7 @@ def validate_config(payload):
 
     base = default_config()
     variants = payload.get("profile_variants", {})
-    if not isinstance(variants, dict) or set(variants) - set(PROFILE_NAMES):
+    if not isinstance(variants, dict) or set(variants) - set(payload.get("profiles", {})):
         raise ValueError("Invalid profile variant document types.")
     for name, bank in variants.items():
         if not isinstance(bank, dict) or len(bank) > 30:
@@ -364,9 +364,23 @@ def validate_config(payload):
     for tier in ["parse_tier", "extract_tier"]:
         if payload.get(tier) not in {"agentic", "agentic_plus", "cost_effective"}:
             raise ValueError("Invalid processing tier.")
-    if set(payload.get("profiles", {})) != set(PROFILE_NAMES):
+    if not set(PROFILE_NAMES).issubset(payload.get("profiles", {})):
         raise ValueError("All supported profile configurations are required.")
+    if len(payload["profiles"]) > 200:
+        raise ValueError("Configure at most 200 document profiles.")
     for name, p in payload["profiles"].items():
+        if not re.fullmatch(r"[a-z][a-z0-9_]{0,79}", name) or not isinstance(p, dict):
+            raise ValueError("Profile IDs must use lowercase identifiers and object definitions.")
+        if not isinstance(p.get("label"), str) or not 1 <= len(p["label"].strip()) <= 200:
+            raise ValueError(f"{name}: a display label is required.")
+        native = name in base["profiles"]
+        if not native and payload["provider"] == "fixture":
+            raise ValueError("Custom profiles require a configured extraction provider; built-in fixture files do not cover them.")
+        if p.get("validation_adapter", "native" if native else "") != ("native" if native else "schema"):
+            raise ValueError("Custom profiles require the schema validation adapter; native adapters cannot be replaced.")
+        baseline = base["profiles"][name] if native else {"schema": p.get("schema", {}), "policy": {}}
+        if not native and not p.get("schema"):
+            raise ValueError("Custom profiles require an explicit schema.")
         if "system_instruction" in p and (
             not isinstance(p["system_instruction"], str)
             or not 10 <= len(p["system_instruction"].strip()) <= 30000
@@ -382,7 +396,10 @@ def validate_config(payload):
             from .enum_aliases import validate_aliases
 
             validate_aliases(p.get("policy", {}))
-        validate_profile_schema(p, base['profiles'][name], payload['provider'])
+        validate_profile_schema(p, baseline, payload['provider'])
+        if not native:
+            from .configuration.profiles import validate_schema_adapter
+            validate_schema_adapter(p)
         if "schema" in p:
             validate_descriptions(p["schema"], name)
         if (
@@ -391,7 +408,7 @@ def validate_config(payload):
         ):
             raise ValueError(f"{name}: invalid schema version.")
         if not isinstance(p.get("policy"), dict) or not set(
-            base["profiles"][name]["policy"]
+            baseline["policy"]
         ).difference({"enum_aliases", "enum_raw_fallback_fields"}).issubset(
             p["policy"]
         ):
@@ -410,7 +427,7 @@ def validate_config(payload):
             isinstance(x, str) and x.strip() for x in p["suffixes"]
         ):
             raise ValueError(f"{name}: invalid suffixes.")
-        for key, expected in base["profiles"][name]["policy"].items():
+        for key, expected in baseline["policy"].items():
             actual = p["policy"][key]
             if expected is not None:
                 valid = isinstance(actual, type(expected))
@@ -456,7 +473,7 @@ def validate_config(payload):
         if not isinstance(payload.get(key), str) or not payload[key].strip():
             raise ValueError("Provider versions must not be blank.")
     for template in payload["templates"].values():
-        if not set(template.get("required", [])).issubset(PROFILE_NAMES):
+        if not set(template.get("required", [])).issubset(payload["profiles"]):
             raise ValueError("Template includes an unknown document type.")
     ids = set()
     for rule in payload.get("rules", []):
@@ -473,11 +490,11 @@ def validate_config(payload):
             raise ValueError("Unsupported SOP operator.")
         if rule.get("severity") not in {"FAIL", "REVIEW"}:
             raise ValueError("Rule severity must be FAIL or REVIEW.")
-        if not rule.get("path") or rule["path"].split(".")[0] not in PROFILE_NAMES:
+        if not rule.get("path") or rule["path"].split(".")[0] not in payload["profiles"]:
             raise ValueError("Rule paths start with a document profile.")
         if rule["operator"] == "match" and (
             not rule.get("other_path")
-            or rule["other_path"].split(".")[0] not in PROFILE_NAMES
+            or rule["other_path"].split(".")[0] not in payload["profiles"]
         ):
             raise ValueError("A match rule requires another profile.field path.")
     from .sop import validate_business
@@ -891,7 +908,7 @@ def refresh_case(db, case_id):
                 "result": "FAIL",
                 "actual": None,
                 "expected": "Document present",
-                "message": f"Missing {LABELS[name]}",
+                "message": "Missing " + cfg["profiles"][name].get("label", name),
                 "evidence": {},
             }
         )

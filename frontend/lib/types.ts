@@ -8,19 +8,7 @@ export type User = {
   active: boolean;
 };
 export type Branch = { id: string; code: string; name: string };
-export type ProfileName =
-  | "application"
-  | "lld"
-  | "invoice"
-  | "valas_declaration_1"
-  | "valas_declaration_2"
-  | "ektp"
-  | "riplay"
-  | "join_visit"
-  | "edd"
-  | "account_opening_form"
-  | "signature_difference"
-  | "company_reference";
+export type ProfileName = string;
 export type SchemaNode = {
   description?: string;
   type?: string | string[];
@@ -29,6 +17,7 @@ export type SchemaNode = {
   [key: string]: unknown;
 };
 export type Profile = {
+  validation_adapter?: "native" | "schema";
   schema?: SchemaNode;
   label: string;
   classification_description: string;
