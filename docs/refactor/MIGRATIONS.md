@@ -3,3 +3,4 @@
 No live migrations executed. No refactor configuration activated.
 Baseline database dump initiated; storage backup and restore rehearsal pending.
 All future entries require migration identifier, source/target version, environment, status and rollback procedure.
+`nBaseline restore rehearsal complete in disposable isolated PostgreSQL. No application migration executed. Restored container retained stopped.
