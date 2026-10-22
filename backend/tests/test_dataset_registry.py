@@ -110,6 +110,18 @@ def test_registered_dataset_can_be_published(signed, monkeypatch):
     assert response.json()['payload']['templates']['forex']['dataset_id'] == 'synthetic-v1'
 
 
+def test_external_reference_file_is_validated_without_logging_values(tmp_path):
+    import json
+    from app.configuration.import_datasets import read_reference_file
+    path = tmp_path / 'authorized-reference.json'
+    path.write_text(json.dumps(reference()), encoding='utf-8')
+    assert read_reference_file(path) == reference()
+    path.write_text(json.dumps({'private_value': 'do-not-log-this-reference-value'}), encoding='utf-8')
+    with pytest.raises(ValueError) as error:
+        read_reference_file(path)
+    assert 'do-not-log-this-reference-value' not in str(error.value)
+
+
 @pytest.mark.parametrize('change', ['duplicate_sample', 'duplicate_row', 'unknown_sample', 'nonfinite'])
 def test_invalid_reference_bindings_are_rejected(change):
     payload = reference()

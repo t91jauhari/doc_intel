@@ -403,3 +403,16 @@ Files:
 
 Changes: per-family report_definition overrides stored in immutable family revisions; other families sharing the renderer retain their mappings. Document/context bindings constrained to family scope; global legacy definitions retained as fallback. Family editor now writes its family override. Settings import no longer creates directories; explicit development initialization creates SQLite parent, storage writes already create their own parents. Native retry regression explicitly selects mocked Llama provider.
 Verification:26 family/report/latest tests passed67.22s; TypeScript passed;19 settings/report/writer/enum tests passed60.34s including source-import write prohibition and SQLite initialization in new nested directory. Retry checkpoint test passed14.10s. Previous broad remainder163 passed before incorrect native-provider fixture; fixed fixture. Remaining tail to resume from test_parse_evidence. Generated standalone trace dependency folder136KB verified inside checkout/no links, dry-run/scoped git clean removed. No live changes or external jobs.
+
+## Step31 — import private references outside the public tree
+Commit message: Support bounded organization-specific reference file imports.
+Files:
+- backend/app/configuration/import_datasets.py
+- backend/tests/test_dataset_registry.py
+- scripts/export_public_source.py
+- docs/refactor/CHANGES.md
+- docs/refactor/CHECKPOINT.md
+- docs/refactor/VERIFICATION.md
+
+Changes: optional external --reference-file imports require --organization and explicit expected database; bounded50MBJSON parse/typed validation without logging source values; transactional immutable registration remains authoritative. Public export includes new synthetic enum/settings/dataset tests and documents private import/new immutable IDs.
+Verification:11 dataset registry/API/import tests passed30.62s. Public candidate1 remains previous-head and not for release. Remaining tail session39864 running from test_parse_evidence; no runtime mutation of imported tail modules. No private data in Git or public push.

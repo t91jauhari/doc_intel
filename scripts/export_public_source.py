@@ -14,6 +14,7 @@ import subprocess
 SYNTHETIC_TESTS = {
     'conftest.py', 'test_connector_contracts.py', 'test_field_checks.py', 'test_report_bindings.py',
     'test_account_policy_contracts.py', 'test_configuration_store.py',
+    'test_spider_enum_revalidation.py', 'test_infrastructure_settings.py', 'test_dataset_registry.py',
 }
 ROOT_FILES = {'.gitignore', '.dockerignore', 'compose.yaml', 'ARCHITECTURE.md', 'FOREX_SOP_RULES.md',
               'ACCOUNT_OPENING_OFFICIAL_RULES.md', 'SOP_SCORING.md', 'SPATIAL_GROUNDING.md', 'DOCUMENT_FAMILIES.md'}
@@ -120,6 +121,10 @@ This source export deliberately omits customer documents, extraction fixtures,
 reference workbook values, browser screenshots, secrets and previous Git history.
 Included dataset examples are empty synthetic references. Import authorized
 private reference JSON separately; never commit operational data or `.env`.
+After migration, `app.configuration.import_datasets --expected-database NAME
+--organization ORG --reference-file /private/reference.json` imports an authorized
+reference without copying it into the source tree. Supply the database URL through
+`REFACTOR_DATABASE_URL`. Existing IDs are immutable; replacements need a new ID.
 
 ## Local development
 
