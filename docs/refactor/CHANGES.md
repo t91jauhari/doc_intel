@@ -105,3 +105,11 @@ Files:
 
 Additional modified file: backend/tests/test_profile_guidance.py (compiled prompt-length fixture).
 Verification: 4 new tests passed; broader run 26 passed/1 outdated fixture failed, fixture corrected but Docker rerun blocked. All backend Python parsed. This is implemented with final regression pending, not completed rollout. See CHECKPOINT for disk incident and preserved state.
+
+## Step 14 — private object-backup tooling (execution blocked)
+Commit message: Add guarded logical object backup and integrity verification.
+Created: backend/app/configuration/backup_objects.py; backend/tests/test_object_backup.py.
+Modified: docs/refactor/CHANGES.md; docs/refactor/CHECKPOINT.md; docs/refactor/VERIFICATION.md.
+Behavior: credentials remain inside existing API container; read-only list/get requests; inventory-before/after guard, per-object SHA256 manifest and archive verification; exclusive output creation; free-space preflight; subprocess timeouts; remove only its own failed output. Never writes live objects or extracts untrusted archive paths. Backup captures current object contents only, not version histories or a transactionally coordinated database snapshot.
+Tests: 3 offline integrity tests passed (valid content, corrupted digest, unexpected member). No completed production object backup: initial attempt exhausted C:, subsequent inventory blocked by Docker. B0/C1 remain incomplete.
+Step13 commit: d03877a. No live activation/public push.

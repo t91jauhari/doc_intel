@@ -36,3 +36,5 @@ Step12 evidence:17 publication/API/transaction-flow tests passed,5 PostgreSQL mi
 
 ## Step 13
 New writer/startup/dual-guidance suite: 4 passed (35.89s). Broader publication/guidance/account regression: 26 passed, 1 failed (179.54s). Failure was a fixture with 29995 raw prompt characters exceeding 30000 after mandatory spatial instruction compilation. Corrected fixture budgets compiled length; Docker rerun blocked by exhausted C: and unresponsive Docker control. Backend AST parse passed. No final green-suite claim. Live API remained healthy. See CHECKPOINT storage incident for recovery.
+
+Step14 offline backup verification: 3 unittest tests passed in0.042s; backend AST parse passed. Docker inventory timeout confirmed after8s. No live backup/restore success claimed.
