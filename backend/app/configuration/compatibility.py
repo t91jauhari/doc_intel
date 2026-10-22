@@ -3,7 +3,7 @@ import copy
 import json
 from pathlib import Path
 
-from .store import fingerprint
+from .codec import fingerprint
 
 
 def release_definition():

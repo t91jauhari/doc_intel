@@ -4,9 +4,9 @@ Independent metadata deliberately prevents application startup from creating or
 activating these tables. The caller owns migrations and transaction boundaries.
 """
 import copy
-import hashlib
-import json
 import uuid
+
+from .codec import fingerprint
 
 from sqlalchemy import JSON, ForeignKey, ForeignKeyConstraint, Integer, String, UniqueConstraint, select
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column
@@ -86,13 +86,6 @@ class FamilyRuleMemberRecord(ConfigurationBase):
 # Structural sections only: no family names, field paths or business rules.
 MAPPING_SECTIONS = ("document_families", "profiles", "profile_variants", "templates")
 LIST_SECTIONS = ("sop_rules", "generic_sop_rules")
-
-
-def fingerprint(payload: dict) -> str:
-    return hashlib.sha256(json.dumps(
-        payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"),
-        allow_nan=False,
-    ).encode()).hexdigest()
 
 
 def import_publication(

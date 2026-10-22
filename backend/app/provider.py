@@ -16,8 +16,7 @@ from .settings import ROOT, settings
 from .storage import original_key, object_key, store
 
 
-class ProcessingIssue(Exception):
-    pass
+from .extraction.contracts import ProcessingIssue
 
 
 def checkpoint(doc_id, status=None, **state):
@@ -43,25 +42,30 @@ def fixture_response(doc_type):
 
 
 def run_provider(doc, cfg, heartbeat):
-    if cfg["provider"] == "spider-ai":
-        from .spider_provider import run_spider
+    """Compatibility facade; callers transition through the application service."""
+    from .extraction.service import extract_document
+    result = extract_document(doc, cfg, heartbeat)
+    return result.response, result.classification
 
-        return run_spider(doc, cfg, heartbeat)
-    if cfg["provider"] == "fixture":
-        if settings.environment != "development":
-            raise ProcessingIssue("Fixture processing is disabled outside development.")
-        if doc.doc_type == "unknown":
-            raise ProcessingIssue(
-                "Fixture mode requires a recognized filename or manually assigned document type."
-            )
-        checkpoint(doc.id, "EXTRACTING", fixture=True)
-        heartbeat()
-        return fixture_response(doc.doc_type), {
-            "method": "fixture",
-            "type": doc.doc_type,
-            "reason": "Synthetic development fixture. No document content was classified or extracted.",
-            "confirmed": False,
-        }
+
+def run_fixture(doc, cfg, heartbeat):
+    if settings.environment != "development":
+        raise ProcessingIssue("Fixture processing is disabled outside development.")
+    if doc.doc_type == "unknown":
+        raise ProcessingIssue(
+            "Fixture mode requires a recognized filename or manually assigned document type."
+        )
+    checkpoint(doc.id, "EXTRACTING", fixture=True)
+    heartbeat()
+    return fixture_response(doc.doc_type), {
+        "method": "fixture",
+        "type": doc.doc_type,
+        "reason": "Synthetic development fixture. No document content was classified or extracted.",
+        "confirmed": False,
+    }
+
+
+def run_llama(doc, cfg, heartbeat):
     with SessionLocal() as db:
         connector = db.scalar(select(Connector).where(Connector.org == doc.org))
         key = decrypt(connector.encrypted) if connector else ""

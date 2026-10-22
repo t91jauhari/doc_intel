@@ -6,7 +6,7 @@ from pathlib import Path
 
 from .generic_sop import GenericRule, validate_generic_rules
 from .identity import IdentityBinding, IdentityPolicy, validate_bindings
-from .store import fingerprint
+from .codec import fingerprint
 
 
 def supported(rule):

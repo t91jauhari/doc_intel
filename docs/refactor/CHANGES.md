@@ -195,3 +195,25 @@ Commit message: Add new text comparisons directly to configuration drafts.
 Modified: frontend/components/comparison-upgrade.tsx; docs/refactor/CHANGES.md; docs/refactor/CHECKPOINT.md; docs/refactor/VERIFICATION.md; docs/refactor/PLAN.md.
 Changes: create comparisons from registered schema text fields, unique IDs, explicit schema bindings, distinct-field guard, case/whitespace matching, rule-order and explicit family-scope updates. Field options load even before a generic rule exists, refresh when context definitions change and debounce requests. Dropdown paths distinguish nested fields with the same label.
 Verification: TypeScript passed. Browser created synthetic_name_match from ektp.name to riplay.customer_name, validated draft, selected new rule in flow, validated again. Publishedv7 unchanged;0 preview documents. Screenshot outside Git: outputs/refactor-step20/new-comparison.png. No backend changes or cloud calls. Preview stopped, tab closed, next-env restored and scoped .next removed after dry-run.
+
+## Step21 — provider-neutral extraction application boundary
+Commit message: Introduce typed extraction service and explicit provider adapters.
+Files:
+- backend/app/extraction/__init__.py (created)
+- backend/app/extraction/contracts.py (created)
+- backend/app/extraction/adapters.py (created)
+- backend/app/extraction/service.py (created)
+- backend/app/configuration/codec.py (created)
+- backend/tests/test_extraction_service.py (created)
+- backend/app/provider.py
+- backend/app/configuration/store.py
+- backend/app/configuration/compatibility.py
+- backend/app/configuration/upgrade_comparisons.py
+- docs/refactor/CHANGES.md
+- docs/refactor/CHECKPOINT.md
+- docs/refactor/VERIFICATION.md
+- docs/refactor/INVENTORY.csv
+- docs/refactor/PLAN.md
+
+Behavior: typed request/result and adapter protocol, explicit code-owned registry, deep-copied pinned configuration with canonical fingerprint, fail-closed unsupported providers/malformed results. Legacy run_provider facade delegates through application service. Existing Llama pipeline and fixture implementation retain checkpoints, classification and reuse behavior. Service adds no retries or hidden paid calls. ProcessingIssue remains import-compatible. Canonical hashing moved to framework-independent codec with old store import preserved.
+Verification:47 service/provider/field-recovery/config-store tests passed204.05s;3 focused Llama classification/parse-reuse/uncertainty tests passed33.77s. All providers mocked/fixture, no paid model requests. No live change, new images or large artifacts. State/connector persistence and remaining provider internals still need separation.
