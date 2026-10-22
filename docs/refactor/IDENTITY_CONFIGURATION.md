@@ -36,6 +36,13 @@ list disables this identity conflict check. Existing findings, evidence structur
 and scoring eligibility are preserved. This does not change filename-based bulk
 group planning, SOP name comparison, extraction schemas or prompts.
 
-The policy persists losslessly through the configuration publication store's
-extension properties. Dedicated binding rows and an administrator UI are pending.
+New policies persist in dedicated publication-scoped identity policy and binding
+tables after migration 0002. Historical publications without this policy remain
+unchanged. An administrator UI is pending.
 No startup seeding changes historical configurations.
+
+The read-only `shadow_identity` command compares historical behavior against the
+declarative compatibility proposal in `legacy_identity_bindings.json`. That file
+is migration input, not a new runtime default. The proposal validates plain versus
+wrapped historical text schemas; it does not publish configuration. The restored
+67-case snapshot produced zero differences and zero configuration errors.

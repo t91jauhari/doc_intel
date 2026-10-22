@@ -38,3 +38,9 @@ Rollback at this additive stage means retaining the old application and leaving
 the unused new tables in place. No destructive downgrade command is provided.
 The SQL statement splitter supports ordinary DDL only; introduce a suitable
 migration tool before procedural SQL or more complex dependencies are required.
+
+Migration 0002 adds dedicated identity policy/binding tables. New imports validate
+identity paths before writing. Compatibility reconstruction preserves explicit
+empty bindings and detects tampering through the publication digest. The read-only
+shadow command verified 67 restored cases with no changes in findings. Dedicated
+UI editing, remaining business-policy tables and activation are still pending.

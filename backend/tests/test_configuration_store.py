@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from app.configuration.store import (
     ConfigurationBase, ConfigurationEntry, Publication,
-    compile_publication, import_publication,
+    IdentityBindingRecord, IdentityPolicyRecord, compile_publication, import_publication,
 )
 
 
@@ -94,9 +94,32 @@ def test_existing_application_defaults_round_trip(db):
 
 def test_identity_policy_survives_publication(db):
     payload = sample()
+    payload["profiles"]["custom"]["schema"]["properties"] = {"customer": {"type": "string"}}
     payload["identity_policy"] = {
         "comparison": "exact_tokens",
         "bindings": [{"profile": "custom", "field_path": "customer"}],
     }
     publication = load(db, payload)
     assert compile_publication(db, publication)["identity_policy"] == payload["identity_policy"]
+    assert "identity_policy" not in publication.extensions
+    assert db.get(IdentityPolicyRecord, publication.id) is not None
+    assert db.scalar(select(IdentityBindingRecord)).profile == "custom"
+
+
+def test_empty_identity_binding_policy_is_distinct_from_absence(db):
+    payload = sample()
+    payload["identity_policy"] = {"bindings": []}
+    publication = load(db, payload)
+    assert compile_publication(db, publication)["identity_policy"] == {"bindings": []}
+
+
+def test_identity_binding_corruption_detected(db):
+    payload = sample()
+    payload["profiles"]["custom"]["schema"]["properties"] = {"customer": {"type": "string"}}
+    payload["identity_policy"] = {"bindings": [{"profile": "custom", "field_path": "customer"}]}
+    publication = load(db, payload)
+    binding = db.scalar(select(IdentityBindingRecord))
+    binding.definition = {"profile": "custom", "field_path": "supplier"}
+    db.flush()
+    with pytest.raises(ValueError, match="integrity"):
+        compile_publication(db, publication)

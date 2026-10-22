@@ -62,3 +62,23 @@ def test_replay_and_checksum_protection(isolated_engine, tmp_path, monkeypatch):
     path.write_text("CREATE TABLE changed(id INTEGER);", encoding="utf-8")
     with pytest.raises(ValueError, match="checksum"):
         migrate.apply_migrations(isolated_engine, expected_database="sqe_refactor")
+
+
+def test_identity_bindings_round_trip_in_postgres(isolated_engine):
+    from sqlalchemy.orm import Session
+    from app.configuration.store import compile_publication, import_publication
+
+    assert migrate.apply_migrations(isolated_engine, expected_database="sqe_refactor") == [
+        "0001_publications", "0002_identity_bindings",
+    ]
+    payload = {
+        "profiles": {"custom": {"schema": {"type": "object", "properties": {
+            "name": {"type": "string"},
+        }}}},
+        "identity_policy": {"bindings": [{"profile": "custom", "field_path": "name"}]},
+    }
+    with Session(isolated_engine) as session, session.begin():
+        publication = import_publication(session, organization="test", revision=1,
+                                         source_config_id="synthetic", payload=payload)
+        assert compile_publication(session, publication) == payload
+        assert session.scalar(text("SELECT count(*) FROM configuration_identity_bindings")) == 1

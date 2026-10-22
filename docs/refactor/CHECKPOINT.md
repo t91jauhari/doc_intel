@@ -56,3 +56,9 @@ Modified: backend/app/grouping.py; backend/app/domain.py; backend/tests/test_con
 Behavior: explicit profile+normalized-field bindings, optional extraction-schema wrapped path, exact-token/compatible-initial policy, publish validation. Missing policy preserves legacy mapping; explicit empty bindings disable check. Existing filename grouping unchanged. Policy currently persists in publication extensions; dedicated normalized binding table and UI pending.
 Tests: 42 passed, 1 deselected; added policy persistence test passed separately. Excluded test_preview_and_upload_use_same_plan failed identically on untouched baseline commit 9925098 (expected 1 document, actual 3); pre-existing issue, not resolved or hidden. Baseline-regression worktree retained for reproduction. Live health ok.
 Next: dedicated binding persistence/migration and saved-case shadow comparison, then generic SOP policy contracts. Public sanitization/push still pending. All commands finished; no background processing implied.
+
+## Step 4 — 2026-10-22
+Dedicated identity policy/binding tables implemented. Migration 0002 rehearsed only on isolated sqe_refactor. New imports validate/store identity policy separately; empty/absent semantics and digest verification retained. Legacy declarative mapping is shadow/migration input, not runtime defaults.
+Tests: 35 focused passed; expanded PostgreSQL migration suite 4 passed. 40 historical publication round trips unchanged; 67 saved cases compared read-only with zero mismatches and zero configuration errors. Live API healthy; isolated DB stopped; no running commands, public push or activation.
+Changed-file inventory and commit message: CHANGES.md Step 4.
+Next highest priority: generic SOP policy contracts/evaluators and explicit family membership; preserve source versions and compare saved findings. Identity UI/publication workflow and public export sanitization remain pending. Earlier baseline upload assertion remains unresolved.

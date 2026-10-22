@@ -42,6 +42,20 @@ class ConfigurationEntry(ConfigurationBase):
     value: Mapped[dict] = mapped_column(JSON)
 
 
+class IdentityPolicyRecord(ConfigurationBase):
+    __tablename__ = "configuration_identity_policies"
+    publication_id: Mapped[str] = mapped_column(ForeignKey("configuration_publications.id"), primary_key=True)
+    settings: Mapped[dict] = mapped_column(JSON)
+
+
+class IdentityBindingRecord(ConfigurationBase):
+    __tablename__ = "configuration_identity_bindings"
+    publication_id: Mapped[str] = mapped_column(ForeignKey("configuration_identity_policies.publication_id"), primary_key=True)
+    profile: Mapped[str] = mapped_column(String(80), primary_key=True)
+    position: Mapped[int] = mapped_column(Integer)
+    definition: Mapped[dict] = mapped_column(JSON)
+
+
 # Structural sections only: no family names, field paths or business rules.
 MAPPING_SECTIONS = ("document_families", "profiles", "profile_variants", "templates")
 LIST_SECTIONS = ("sop_rules",)
@@ -71,6 +85,11 @@ def import_publication(
         compile_publication(session, existing)
         return existing
     extensions = copy.deepcopy(payload)
+    identity = extensions.pop("identity_policy", None)
+    if "identity_policy" in payload:
+        from .identity import IdentityPolicy, validate_bindings
+
+        validate_bindings(IdentityPolicy.model_validate(identity), payload.get("profiles", {}))
     entries = []
     for section in MAPPING_SECTIONS + LIST_SECTIONS:
         if section not in extensions:
@@ -96,6 +115,15 @@ def import_publication(
     )
     session.add(publication)
     session.flush()
+    if identity is not None:
+        settings = {key: copy.deepcopy(value) for key, value in identity.items() if key != "bindings"}
+        session.add(IdentityPolicyRecord(publication_id=publication.id, settings=settings))
+        session.flush()
+        for position, binding in enumerate(identity["bindings"]):
+            session.add(IdentityBindingRecord(
+                publication_id=publication.id, profile=binding["profile"],
+                position=position, definition=copy.deepcopy(binding),
+            ))
     for section, key, position, value in entries:
         session.add(ConfigurationEntry(
             id=str(uuid.uuid4()), publication_id=publication.id, section=section,
@@ -109,6 +137,14 @@ def import_publication(
 def compile_publication(session: Session, publication: Publication) -> dict:
     """Reconstruct the legacy contract and detect accidental persisted changes."""
     payload = copy.deepcopy(publication.extensions)
+    identity = session.get(IdentityPolicyRecord, publication.id)
+    if identity is not None:
+        settings = copy.deepcopy(identity.settings)
+        settings["bindings"] = [copy.deepcopy(binding.definition) for binding in session.scalars(
+            select(IdentityBindingRecord).where(IdentityBindingRecord.publication_id == publication.id)
+            .order_by(IdentityBindingRecord.position)
+        )]
+        payload["identity_policy"] = settings
     entries = session.scalars(select(ConfigurationEntry).where(
         ConfigurationEntry.publication_id == publication.id,
     ).order_by(ConfigurationEntry.section, ConfigurationEntry.position)).all()
