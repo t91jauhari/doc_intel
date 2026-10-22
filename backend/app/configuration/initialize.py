@@ -7,6 +7,10 @@ def initialize_development():
     from app.settings import settings
     if settings.environment != "development":
         raise ValueError("Development initialization requires APP_ENV=development.")
+    from app.db import engine
+    if engine.dialect.name == 'sqlite' and engine.url.database not in {None, ':memory:'}:
+        from pathlib import Path
+        Path(engine.url.database).expanduser().resolve().parent.mkdir(parents=True, exist_ok=True)
     from app.domain import seed
     from app.profile_variants import seed_profile_variants
     from app.enum_aliases import seed_enum_aliases

@@ -384,3 +384,22 @@ Files:
 
 Changes: explicit enum-revalidation receipts now apply approved canonical/alias spelling and raw fallback to Spider reports, preserve original raw/other fields, record transformations/source configuration and keep uncertainty. Unrequested extraction unchanged; configured field checks still run afterward. Reject requests without applicable profile fields. Native-only tests choose native provider explicitly instead of assuming default Spider normalizes.
 Verification:40 enum/Spider/field tests passed12.37s; broader remaining suite from test_enum_display running session7895, currently past45percent; do not claim final green. Separate PostgreSQL migration7 tests passed1.24s. Exported previous-head synthetic suite76 passed35.15s. Frontend production build compiled/TypeScript/static pages successfully. Automatic approval review rejected production preview start with only blocked-by-policy/no detailed reason; new conditional editor browser acceptance remains pending. Preview stopped/cache removed after dry-run. No live/model calls.
+
+## Step30 — family isolation and readonly source startup
+Commit message: Scope report mappings to families and defer filesystem writes.
+Files:
+- backend/app/configuration/reporting.py
+- backend/app/configuration/initialize.py
+- backend/app/settings.py
+- backend/tests/test_report_bindings.py
+- backend/tests/test_infrastructure_settings.py
+- backend/tests/test_parse_evidence.py
+- frontend/components/report-bindings.tsx
+- frontend/components/document-families.tsx
+- frontend/lib/types.ts
+- docs/refactor/CHANGES.md
+- docs/refactor/CHECKPOINT.md
+- docs/refactor/VERIFICATION.md
+
+Changes: per-family report_definition overrides stored in immutable family revisions; other families sharing the renderer retain their mappings. Document/context bindings constrained to family scope; global legacy definitions retained as fallback. Family editor now writes its family override. Settings import no longer creates directories; explicit development initialization creates SQLite parent, storage writes already create their own parents. Native retry regression explicitly selects mocked Llama provider.
+Verification:26 family/report/latest tests passed67.22s; TypeScript passed;19 settings/report/writer/enum tests passed60.34s including source-import write prohibition and SQLite initialization in new nested directory. Retry checkpoint test passed14.10s. Previous broad remainder163 passed before incorrect native-provider fixture; fixed fixture. Remaining tail to resume from test_parse_evidence. Generated standalone trace dependency folder136KB verified inside checkout/no links, dry-run/scoped git clean removed. No live changes or external jobs.

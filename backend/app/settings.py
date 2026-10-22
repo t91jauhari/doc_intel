@@ -51,8 +51,6 @@ if settings.configuration_read_mode not in {"legacy", "verify", "normalized"}:
     raise RuntimeError("CONFIGURATION_READ_MODE must be legacy, verify or normalized.")
 if settings.configuration_read_mode != "legacy" and settings.configuration_storage_mode != "dual":
     raise RuntimeError("Verified/normalized configuration reads require dual writes.")
-settings.storage.mkdir(parents=True, exist_ok=True)
-(ROOT / "data").mkdir(exist_ok=True)
 if not settings.secret:
     raise RuntimeError("APP_SECRET is required. Run python scripts/init_dev.py first.")
 if settings.environment != "development" and (

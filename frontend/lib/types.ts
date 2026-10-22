@@ -135,6 +135,7 @@ export type Configuration = {
   cross_page_reference?: boolean;
 };
 export type DocumentFamilyConfig = {
+  report_definition?: NonNullable<Configuration["report_definitions"]>[string] | null;
   label: string;
   description?: string;
   enabled?: boolean;

@@ -251,6 +251,9 @@ def test_retry_after_extract_400_reuses_parse_and_expanded_result(signed, monkey
 
     monkeypatch.setattr(provider, "LlamaCloud", FakeClient)
     signed.put("/api/connector", json={"api_key": "llx-not-live"})
+    current = signed.get('/api/config').json()
+    current['payload']['provider'] = 'llama'
+    assert signed.post('/api/config/publish', json={'expected_version': current['version'], 'payload': current['payload']}).status_code == 200
     cid = upload(signed, names=("retry_transaction.pdf",), template="custom").json()[
         "case_ids"
     ][0]

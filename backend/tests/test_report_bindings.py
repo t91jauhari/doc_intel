@@ -36,6 +36,26 @@ def test_ambiguous_sources_do_not_choose_a_document():
     assert values['customer'] == 'Synthetic customer'
 
 
+def test_family_override_does_not_change_another_family_using_same_layout():
+    source = snapshot()
+    override = defaults()['forex']
+    override['bindings']['account'] = {'source': 'literal', 'default': 'LOAN-ACCOUNT'}
+    source['configuration'] = {'templates': {'loan': {'document_family': 'loans'}, 'forex': {'document_family': 'forex'}},
+        'document_families': {'loans': {'report_layout': 'forex', 'report_definition': override}}}
+    source['template'] = 'loan'
+    assert project_report(source, 'forex')[0]['account'] == 'LOAN-ACCOUNT'
+    source['template'] = 'forex'
+    assert project_report(source, 'forex')[0]['account'] == '00123'
+
+
+def test_family_binding_cannot_reference_another_familys_documents():
+    configuration = default_config()
+    configuration['document_families'] = {'loans': {'label': 'Loans', 'profiles': ['ektp'],
+        'report_layout': 'forex', 'report_definition': defaults()['forex']}}
+    with pytest.raises(ValueError, match='outside this family'):
+        validate_report_definitions(configuration)
+
+
 def test_all_default_report_bindings_validate_against_profile_schemas():
     configuration = default_config()
     configuration['report_definitions'] = defaults()

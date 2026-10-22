@@ -3,14 +3,14 @@ import {useData} from "./platform-provider";
 import type {Configuration} from "@/lib/types";
 
 type Definitions = NonNullable<Configuration["report_definitions"]>;
-export function ReportBindings({draft, update, layout}: {draft: Configuration; update: (value: Configuration) => void; layout: string}) {
+export function ReportBindings({configured, onChange, layout}: {configured?: Definitions[string] | null; onChange: (value: Definitions[string]) => void; layout: string}) {
   const {data, error} = useData<Definitions>("/config/report-bindings",0);
-  const definition = draft.report_definitions?.[layout] || data?.[layout];
+  const definition = configured || data?.[layout];
   if (!definition) return error ? <p role="alert">Unable to load report mappings. Reload to configure them.</p> : <p>Loading report mappings…</p>;
-  const save = (value: Definitions[string]) => update({...draft, report_definitions: {...draft.report_definitions, [layout]: value}});
+  const save = onChange;
   const labels: Record<string,string> = {customer:"Customer name",account:"Account number",transaction_type:"Transaction type",inputter:"Inputter",approver:"Approver",carrier:"Transaction carrier",transaction_date:"Transaction date"};
   return <details><summary>Report field mappings</summary>
-    <p>Choose where each report value comes from. These mappings affect display only. SOP findings and scores retain their original rules. Changes apply after testing and publishing.</p>
+    <p>Choose where this family’s report values come from. These mappings affect display only. SOP findings and scores retain their original rules. Changes apply after testing and publishing.</p>
     <label>Report timezone<input value={definition.timezone} placeholder="Asia/Jakarta" onChange={event=>save({...definition,timezone:event.target.value})}/></label>
     {Object.entries(definition.bindings).map(([key,binding])=><fieldset key={key} className="panel">
       <legend>{labels[key] || key}</legend>
