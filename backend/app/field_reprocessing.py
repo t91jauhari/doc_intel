@@ -1,4 +1,6 @@
 """Durable, selected-field extraction. Reference answers never enter provider prompts."""
+from .configuration.repository import get_revision
+
 import copy
 import json
 import time
@@ -221,7 +223,7 @@ def process_fields(job_id, heartbeat=lambda:None):
             refresh_case(db,doc.case_id)
             from .profile_context import queue_dependents
             from .db import Config
-            queue_dependents(db,stored,db.get(Config,db.get(Case,doc.case_id).config_id).payload)
+            queue_dependents(db,stored,get_revision(db, db.get(Case,doc.case_id).config_id).payload)
     except Exception as exc:
         with SessionLocal.begin() as db:
             job=db.get(Job,job_id);job.status='ERROR';job.lease_until=0

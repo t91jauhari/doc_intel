@@ -1,4 +1,6 @@
 """Independent reference comparisons; never modify extraction or SOP decisions."""
+from .configuration.repository import get_revision
+
 
 import hashlib
 import json
@@ -27,7 +29,7 @@ ACCOUNT_DATASET = json.loads(
 def dataset_for_case(db, case):
     from .db import Config
 
-    flow = db.get(Config, case.config_id).payload["templates"][case.template]
+    flow = get_revision(db, case.config_id).payload["templates"][case.template]
     if 'dataset_id' in flow and flow['dataset_id'] is None:
         return {'id':'none','source_name':'No reference dataset','sha256':'','samples':[],'rows':[]}
     return (

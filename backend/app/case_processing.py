@@ -1,4 +1,6 @@
 """Frozen case inputs and independently dispatched SOP/report jobs."""
+from .configuration.repository import get_revision
+
 
 import hashlib
 import json
@@ -23,7 +25,7 @@ ACTIVE = {"QUEUED", "CLASSIFYING", "UPLOADING", "PARSING", "EXTRACTING", "VALIDA
 
 
 def inputs(db, case):
-    cfg = db.get(Config, case.config_id)
+    cfg = get_revision(db, case.config_id)
     docs = db.scalars(
         select(Document).where(Document.case_id == case.id).order_by(Document.id)
     ).all()

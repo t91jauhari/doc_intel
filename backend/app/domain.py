@@ -1,4 +1,6 @@
 """Versioned business configuration, conservative filename routing and SOP evaluation."""
+from .configuration.repository import get_revision
+
 from .configuration.publication import persist_revision
 
 
@@ -481,9 +483,11 @@ def validate_config(payload):
 
 
 def latest_config(db, org):
-    return db.scalar(
+    from .configuration.repository import resolve_revision
+    record = db.scalar(
         select(Config).where(Config.org == org).order_by(Config.version.desc()).limit(1)
     )
+    return resolve_revision(db, record)
 
 
 def seed():
@@ -865,7 +869,7 @@ def refresh_case(db, case_id):
         .where(Document.case_id == case_id)
         .order_by(Document.created_at)
     ).all()
-    cfg_record = db.get(Config, case.config_id)
+    cfg_record = get_revision(db, case.config_id)
     cfg = cfg_record.payload
     if "workflow" in cfg:
         from .case_processing import queue_case

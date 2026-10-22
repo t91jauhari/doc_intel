@@ -1,3 +1,4 @@
+from .configuration.repository import get_revision
 import logging
 import time
 
@@ -28,7 +29,7 @@ def process_job(job_id, heartbeat=lambda: None):
         case = db.get(Case, doc.case_id)
         case.status = "PROCESSING"
         case.updated_at = time.time()
-        cfg = db.get(Config, case.config_id).payload
+        cfg = get_revision(db, case.config_id).payload
         from .document_families import extraction_config
         cfg = extraction_config(cfg, case.template)
         audit(

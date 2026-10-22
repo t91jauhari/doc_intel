@@ -1,13 +1,14 @@
 id,area,source,status,target
 C01,family catalog,backend/app/document_families.py,identified,family revision tables
-C02,identity mapping,backend/app/grouping.py,identified,profile identity bindings
-C03,rule scope prefixes,backend/app/transaction_flows.py,identified,explicit family rule membership
+C02,identity mapping,backend/app/grouping.py,partial,profile identity bindings
+C03,rule scope prefixes,backend/app/transaction_flows.py,partial,explicit family rule membership
 C04,scorer layout coupling,backend/app/transaction_flows.py,identified,scoring policy
 C05,conditional SOP,backend/app/account_opening_sop.py,identified,typed policy conditions
 C06,signature paths,backend/app/account_opening_sop.py,identified,evidence bindings
-C07,startup business updates,backend/app/main.py,identified,explicit upgrade publication
+C07,startup business updates,backend/app/main.py,implemented_tested,explicit upgrade publication
 C08,bundled datasets,backend/app/dataset_comparison.py,identified,dataset registry revisions
 C09,comparison thresholds,backend/app/dataset_comparison.py,identified,field comparison policy
 C10,report bindings,backend/app/account_opening_report.py,identified,report configuration
 C11,legacy refresh defect,backend/app/domain.py,identified,compatibility regression fix
 C12,validation status propagation,backend/app/sop.py,identified,typed validation outcomes
+C13,pinned configuration reads,backend/app/configuration/repository.py,verification_in_progress,explicit legacy verify normalized rollout

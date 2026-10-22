@@ -79,7 +79,7 @@ Modified: backend/app/main.py; backend/app/settings.py; backend/tests/test_confi
 Change: publish endpoint delegates to application service; explicit legacy(default)/dual infrastructure rollout mode; requires migrated tables/checksums; Config, normalized publication and audit share transaction. Source request not mutated, historical case pins preserved. No startup table creation.
 Verification: 17 API/publication/flow tests passed;5 PostgreSQL migration tests passed; final1 input-copy/prompt-compilation test passed. PostgreSQL rehearsal proposed41 and rolled back, round trip equal, original config/case/publication/audit rows unchanged. Live health ok; restored DB stopped. Other direct writers/normalized reads still pending; M1 partial, no activation or push.
 
-## Step 13 — all configuration writers and explicit initialization
+## Step 13 â€” all configuration writers and explicit initialization
 Commit message: Centralize configuration writers and remove startup policy upgrades.
 Files:
 - backend/app/configuration/initialize.py (created)
@@ -106,10 +106,17 @@ Files:
 Additional modified file: backend/tests/test_profile_guidance.py (compiled prompt-length fixture).
 Verification: 4 new tests passed; broader run 26 passed/1 outdated fixture failed, fixture corrected but Docker rerun blocked. All backend Python parsed. This is implemented with final regression pending, not completed rollout. See CHECKPOINT for disk incident and preserved state.
 
-## Step 14 — private object-backup tooling (execution blocked)
+## Step 14 â€” private object-backup tooling (execution blocked)
 Commit message: Add guarded logical object backup and integrity verification.
 Created: backend/app/configuration/backup_objects.py; backend/tests/test_object_backup.py.
 Modified: docs/refactor/CHANGES.md; docs/refactor/CHECKPOINT.md; docs/refactor/VERIFICATION.md.
 Behavior: credentials remain inside existing API container; read-only list/get requests; inventory-before/after guard, per-object SHA256 manifest and archive verification; exclusive output creation; free-space preflight; subprocess timeouts; remove only its own failed output. Never writes live objects or extracts untrusted archive paths. Backup captures current object contents only, not version histories or a transactionally coordinated database snapshot.
 Tests: 3 offline integrity tests passed (valid content, corrupted digest, unexpected member). No completed production object backup: initial attempt exhausted C:, subsequent inventory blocked by Docker. B0/C1 remain incomplete.
 Step13 commit: d03877a. No live activation/public push.
+
+## Step15 â€” verified pinned configuration repository
+Commit message: Route pinned configuration reads through a verified repository.
+Created: backend/app/configuration/repository.py; backend/tests/test_configuration_repository.py.
+Modified: backend/app/case_processing.py; backend/app/dataset_comparison.py; backend/app/domain.py; backend/app/field_reprocessing.py; backend/app/grouping_repair.py; backend/app/main.py; backend/app/processor.py; backend/app/settings.py; docs/refactor/PUBLICATION_SERVICE.md; docs/refactor/INVENTORY.csv; docs/refactor/PLAN.md; docs/refactor/MIGRATIONS.md; docs/refactor/VERIFICATION.md; docs/refactor/CHANGES.md; docs/refactor/CHECKPOINT.md.
+Behavior: copied snapshots, pinned-ID resolution, legacy/verify/normalized infrastructure modes, dual-write precondition, fail closed on missing/linkage/digest/parity errors. No live flags changed. Guidance/upgrades use centralized writes. Existing case pins preserved.
+Verification:22 focused plus52 broader tests passed.40 revisions/67 pins parity checked read-only. PostgreSQL publication rollback rehearsal passed. Object baseline backup verified. M1 complete in isolation; remaining plan points not marked complete. Tracking documents repaired to UTF-8 where prior mixed encodings existed.

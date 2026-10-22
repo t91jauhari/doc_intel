@@ -1,3 +1,4 @@
+from .configuration.repository import get_revision
 import copy
 import csv
 import hashlib
@@ -747,7 +748,7 @@ def save_connector(data: ConnectorInput, user=Depends(ADMIN)):
 def case_view(c, db):
     states = db.scalars(select(Document.status).where(Document.case_id == c.id)).all()
     docs = db.scalars(select(Document).where(Document.case_id == c.id)).all()
-    payload = db.get(Config, c.config_id).payload
+    payload = get_revision(db, c.config_id).payload
     missing_documents = sorted(
         {
             payload["profiles"][d.doc_type]["label"]
@@ -772,7 +773,7 @@ def case_view(c, db):
         "completed_count": sum(x == "COMPLETED" for x in states),
         "missing_documents": missing_documents,
         "created_by": c.created_by,
-        "config_version": db.get(Config, c.config_id).version,
+        "config_version": get_revision(db, c.config_id).version,
     }
 
 
@@ -827,7 +828,7 @@ async def upload(
             cfg = latest_config(db, user.org)
             existing = authorized(db, Case, case_id, user) if case_id else None
             if existing:
-                cfg = db.get(Config, existing.config_id)
+                cfg = get_revision(db, existing.config_id)
                 template = existing.template
             elif template not in cfg.payload["templates"] or not cfg.payload[
                 "templates"
@@ -1220,7 +1221,7 @@ def case_detail(case_id: str, user=Depends(current_user)):
             ],
             "can_write": user.role not in {"auditor"},
             "can_review": user.role in {"bank_admin", "branch_admin", "reviewer"},
-            "maker_checker": db.get(Config, c.config_id).payload["maker_checker"],
+            "maker_checker": get_revision(db, c.config_id).payload["maker_checker"],
         }
 
 
@@ -1647,7 +1648,7 @@ def review_sop(case_id: str, data: FindingReview, user=Depends(REVIEW)):
                     422,
                     "Each observation needs a case document, 1-based page and visible region description.",
                 )
-        cfg = db.get(Config, case.config_id)
+        cfg = get_revision(db, case.config_id)
         rule = next(
             (r for r in cfg.payload.get("sop_rules", []) if r["id"] == data.rule_id),
             None,
@@ -1813,7 +1814,7 @@ def review_visual_box(doc_id: str, data: VisualBoxReview, user=Depends(REVIEW)):
         }
         if data.field not in visual_names | ordinary_names:
             raise HTTPException(422, "Unknown extracted field.")
-        cfg = db.get(Config, db.get(Case, d.case_id).config_id).payload
+        cfg = get_revision(db, db.get(Case, d.case_id).config_id).payload
         metadata = {
             **d.metadata_json,
             "visual_evidence": {
@@ -1998,7 +1999,7 @@ def reprocess_document_fields(doc_id: str, data: ReprocessFieldsInput, user=Depe
         if db.scalar(select(Job).where(Job.document_id==d.id,Job.status.in_(['QUEUED','DISPATCHED','RUNNING']))):
             raise HTTPException(409, 'A document job is already active.')
         case=db.get(Case,d.case_id)
-        pinned=db.get(Config,case.config_id)
+        pinned=get_revision(db, case.config_id)
         instruction=data.instruction.strip()
         save_guidance=bool(instruction and data.save_to_profile)
         if save_guidance and user.role != 'bank_admin':
@@ -2175,7 +2176,7 @@ def confirm_type(doc_id: str, data: ClassificationInput, user=Depends(REVIEW)):
         d = authorized(db, Document, doc_id, user)
         if d.status not in {"NEEDS_CLASSIFICATION", "ERROR"} or d.raw:
             raise HTTPException(409, "Type can only be assigned before extraction.")
-        cfg = db.get(Config, db.get(Case, d.case_id).config_id).payload
+        cfg = get_revision(db, db.get(Case, d.case_id).config_id).payload
         if data.doc_type not in cfg["profiles"]:
             raise HTTPException(422, "Unknown profile.")
         before = d.doc_type
@@ -2231,7 +2232,7 @@ def correct_field(doc_id: str, data: CorrectionInput, user=Depends(REVIEW)):
         effective = copy.deepcopy(d.raw)
         effective.update(d.overrides)
         effective[data.field] = data.value
-        cfg = db.get(Config, db.get(Case, d.case_id).config_id).payload
+        cfg = get_revision(db, db.get(Case, d.case_id).config_id).payload
         try:
             if cfg.get("provider") != "spider-ai":
                 check_schema(effective, get_profile(d.doc_type)["schema"])
@@ -2282,7 +2283,7 @@ def correct_effective_field(
             raise HTTPException(
                 409, "The effective value changed. Refresh before correcting it."
             )
-        cfg = db.get(Config, db.get(Case, d.case_id).config_id).payload
+        cfg = get_revision(db, db.get(Case, d.case_id).config_id).payload
         try:
             replacement = (
                 data.value
@@ -2724,7 +2725,7 @@ def approve_report(report_id: str, user=Depends(REVIEW)):
                 409,
                 "Only the latest ready report with complete processing and no unresolved review findings can be released. Confirmed violations may be released.",
             )
-        cfg = db.get(Config, c.config_id)
+        cfg = get_revision(db, c.config_id)
         if cfg.payload["maker_checker"] and c.created_by == user.id:
             raise HTTPException(403, "A different reviewer must approve this case.")
         r.state = "FINAL"
@@ -2843,7 +2844,7 @@ def revalidate_enum_aliases(
         ]
         if not targets:
             raise HTTPException(422, "No completed eKTP extraction is available.")
-        old = db.get(Config, case.config_id)
+        old = get_revision(db, case.config_id)
         latest = latest_config(db, user.org)
         payload = copy.deepcopy(old.payload)
         policy = payload["profiles"]["ektp"]["policy"]

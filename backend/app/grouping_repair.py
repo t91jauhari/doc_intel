@@ -1,4 +1,6 @@
 """Repair one historical batch without repeating provider extraction."""
+from .configuration.repository import get_revision
+
 
 import hashlib
 import json
@@ -51,7 +53,7 @@ def load_batch(db, batch_id, user, lock=False):
             sort_keys=True,
         ).encode()
     ).hexdigest()
-    cfg = db.get(Config, next(iter(cases.values())).config_id).payload
+    cfg = get_revision(db, next(iter(cases.values())).config_id).payload
     return batch, docs, cases, cfg, revision
 
 
