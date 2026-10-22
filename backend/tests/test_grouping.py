@@ -77,12 +77,11 @@ def test_preview_and_upload_use_same_plan(signed):
     assert len(response.json()["case_ids"]) == 1
     with SessionLocal() as db:
         assert db.scalar(select(Case)).customer == "Dirman"
-        assert (
-            len(db.scalars(select(Document)).all()) == 1
-        )  # identical synthetic PDFs deduplicated
-        assert db.scalar(select(Document)).provider_state["grouping"][
-            "original_customer"
-        ]
+        documents = db.scalars(select(Document)).all()
+        # upload() creates distinct bytes for each fixture filename.
+        assert len(documents) == len(names)
+        assert {doc.filename for doc in documents} == set(names)
+        assert all(doc.provider_state["grouping"]["original_customer"] for doc in documents)
 
 
 def test_unresolved_upload_is_atomic_and_manual_assignment_works(signed):
@@ -119,6 +118,19 @@ def test_unresolved_upload_is_atomic_and_manual_assignment_works(signed):
             len(db.scalars(select(Document).where(Document.case_id == target.id)).all())
             == 2
         )
+
+
+def test_identical_content_is_deduplicated_independently_of_filename(signed):
+    branch = signed.get("/api/branches").json()[0]["id"]
+    response = signed.post("/api/uploads", data={"branch_id": branch, "template": "forex"},
+        files=[("files", (name, PDF, "application/pdf")) for name in
+               ("Synthetic_ektp.pdf", "Synthetic_lld.pdf", "Synthetic_invoice.pdf")],
+        headers={"Idempotency-Key": "identical-content"})
+    assert response.status_code == 202, response.text
+    with SessionLocal() as db:
+        assert len(db.scalars(select(Document)).all()) == 1
+        assert len(db.scalars(select(Job)).all()) == 1
+        assert len(db.scalars(select(Case)).all()) == 1
 
 
 def test_duplicate_filenames_are_rejected(signed):

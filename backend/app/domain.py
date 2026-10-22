@@ -879,15 +879,6 @@ def refresh_case(db, case_id):
     present = {d.doc_type for d in docs}
     missing = [x for x in required if x not in present]
     findings = riplay_identity_findings(docs, cfg)
-    if riplay_update and "riplay" in payload["profiles"]:
-        rp = payload["profiles"]["riplay"]
-        rp["policy"] = {**rp["policy"], "required_initial_pages": [1, 2, 3]}
-        rp["schema"] = defaults["profiles"]["riplay"]["schema"]
-        rp["schema_version"] = defaults["profiles"]["riplay"]["schema_version"]
-        clarification = "\nRIPLAY page-rule clarification overrides any older footer instruction: require bottom-right customer initials on pages 1, 2 and 3 only. Page 4 contains the main signing fields and needs no separate footer initial."
-        rp["system_prompt"] += clarification
-        rp["parse_prompt"] += clarification
-    payload.setdefault("customer_aliases", {})
     for name in missing:
         findings.append(
             {

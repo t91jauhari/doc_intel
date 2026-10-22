@@ -127,3 +127,9 @@ Created: backend/app/configuration/migrations/0004_revision_immutability.sql.
 Modified: backend/app/configuration/migrate.py; backend/app/configuration/README.md; backend/tests/test_configuration_migrations.py; docs/refactor/CHANGES.md; docs/refactor/CHECKPOINT.md; docs/refactor/MIGRATIONS.md; docs/refactor/VERIFICATION.md; docs/refactor/PLAN.md.
 Changes: mutation triggers for six normalized tables and legacy configurations; transaction-bound child inserts; parameter-free migration script execution. No live migration.
 Verification:6 PostgreSQL tests passed, including21 table mutation attempts and5 late-insert attempts; new revision/idempotent import preserved. Migration0004 applied/replayed on isolated restore;40 revisions round-trip, original rows unchanged. New publication rehearsal proposed41/rolled back/equal, originals unchanged. Docker restart succeeded; live services healthy.
+
+## Step17 — legacy refresh and grouping regressions
+Commit message: Fix legacy case refresh and correct grouping regression coverage.
+Created: backend/tests/test_legacy_case_refresh.py.
+Modified: backend/app/domain.py; backend/tests/test_grouping.py; docs/refactor/CHANGES.md; docs/refactor/CHECKPOINT.md; docs/refactor/VERIFICATION.md; docs/refactor/INVENTORY.csv.
+Removed misplaced profile-upgrade code from legacy refresh; case evaluation never changes published profile policy. Grouping fixture now expects3 distinct byte streams; separate identical-content test confirms1 document/job/case.17 tests passed; strengthened legacy idempotency assertions rerun2 passed. Removed clean, obsolete baseline-regression worktree after confirming no changes; baseline commit remains reproducible in Git. No live changes.

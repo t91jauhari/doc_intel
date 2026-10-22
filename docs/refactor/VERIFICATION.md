@@ -44,3 +44,5 @@ Fresh repository/publication/writer/guidance suite:22 passed (174.16s), includin
 Object backup verified7655 objects. Automatic cleanup denied recursive deletion of old94 MB preview cache on O:; left untouched. Test containers use --rm. No image rebuild or broad prune.
 
 Step16:6 PostgreSQL migration tests passed (0.98s). Initial parameter handling failed on PostgreSQL format placeholders; corrected by explicit no_parameters execution and reran successfully. Migration0004 isolated restore: replay0 changes,40 revisions checked, source rows unchanged. Post-trigger publication rehearsal exact and rolled back, source rows unchanged. No live schema activation.
+
+Step17: grouping and legacy refresh17 passed (59.83s). Strengthened2 legacy snapshot-idempotency tests passed (13.46s). Both READY and missing-document FAIL paths preserve pinned payload and avoid duplicate report artifacts. Actual identical-content upload dedup is covered independently from distinct fixture PDFs. Earlier baseline grouping failure is resolved as an outdated assertion, with dedup coverage retained.
