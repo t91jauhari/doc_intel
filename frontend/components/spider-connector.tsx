@@ -2,10 +2,13 @@
 import { useState } from "react";
 import { useData, usePlatform } from "@/components/platform-provider";
 import { api } from "@/lib/api";
+import { ConnectorOptions, numericConnectorValues, type NumericConnectorDraft, type NumericConnectorField } from "@/components/connector-options";
 import { Busy, ErrorNotice } from "@/components/ui";
 type Connector = {
   configured: boolean;
-  options: { base_url: string; model_id: string };
+  options: { base_url: string; model_id: string; [key: string]: unknown };
+  numeric_fields?: NumericConnectorField[];
+  configuration_warning?: string | null;
 };
 export function SpiderConnectorForm() {
   const { data, error, refresh } = useData<Connector>(
@@ -17,6 +20,7 @@ export function SpiderConnectorForm() {
   const [base, setBase] = useState<string | null>(null);
   const [model, setModel] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [advanced, setAdvanced] = useState<NumericConnectorDraft>({});
   if (!data) return error ? <ErrorNotice message={error} /> : <Busy />;
   return (
     <section className="panel settings-card">
@@ -25,6 +29,7 @@ export function SpiderConnectorForm() {
         {data.configured ? "API key configured" : "API key required"}.
         Credentials are encrypted and never returned to the browser.
       </p>
+      {data.configuration_warning && <ErrorNotice message={data.configuration_warning} />}
       <form
         onSubmit={async (e) => {
           e.preventDefault();
@@ -36,9 +41,10 @@ export function SpiderConnectorForm() {
                 api_key: key || null,
                 base_url: base ?? data.options.base_url,
                 model_id: model ?? data.options.model_id,
+                ...numericConnectorValues(data.numeric_fields || [], data.options, advanced),
               }),
             });
-            setKey("");
+            setKey(""); setBase(null); setModel(null); setAdvanced({});
             await refresh();
             notify(
               "Spider-AI connector saved. Select Spider-AI under Processing defaults and publish.",
@@ -85,6 +91,7 @@ export function SpiderConnectorForm() {
           All PDF pages are rendered to images before classification and
           extraction. LlamaCloud is not called by this provider.
         </p>
+        <ConnectorOptions fields={data.numeric_fields || []} options={data.options} draft={advanced} onChange={setAdvanced} title="Advanced request and image settings" />
         <button className="primary" disabled={busy}>
           {busy ? "Saving…" : "Save Spider-AI connector"}
         </button>

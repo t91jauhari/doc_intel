@@ -236,3 +236,25 @@ Files:
 
 Changes: ProviderStateStore protocol and SQL implementation; checkpoint transactions explicitly commit before external effects; FOR UPDATE serializes state merges; nested state copied; missing-document and invalid-serialization paths fail without losing prior receipts. Legacy helper APIs delegate to repository. Custom profile ID limit aligned to Document.doc_type VARCHAR(50), including UI guard.
 Verification:10 repository/custom-profile tests passed23.70s including real PostgreSQL blocked-writer merge;8 recovery/native reuse tests passed82.67s; TypeScript passed. Temporary PostgreSQL schema removed; no public data modified. --rm runners; isolated database stopped. No model calls/images/large artifacts. Atomic submission claiming across concurrent jobs remains a distinct responsibility; this change guarantees merge integrity, not a full lifecycle rewrite.
+
+## Step23 — typed provider connectors and configurable request controls
+Commit message: Preserve connector settings and share validated provider options.
+Files:
+- backend/app/config_data/provider_defaults_v1.json
+- backend/app/extraction/connector_contracts.py
+- backend/app/extraction/connector_repository.py
+- backend/app/field_reprocessing.py
+- backend/app/main.py
+- backend/app/provider.py
+- backend/app/spider_provider.py
+- backend/tests/test_connector_contracts.py
+- frontend/components/connector-options.tsx
+- frontend/components/spider-connector.tsx
+- frontend/app/settings/page.tsx
+- docs/refactor/CHANGES.md
+- docs/refactor/CHECKPOINT.md
+- docs/refactor/VERIFICATION.md
+- docs/refactor/PLAN.md
+
+Changes: shared organization-scoped connector repository; encrypted credentials excluded from responses/repr; typed URL/key/numeric contracts; versioned compatible defaults; key-only updates merge submitted options instead of resetting model/scope; unknown legacy storage options preserved but not exposed or executed. Invalid saved options fail closed for extraction and show a repair warning in settings. Normal/selected-field providers use the same options, including timeouts and image budgets. Advanced UI controls derive limits from backend metadata.
+Verification:48 connector/Spider/prompt-delivery/field-reprocessing tests passed373.81s; TypeScript passed; both restored connector rows validated without reading credentials. No real model calls or live changes. Browser validation of new advanced controls remains part of final UI acceptance.

@@ -10,6 +10,7 @@ import { ForexSOPPolicyEditor } from "@/components/forex-sop-policy";
 import { ContextEditor } from "@/components/context-editor";
 import { ComparisonUpgrade } from "@/components/comparison-upgrade";
 import { ProfileVersionComparison } from "@/components/profile-version-comparison";
+import { ConnectorOptions, numericConnectorValues, type NumericConnectorDraft, type NumericConnectorField } from "@/components/connector-options";
 import { SpiderConnectorForm } from "@/components/spider-connector";
 import { TransactionFlows } from "@/components/transaction-flows";
 import { DocumentFamilies } from "@/components/document-families";
@@ -100,7 +101,9 @@ const settingsSections = {
 };
 type Connector = {
   configured: boolean;
-  options: { base_url?: string; project_id?: string; organization_id?: string };
+  options: { base_url?: string; project_id?: string; organization_id?: string; [key: string]: unknown };
+  numeric_fields?: NumericConnectorField[];
+  configuration_warning?: string | null;
 };
 type Test = {
   sop_results?: {
@@ -1241,6 +1244,7 @@ function ConnectorForm() {
     [project, setProject] = useState(""),
     [org, setOrg] = useState(""),
     [pending, setPending] = useState(false);
+  const [advanced, setAdvanced] = useState<NumericConnectorDraft>({});
   useEffect(() => {
     if (data) {
       setBase(data.options.base_url || "");
@@ -1259,6 +1263,7 @@ function ConnectorForm() {
         <Badge value={data?.configured ? "READY" : "PENDING"} />
       </div>
       {error && <ErrorNotice message={error} />}
+      {data?.configuration_warning && <ErrorNotice message={data.configuration_warning} />}
       <form
         onSubmit={async (e) => {
           e.preventDefault();
@@ -1271,9 +1276,10 @@ function ConnectorForm() {
                 base_url: base,
                 project_id: project,
                 organization_id: org,
+                ...numericConnectorValues(data?.numeric_fields || [], data?.options || {}, advanced),
               }),
             });
-            setKey("");
+            setKey(""); setAdvanced({});
             notify("Connector saved. Retry waiting documents from their case.");
             await refresh();
           } catch (err) {
@@ -1330,6 +1336,7 @@ function ConnectorForm() {
           Classification runs after filename grouping and may incur parsing
           charges in addition to the specialized extraction parse.
         </div>
+        <ConnectorOptions fields={data?.numeric_fields || []} options={data?.options || {}} draft={advanced} onChange={setAdvanced} />
         <button className="primary" disabled={pending}>
           <Save size={16} />
           {pending ? "Saving…" : "Save connector"}

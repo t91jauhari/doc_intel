@@ -56,3 +56,5 @@ Step20: TypeScript passed. Browser validated new comparison definition and expli
 Step21:47 provider/service/Spider recovery/config-store tests passed204.05s;3 mocked Llama classification/parse-reuse/uncertain-submission tests passed33.77s. Unsupported provider fails before dispatch, copied configuration cannot mutate source, classification-only result and exception identity retained. Hash persistence compatibility tests passed through store re-export. No cloud calls.
 
 Step22:10 repository/custom-profile tests23.70s, including PostgreSQL row-lock concurrency and committed receipt preservation.8 provider recovery/native reuse tests82.67s. TypeScript passed. Failure serialization rolls back status/state; later processing rollback cannot remove committed checkpoint; nested state does not leak. Temporary provider_state_contract_tests schema dropped and verified absent.
+
+Step23:48 connector/Spider/prompt-delivery/selected-field tests passed373.81s; TypeScript noEmit passed. Restored PostgreSQL2 connector option records accepted; no credential reads. Mock/fixture providers only. Advanced connector browser controls await final UI acceptance.

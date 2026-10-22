@@ -1,5 +1,6 @@
 from .configuration.repository import get_revision
 from .configuration.profiles import profile_schema, validate_shape
+from .extraction.connector_contracts import ConnectorInput, SpiderConnectorInput, normalized_options, administrative_options
 import copy
 import csv
 import hashlib
@@ -546,55 +547,18 @@ def preview_upload(data: PreviewInput, user=Depends(WRITE)):
     return plan_grouping(data.filenames, cfg)
 
 
-class SpiderConnectorInput(BaseModel):
-    api_key: str | None = Field(default=None, max_length=500)
-    base_url: str = "https://spider.thantowijauhari.com/v1"
-    model_id: str = Field(
-        default="pct-prod-spider/pecut/gemini-3.8-flash-high",
-        min_length=1,
-        max_length=200,
-    )
-
-
 @app.get("/api/connectors/spider-ai")
 def spider_connector(user=Depends(ADMIN)):
-    from .spider_provider import BASE_URL, MODEL
-
     with SessionLocal() as db:
         item = db.scalar(select(SpiderConnector).where(SpiderConnector.org == user.org))
         return {
             "configured": bool(item and item.encrypted),
-            "options": item.options
-            if item
-            else {"base_url": BASE_URL, "model_id": MODEL},
+            **administrative_options("spider-ai", item.options if item else {}),
         }
 
 
 @app.put("/api/connectors/spider-ai")
 def save_spider_connector(data: SpiderConnectorInput, user=Depends(ADMIN)):
-    if not data.model_id.strip():
-        raise HTTPException(422, "Supply a non-empty model ID.")
-    url = urlsplit(data.base_url)
-    if (
-        url.scheme != "https"
-        or not url.hostname
-        or url.username
-        or url.password
-        or url.query
-        or url.fragment
-    ):
-        raise HTTPException(
-            422,
-            "Use an HTTPS base URL without embedded credentials, query or fragment.",
-        )
-    if data.api_key is not None and (
-        not data.api_key.strip()
-        or data.api_key.lower().startswith("bearer ")
-        or any(c.isspace() for c in data.api_key)
-    ):
-        raise HTTPException(
-            422, "Supply only the API key, without Bearer or whitespace."
-        )
     with SessionLocal.begin() as db:
         item = db.scalar(select(SpiderConnector).where(SpiderConnector.org == user.org))
         if not item:
@@ -602,10 +566,13 @@ def save_spider_connector(data: SpiderConnectorInput, user=Depends(ADMIN)):
             db.add(item)
         if data.api_key is not None:
             item.encrypted = encrypt(data.api_key)
-        item.options = {
-            "base_url": data.base_url.rstrip("/"),
-            "model_id": data.model_id.strip(),
-        }
+        changes = data.model_dump(exclude={"api_key"}, exclude_unset=True)
+        candidate = {**(item.options or {}), **changes}
+        try:
+            validated = normalized_options("spider-ai", candidate)
+        except ValueError:
+            raise HTTPException(422, "Connector settings are invalid. Review all configured options.") from None
+        item.options = {**candidate, **validated}
         audit(
             db,
             user.org,
@@ -613,7 +580,7 @@ def save_spider_connector(data: SpiderConnectorInput, user=Depends(ADMIN)):
             "spider.connector_updated",
             credential_changed=data.api_key is not None,
         )
-        return {"configured": bool(item.encrypted), "options": item.options}
+        return {"configured": bool(item.encrypted), "options": validated}
 
 
 class SpiderResubmit(BaseModel):
@@ -705,32 +672,12 @@ def connector(user=Depends(ADMIN)):
         item = db.scalar(select(Connector).where(Connector.org == user.org))
         return {
             "configured": bool(item and item.encrypted),
-            "options": item.options if item else {},
+            **administrative_options("llama", item.options if item else {}),
         }
-
-
-class ConnectorInput(BaseModel):
-    api_key: str | None = Field(default=None, max_length=500)
-    base_url: str = ""
-    project_id: str = ""
-    organization_id: str = ""
 
 
 @app.put("/api/connector")
 def save_connector(data: ConnectorInput, user=Depends(ADMIN)):
-    if data.api_key is not None and (
-        not data.api_key.strip()
-        or data.api_key.lower().startswith("bearer ")
-        or any(c.isspace() for c in data.api_key)
-    ):
-        raise HTTPException(
-            422, "Supply only the API key, without Bearer or whitespace."
-        )
-    if data.base_url and (
-        urlsplit(data.base_url).scheme != "https"
-        or not urlsplit(data.base_url).hostname
-    ):
-        raise HTTPException(422, "Provider base URL must be HTTPS.")
     with SessionLocal.begin() as db:
         item = db.scalar(select(Connector).where(Connector.org == user.org))
         if not item:
@@ -738,11 +685,13 @@ def save_connector(data: ConnectorInput, user=Depends(ADMIN)):
             db.add(item)
         if data.api_key is not None:
             item.encrypted = encrypt(data.api_key)
-        item.options = {
-            "base_url": data.base_url,
-            "project_id": data.project_id,
-            "organization_id": data.organization_id,
-        }
+        changes = data.model_dump(exclude={"api_key"}, exclude_unset=True)
+        candidate = {**(item.options or {}), **changes}
+        try:
+            validated = normalized_options("llama", candidate)
+        except ValueError:
+            raise HTTPException(422, "Connector settings are invalid. Review all configured options.") from None
+        item.options = {**candidate, **validated}
         audit(
             db,
             user.org,
@@ -750,7 +699,7 @@ def save_connector(data: ConnectorInput, user=Depends(ADMIN)):
             "connector.updated",
             credential_changed=data.api_key is not None,
         )
-        return {"configured": bool(item.encrypted), "options": item.options}
+        return {"configured": bool(item.encrypted), "options": validated}
 
 
 def case_view(c, db):

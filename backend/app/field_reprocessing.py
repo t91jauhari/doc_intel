@@ -47,18 +47,16 @@ def extract_selected(doc, request, heartbeat):
         from .provider import fixture_response
         raw = fixture_response(doc.doc_type)['extract_result']
         return {k:raw.get(k) for k in request.payload['fields']}
-    with SessionLocal() as db:
-        cls = SpiderConnector if provider == 'spider-ai' else Connector
-        connector = db.scalar(select(cls).where(cls.org == doc.org))
-        key = decrypt(connector.encrypted) if connector else ''
-        options = connector.options if connector else {}
+    from .extraction.connector_repository import SqlConnectorRepository
+    connection = SqlConnectorRepository(SessionLocal, decrypt).read(doc.org, provider)
+    key, options = connection.api_key, connection.options
     if not key:
         raise ProcessingIssue('Configure the extraction connector before reprocessing fields.')
     hints,guidance=saved_location_guidance(doc,profile,'field_location_guidance_'+request.id,request.payload['fields'])
     if provider == 'spider-ai':
         images = render_pages(doc, heartbeat, max_pixels=options.get('image_max_pixels',2400),
                               jpeg_quality=options.get('image_jpeg_quality',90),
-                              max_image_bytes=options.get('image_max_bytes',180000))
+                              max_image_bytes=options.get('image_max_bytes', options['field_image_max_bytes']))
         profile = cfg['profiles'][doc.doc_type]
         options={**options,**profile.get('policy',{}).get('extraction_sampling',{})}
         options['_prompt_manifest']=prompt_manifest(profile,schema,instruction,guidance)
@@ -98,7 +96,7 @@ def extract_selected(doc, request, heartbeat):
     if extract_id and stage.get(state_key+'_prompt_manifest') and stage[state_key+'_prompt_manifest']!=manifest:
         raise ProcessingIssue('Saved selected-field job used different prompts. Start a new field request; no paid call was made.')
     scope = {k:options[k] for k in ['project_id','organization_id'] if options.get(k)}
-    client = LlamaCloud(api_key=key, max_retries=0, timeout=60, **({'base_url':options['base_url']} if options.get('base_url') else {}))
+    client = LlamaCloud(api_key=key, max_retries=0, timeout=options['timeout_seconds'], **({'base_url':options['base_url']} if options.get('base_url') else {}))
     if not extract_id:
         if stage.get('pending_create'):
             raise ProcessingIssue('Reconcile the uncertain selected-field submission before retrying.')

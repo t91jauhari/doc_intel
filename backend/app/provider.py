@@ -63,10 +63,9 @@ def run_fixture(doc, cfg, heartbeat):
 
 
 def run_llama(doc, cfg, heartbeat):
-    with SessionLocal() as db:
-        connector = db.scalar(select(Connector).where(Connector.org == doc.org))
-        key = decrypt(connector.encrypted) if connector else ""
-        options = connector.options if connector else {}
+    from .extraction.connector_repository import SqlConnectorRepository
+    connection = SqlConnectorRepository(SessionLocal, decrypt).read(doc.org, "llama")
+    key, options = connection.api_key, connection.options
     if not key:
         raise ProcessingIssue(
             "LlamaCloud API key is not configured. Open Settings → Connector, save the key, then retry."
@@ -74,7 +73,7 @@ def run_llama(doc, cfg, heartbeat):
     scope = {
         k: v for k, v in options.items() if k in {"project_id", "organization_id"} and v
     }
-    kwargs = {"api_key": key, "max_retries": 0, "timeout": 60}
+    kwargs = {"api_key": key, "max_retries": 0, "timeout": options["timeout_seconds"]}
     if options.get("base_url"):
         kwargs["base_url"] = options["base_url"]
     steps = {s["action"]: s for s in cfg.get("workflow", [])}

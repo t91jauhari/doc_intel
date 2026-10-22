@@ -17,8 +17,10 @@ from .security import decrypt
 from .storage import store, original_key, object_key, fitz_open_original
 from .extraction_prompts import DEFAULT_INSTRUCTION, system_instruction, reading_instructions, prompt_manifest, prompt_receipt, saved_location_guidance
 
-BASE_URL = "https://spider.thantowijauhari.com/v1"
-MODEL = "pct-prod-spider/pecut/gemini-3.8-flash-high"
+from .extraction.connector_contracts import defaults
+SPIDER_DEFAULTS = defaults("spider-ai")
+BASE_URL = SPIDER_DEFAULTS["base_url"]
+MODEL = SPIDER_DEFAULTS["model_id"]
 log = logging.getLogger("sqe.spider")
 
 
@@ -161,9 +163,9 @@ def build_request_payload(messages, options):
         "model": options.get("model_id", MODEL),
         "messages": messages,
         "stream": False,
-        "max_tokens": 16384,
-        "temperature": options.get('temperature',0.41),
-        "top_p": options.get('top_p',0.22),
+        "max_tokens": options.get("max_tokens", SPIDER_DEFAULTS["max_tokens"]),
+        "temperature": options.get('temperature', SPIDER_DEFAULTS['temperature']),
+        "top_p": options.get('top_p', SPIDER_DEFAULTS['top_p']),
         "response_format": {"type": "json_object"},
     }
 
@@ -290,7 +292,7 @@ def completion(doc, stage, messages, options, key, heartbeat):
     try:
         heartbeat()
         with httpx.Client(
-            timeout=httpx.Timeout(600, connect=15), follow_redirects=False
+            timeout=httpx.Timeout(options.get("timeout_seconds", SPIDER_DEFAULTS["timeout_seconds"]), connect=options.get("connect_timeout_seconds", SPIDER_DEFAULTS["connect_timeout_seconds"])), follow_redirects=False
         ) as client:
             response = client.post(
                 options.get("base_url", BASE_URL).rstrip("/") + "/chat/completions",
@@ -406,12 +408,9 @@ def content_json(payload):
 def run_spider(doc, cfg, heartbeat):
     from .provider import checkpoint, state_of, ProcessingIssue
 
-    with SessionLocal() as db:
-        connector = db.scalar(
-            select(SpiderConnector).where(SpiderConnector.org == doc.org)
-        )
-        key = decrypt(connector.encrypted) if connector else ""
-        options = connector.options if connector else {}
+    from .extraction.connector_repository import SqlConnectorRepository
+    connection = SqlConnectorRepository(SessionLocal, decrypt).read(doc.org, "spider-ai")
+    key, options = connection.api_key, connection.options
     if not key:
         raise ProcessingIssue(
             "Spider-AI API key is not configured. Save it under Configuration → Connector."
@@ -599,8 +598,8 @@ def run_spider(doc, cfg, heartbeat):
             "model_id": options.get("model_id", MODEL),
             "usage": output.get("usage"),
             "source": "rendered_document_pages",
-            "temperature": options.get('temperature',0.41),
-            "top_p": options.get('top_p',0.22),
+            "temperature": options.get('temperature', SPIDER_DEFAULTS['temperature']),
+            "top_p": options.get('top_p', SPIDER_DEFAULTS['top_p']),
             "processing_mode": "spider_extraction_formatted",
             "location_guidance": hints,
             "location_guidance_version": 1,
