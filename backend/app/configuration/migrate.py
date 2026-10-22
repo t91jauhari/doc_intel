@@ -47,11 +47,9 @@ def apply_migrations(engine, *, expected_database: str) -> list[str]:
                 if known[path.stem] != checksum:
                     raise ValueError("Applied migration checksum differs from source.")
                 continue
-            # Current migration files contain ordinary DDL statements only.
-            # Do not use this splitter for function bodies or procedural SQL.
-            for statement in content.decode("utf-8").split(";"):
-                if statement.strip():
-                    connection.execute(text(statement))
+            # Execute trusted versioned SQL as one parameter-free script. Let
+            # PostgreSQL parse procedural bodies and quoted semicolons itself.
+            connection.exec_driver_sql(content.decode("utf-8"), execution_options={"no_parameters": True})
             connection.execute(text(
                 "INSERT INTO configuration_schema_migrations(version,checksum) "
                 "VALUES (:version,:checksum)"

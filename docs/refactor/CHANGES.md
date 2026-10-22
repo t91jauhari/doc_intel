@@ -120,3 +120,10 @@ Created: backend/app/configuration/repository.py; backend/tests/test_configurati
 Modified: backend/app/case_processing.py; backend/app/dataset_comparison.py; backend/app/domain.py; backend/app/field_reprocessing.py; backend/app/grouping_repair.py; backend/app/main.py; backend/app/processor.py; backend/app/settings.py; docs/refactor/PUBLICATION_SERVICE.md; docs/refactor/INVENTORY.csv; docs/refactor/PLAN.md; docs/refactor/MIGRATIONS.md; docs/refactor/VERIFICATION.md; docs/refactor/CHANGES.md; docs/refactor/CHECKPOINT.md.
 Behavior: copied snapshots, pinned-ID resolution, legacy/verify/normalized infrastructure modes, dual-write precondition, fail closed on missing/linkage/digest/parity errors. No live flags changed. Guidance/upgrades use centralized writes. Existing case pins preserved.
 Verification:22 focused plus52 broader tests passed.40 revisions/67 pins parity checked read-only. PostgreSQL publication rollback rehearsal passed. Object baseline backup verified. M1 complete in isolation; remaining plan points not marked complete. Tracking documents repaired to UTF-8 where prior mixed encodings existed.
+
+## Step16 — database-enforced revision immutability
+Commit message: Enforce immutable configuration revisions in PostgreSQL.
+Created: backend/app/configuration/migrations/0004_revision_immutability.sql.
+Modified: backend/app/configuration/migrate.py; backend/app/configuration/README.md; backend/tests/test_configuration_migrations.py; docs/refactor/CHANGES.md; docs/refactor/CHECKPOINT.md; docs/refactor/MIGRATIONS.md; docs/refactor/VERIFICATION.md; docs/refactor/PLAN.md.
+Changes: mutation triggers for six normalized tables and legacy configurations; transaction-bound child inserts; parameter-free migration script execution. No live migration.
+Verification:6 PostgreSQL tests passed, including21 table mutation attempts and5 late-insert attempts; new revision/idempotent import preserved. Migration0004 applied/replayed on isolated restore;40 revisions round-trip, original rows unchanged. New publication rehearsal proposed41/rolled back/equal, originals unchanged. Docker restart succeeded; live services healthy.

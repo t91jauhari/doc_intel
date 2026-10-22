@@ -69,7 +69,7 @@ def test_identity_bindings_round_trip_in_postgres(isolated_engine):
     from app.configuration.store import compile_publication, import_publication
 
     assert migrate.apply_migrations(isolated_engine, expected_database="sqe_refactor") == [
-        "0001_publications", "0002_identity_bindings", "0003_family_rule_membership",
+        "0001_publications", "0002_identity_bindings", "0003_family_rule_membership", "0004_revision_immutability",
     ]
     payload = {
         "profiles": {"custom": {"schema": {"type": "object", "properties": {
@@ -98,3 +98,50 @@ def test_publication_requires_intact_migration_history(isolated_engine):
         with pytest.raises(ConfigurationStorageNotReady, match="migration history"):
             require_storage_schema(session)
         session.rollback()
+
+
+def test_committed_revision_tables_reject_rewrites_and_late_entries(isolated_engine):
+    from sqlalchemy.exc import DBAPIError
+    from sqlalchemy.orm import Session
+    from app.configuration.store import ConfigurationBase, import_publication, compile_publication
+
+    with isolated_engine.begin() as connection:
+        connection.execute(text("CREATE TABLE configurations(id TEXT PRIMARY KEY)"))
+        connection.execute(text("INSERT INTO configurations VALUES ('historical')"))
+    migrate.apply_migrations(isolated_engine, expected_database="sqe_refactor")
+    payload = {"profiles": {"custom": {"schema": {"type": "object", "properties": {"name": {"type": "string"}}}}},
+               "identity_policy": {"bindings": [{"profile": "custom", "field_path": "name"}]},
+               "sop_rules": [{"id": "synthetic"}],
+               "rule_scope": {"family_rule_ids": {"forex": ["synthetic"], "account_opening": []}}}
+    with Session(isolated_engine) as session, session.begin():
+        publication = import_publication(session, organization="synthetic", revision=1,
+                                         source_config_id="historical", payload=payload)
+        publication_id = publication.id
+        assert compile_publication(session, publication) == payload
+    tables = {name: next(iter(table.primary_key.columns)).name
+              for name, table in ConfigurationBase.metadata.tables.items()}
+    tables["configurations"] = "id"
+    for table, column in tables.items():
+        for statement in (f'DELETE FROM {table}', f'UPDATE {table} SET {column}={column}', f'TRUNCATE {table} CASCADE'):
+            with pytest.raises(DBAPIError, match="immutable"):
+                with isolated_engine.begin() as connection:
+                    connection.execute(text(statement))
+    late_inserts = [
+        "INSERT INTO configuration_entries(id,publication_id,section,entry_key,position,value) VALUES ('late',:publication,'profiles','late',99,'{}')",
+        "INSERT INTO configuration_identity_policies(publication_id,settings) VALUES (:publication,'{}')",
+        "INSERT INTO configuration_identity_bindings(publication_id,profile,position,definition) VALUES (:publication,'late',99,'{}')",
+        "INSERT INTO configuration_family_rule_scopes(publication_id,family) VALUES (:publication,'late')",
+        "INSERT INTO configuration_family_rule_members(publication_id,family,rule_id,position) VALUES (:publication,'forex','late',99)",
+    ]
+    for statement in late_inserts:
+        with pytest.raises(DBAPIError, match="transaction creating"):
+            with isolated_engine.begin() as connection:
+                connection.execute(text(statement), {"publication": publication_id})
+    # New revisions and idempotent imports remain valid after immutability.
+    with Session(isolated_engine) as session, session.begin():
+        existing = import_publication(session, organization="synthetic", revision=1,
+                                      source_config_id="historical", payload=payload)
+        assert existing.id == publication_id
+        new = import_publication(session, organization="synthetic", revision=2,
+                                 source_config_id="new-revision", payload=payload)
+        assert compile_publication(session, new) == payload

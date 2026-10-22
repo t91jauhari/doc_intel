@@ -36,8 +36,8 @@ and case rows before/after. No report or extraction is activated.
 
 Rollback at this additive stage means retaining the old application and leaving
 the unused new tables in place. No destructive downgrade command is provided.
-The SQL statement splitter supports ordinary DDL only; introduce a suitable
-migration tool before procedural SQL or more complex dependencies are required.
+Trusted migration files execute as parameter-free PostgreSQL scripts in the same
+transaction; PostgreSQL parses procedural bodies and quoted semicolons.
 
 Migration 0002 adds dedicated identity policy/binding tables. New imports validate
 identity paths before writing. Compatibility reconstruction preserves explicit
@@ -53,3 +53,14 @@ detect deleted memberships. Historical imports without scope remain untouched.
 `shadow_comparisons` verifies the supported plain-text match subset against the
 existing evaluator on restored extraction values. It reports skipped cases/rules
 explicitly; zero differences in that subset does not certify complex SOP logic.
+
+Migration0004 prevents UPDATE, DELETE and TRUNCATE on normalized revision tables,
+and on the legacy configurations table when present in the target schema.
+Child rows may be inserted only in the same transaction that created their
+publication. A transaction-ID column enforces that boundary. Existing revisions
+remain readable and repeated imports do not rewrite them. SQLite test metadata
+does not install these PostgreSQL triggers. A database owner can disable schema
+protections; deployment must restrict schema-changing privileges to migrations.
+Rollback to the legacy application remains possible because new legacy Config
+inserts are allowed. Before returning from legacy-only writes to verified reads,
+import any additional legacy revisions explicitly and verify parity again.
