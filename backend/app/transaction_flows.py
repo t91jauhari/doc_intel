@@ -114,6 +114,9 @@ def scope_configuration(cfg, flow_id):
     from .forex_sop import effective_rule, policy_for
     result["sop_rules"] = [effective_rule(r) if r.get("operator") != "configured_compare" and r.get("source_ref", "").startswith("SOP3:") else r for r in result.get("sop_rules", [])]
     result["forex_sop_policy"] = policy_for(result)
+    if "rule_order" in cfg:
+        ranks = {rule_id: position for position, rule_id in enumerate(cfg["rule_order"])}
+        result["sop_rules"].sort(key=lambda rule: ranks[rule["id"]])
     result["report_context"] = {
         **result.get("report_context", {}),
         **family.get('report_context',{}),

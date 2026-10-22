@@ -47,6 +47,13 @@ reference prefixes do not dispatch or transform these new rules. Existing rules
 remain unchanged; there is no automatic conversion. Complex condition policies,
 visual rules and broader saved-result coverage remain pending.
 
+Supported old comparisons can now be converted through the explicit draft-only
+upgrade tool documented in COMPARISON_UPGRADE.md. Conversion preserves IDs and
+uses a validated `rule_order` to preserve finding/report order. No startup upgrade
+or automatic publication is performed. Saved-data verification covered 36
+eligible cases and 5,623 ordered findings with no state or score differences;
+18 legacy cases were blocked by current validation and 13 had no supported rules.
+
 New scope policies persist in dedicated
 publication-scoped family and membership tables through migration 0003. Empty
 family selections and rule order survive reconstruction. The editor is pending.

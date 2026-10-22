@@ -281,6 +281,11 @@ def default_config():
 
 
 def validate_config(payload):
+    if "rule_order" in payload:
+        order = payload["rule_order"]
+        known = {rule["id"] for rule in payload.get("sop_rules", []) + payload.get("generic_sop_rules", [])}
+        if not isinstance(order, list) or any(not isinstance(value, str) for value in order) or len(order) != len(set(order)) or set(order) != known:
+            raise ValueError("Rule order must list each registered rule exactly once.")
     if "generic_sop_rules" in payload:
         from .configuration.generic_sop import validate_generic_rules
 
