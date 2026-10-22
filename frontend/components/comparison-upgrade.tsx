@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { ArrowRightLeft, Eye, CheckCircle2 } from "lucide-react";
 import { api } from "@/lib/api";
 import type { Configuration } from "@/lib/types";
+import { ComparisonFields, type FieldOptions } from "@/components/comparison-fields";
 
 type Candidate = { id: string; label: string; left: string; right: string; families: string[] };
 type Preview = { source_version: number; basis_sha256: string; converted_rule_ids: string[]; payload: Configuration };
@@ -21,6 +22,17 @@ export function ComparisonUpgrade({ configuration, version, editable, onApply, f
   const [loadingCandidates, setLoadingCandidates] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [fieldOptions, setFieldOptions] = useState<FieldOptions | null>(null);
+  const hasConfigured = !!configuration.generic_sop_rules?.some(rule => rule.families.includes(family));
+  useEffect(() => {
+    let cancelled = false;
+    setFieldOptions(null);
+    if (editable && hasConfigured) api<FieldOptions>("/config/upgrades/comparisons/fields", {
+      method: "POST", body: JSON.stringify({ expected_version: version, family, payload: configuration }),
+    }).then(result => { if (!cancelled) setFieldOptions(result); })
+      .catch(error => { if (!cancelled) setError(error instanceof Error ? error.message : "Could not load fields."); });
+    return () => { cancelled = true; };
+  }, [configuration.profiles, configuration.document_families, version, family, editable, hasConfigured]);
   useEffect(() => {
     let cancelled = false;
     setLoadingCandidates(true);
@@ -73,7 +85,7 @@ export function ComparisonUpgrade({ configuration, version, editable, onApply, f
   </section>
   {!!configured.length && <section className="panel settings-card" aria-labelledby="configured-comparisons-title">
     <h2 id="configured-comparisons-title">Configurable comparisons</h2>
-    <p>Edit comparison wording and matching behavior in your draft. Field bindings stay visible for review.</p>
+    <p>Configure matching, compared fields and applicability in your draft.</p>
     {configured.map(rule => {
       const change = (patch: Partial<typeof rule>) => onApply({ ...configuration,
         generic_sop_rules: configuration.generic_sop_rules!.map(value => value.id === rule.id ? { ...value, ...patch } : value),
@@ -82,6 +94,7 @@ export function ComparisonUpgrade({ configuration, version, editable, onApply, f
         <legend>{rule.label}</legend>
         <label>Rule description<input aria-label={`Description for ${rule.id}`} value={rule.label} onChange={event => change({ label: event.target.value })} /></label>
         <p>{rule.policy.left} ↔ {rule.policy.right}</p>
+        <ComparisonFields rule={rule} options={fieldOptions} onChange={change} />
         <label>Matching behavior<select aria-label={`Matching behavior for ${rule.id}`} value={rule.policy.normalization || "literal"}
           onChange={event => change({ policy: { ...rule.policy, normalization: event.target.value as "literal" | "casefold_whitespace" } })}>
           <option value="literal">Exact characters</option>

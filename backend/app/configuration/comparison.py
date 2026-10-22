@@ -2,7 +2,7 @@
 import re
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 
 class ComparisonPolicy(BaseModel):
@@ -12,6 +12,12 @@ class ComparisonPolicy(BaseModel):
     right: str = Field(pattern=r"^[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)+$", max_length=500)
     normalization: Literal["literal", "casefold_whitespace"] = "literal"
     pattern: str | None = Field(default=None, max_length=120)
+
+    @model_validator(mode="after")
+    def distinct_fields(self):
+        if self.left == self.right:
+            raise ValueError("Choose two different fields; a field cannot verify itself.")
+        return self
 
     @field_validator("pattern")
     @classmethod

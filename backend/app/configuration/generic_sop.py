@@ -4,7 +4,8 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field
 
 from .comparison import ComparisonPolicy, evaluate_comparison, _read
-from .identity import IdentityBinding, IdentityPolicy, validate_bindings
+from .identity import IdentityBinding
+from .field_options import validate_text_binding
 
 
 class Applicability(BaseModel):
@@ -51,7 +52,7 @@ def validate_generic_rules(payload):
                 raise ValueError("Schema binding must reference the same profile.")
             binding = IdentityBinding(profile=profile, field_path=field,
                                       schema_path=schema_path.split(".", 1)[1])
-            validate_bindings(IdentityPolicy(bindings=(binding,)), payload["profiles"])
+            validate_text_binding(binding, payload["profiles"])
             if any(profile not in catalog[family]["profiles"] for family in rule.families):
                 raise ValueError("Compared profiles must belong to every selected family.")
         rules.append(rule)

@@ -41,6 +41,9 @@ def test_nonadministrator_cannot_preview(signed):
         user.role = "reviewer"
     assert signed.get("/api/config/upgrades/comparisons").status_code == 403
     assert signed.get("/api/config/upgrades/compatibility").status_code == 403
+    assert signed.post("/api/config/upgrades/comparisons/fields", json={
+        "expected_version": 1, "family": "forex",
+    }).status_code == 403
     assert signed.post("/api/config/upgrades/compatibility/preview", json={
         "expected_version": 1, "selected_keys": ["sop_review_bypass"],
     }).status_code == 403
@@ -69,3 +72,16 @@ def test_compatibility_preview_is_explicit_and_read_only(signed):
     assert signed.post("/api/config/upgrades/compatibility/preview", json={
         "expected_version": current["version"] + 1, "selected_keys": keys, "payload": legacy,
     }).status_code == 409
+
+
+def test_field_catalog_is_family_scoped_read_only_and_versioned(signed):
+    current = signed.get("/api/config").json()
+    endpoint = "/api/config/upgrades/comparisons/fields"
+    result = signed.post(endpoint, json={"expected_version": current["version"], "family": "forex"})
+    assert result.status_code == 200, result.text
+    fields = result.json()["fields"]
+    assert any(field["path"] == "ektp.name" and field["schema_path"] == "ektp.name.raw" for field in fields)
+    assert not any(field["profile"] == "account_opening_form" for field in fields)
+    assert signed.get("/api/config").json() == current
+    assert signed.post(endpoint, json={"expected_version": current["version"] + 1, "family": "forex"}).status_code == 409
+    assert signed.post(endpoint, json={"expected_version": current["version"], "family": "unknown"}).status_code == 422

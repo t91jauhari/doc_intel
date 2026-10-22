@@ -26,6 +26,29 @@ class CompatibilityInput(BaseModel):
     payload: dict | None = None
 
 
+class FieldOptionsInput(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    expected_version: int = Field(ge=1)
+    family: str = Field(min_length=1, max_length=40)
+    payload: dict | None = None
+
+
+@router.post("/fields")
+def field_options(data: FieldOptionsInput, user=Depends(administrator)):
+    from .field_options import text_field_options
+    from app.sop import CONTEXT
+
+    with SessionLocal() as session:
+        current = latest_config(session, user.org)
+        if current.version != data.expected_version:
+            raise HTTPException(409, "Configuration changed. Reload field options.")
+        try:
+            return {"fields": text_field_options(current.payload if data.payload is None else data.payload, data.family),
+                    "context_options": CONTEXT}
+        except (ValueError, KeyError, TypeError) as exc:
+            raise HTTPException(422, str(exc)) from exc
+
+
 @compatibility_router.get("")
 def compatibility_candidates(user=Depends(administrator)):
     from .compatibility import missing_settings
