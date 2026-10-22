@@ -21,7 +21,7 @@ class SqlConnectorRepository:
         self.sessions, self.decrypt = sessions, decrypt
 
     def read(self, organization, provider):
-        model = {"llama": Connector, "spider-ai": SpiderConnector}.get(provider)
+        model = {"spider-ai": SpiderConnector}.get(provider)
         if model is None:
             raise ProcessingIssue("The configured extraction provider is not registered.")
         with self.sessions() as session:

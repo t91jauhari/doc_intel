@@ -10,7 +10,7 @@ import { ForexSOPPolicyEditor } from "@/components/forex-sop-policy";
 import { ContextEditor } from "@/components/context-editor";
 import { ComparisonUpgrade } from "@/components/comparison-upgrade";
 import { ProfileVersionComparison } from "@/components/profile-version-comparison";
-import { ConnectorOptions, numericConnectorValues, type NumericConnectorDraft, type NumericConnectorField } from "@/components/connector-options";
+
 import { SpiderConnectorForm } from "@/components/spider-connector";
 import { TransactionFlows } from "@/components/transaction-flows";
 import { DocumentFamilies } from "@/components/document-families";
@@ -99,12 +99,6 @@ const settingsSections = {
     detail: "Organization access controls",
     icon: Users,
   },
-};
-type Connector = {
-  configured: boolean;
-  options: { base_url?: string; project_id?: string; organization_id?: string; [key: string]: unknown };
-  numeric_fields?: NumericConnectorField[];
-  configuration_warning?: string | null;
 };
 type Test = {
   sop_results?: {
@@ -525,9 +519,7 @@ export default function Settings() {
                           <option value="spider-ai">
                             Spider-AI (recommended) · image-based extraction
                           </option>
-                          <option value="llama">
-                            LlamaCloud · real document processing
-                          </option>
+                          {draft.provider === "llama" && <option value="llama" disabled>Llama � removed (select Spider-AI)</option>}
                           <option value="fixture">
                             Synthetic fixtures · development only
                           </option>
@@ -538,8 +530,6 @@ export default function Settings() {
                           Spider-AI renders every PDF page to an image and uses
                           the profile’s system, parser and extraction
                           instructions, including saved field descriptions.
-                          Llama tier and parser version controls below apply
-                          only to the Llama provider.
                         </p>
                       )}
                       {draft.provider === "fixture" && (
@@ -555,64 +545,6 @@ export default function Settings() {
                           are skipped. Case SOP checks still run.
                         </p>
                       )}
-                      <div className="form-row">
-                        <label>
-                          Parse tier
-                          <select
-                            value={draft.parse_tier}
-                            onChange={(e) =>
-                              update({ ...draft, parse_tier: e.target.value })
-                            }
-                          >
-                            {["agentic_plus", "agentic", "cost_effective"].map(
-                              (x) => (
-                                <option key={x}>{x}</option>
-                              ),
-                            )}
-                          </select>
-                        </label>
-                        <label>
-                          Extract tier
-                          <select
-                            value={draft.extract_tier}
-                            onChange={(e) =>
-                              update({ ...draft, extract_tier: e.target.value })
-                            }
-                          >
-                            {["agentic_plus", "agentic", "cost_effective"].map(
-                              (x) => (
-                                <option key={x}>{x}</option>
-                              ),
-                            )}
-                          </select>
-                        </label>
-                      </div>
-                      <div className="form-row">
-                        <label>
-                          Parse version
-                          <input
-                            value={draft.parse_version}
-                            onChange={(e) =>
-                              update({
-                                ...draft,
-                                parse_version: e.target.value,
-                              })
-                            }
-                          />
-                        </label>
-                        <label>
-                          Extract version
-                          <input
-                            value={draft.extract_version}
-                            onChange={(e) =>
-                              update({
-                                ...draft,
-                                extract_version: e.target.value,
-                              })
-                            }
-                          />
-                        </label>
-                      </div>
                       <label>
                         Classification confidence threshold
                         <input
@@ -971,7 +903,7 @@ export default function Settings() {
                         <label>
                           Parser instructions
                           <small>
-                            Used by LlamaCloud parsing and as reading guidance
+                            Used as reading guidance
                             during extraction with either provider.
                           </small>
                           <textarea
@@ -1151,7 +1083,6 @@ export default function Settings() {
               )}
               {tab === "connector" && canEdit && (
                 <>
-                  <ConnectorForm />
                   <SpiderConnectorForm />
                 </>
               )}
@@ -1240,115 +1171,6 @@ export default function Settings() {
         )
       )}
     </Shell>
-  );
-}
-function ConnectorForm() {
-  const { data, error, refresh } = useData<Connector>("/connector", 0),
-    { notify } = usePlatform();
-  const [key, setKey] = useState(""),
-    [base, setBase] = useState(""),
-    [project, setProject] = useState(""),
-    [org, setOrg] = useState(""),
-    [pending, setPending] = useState(false);
-  const [advanced, setAdvanced] = useState<NumericConnectorDraft>({});
-  useEffect(() => {
-    if (data) {
-      setBase(data.options.base_url || "");
-      setProject(data.options.project_id || "");
-      setOrg(data.options.organization_id || "");
-    }
-  }, [data]);
-  return (
-    <section className="panel settings-card connector-card">
-      <div className="connector-head">
-        <KeyRound size={23} />
-        <div>
-          <h2>LlamaCloud connector</h2>
-          <p>Credentials are encrypted and never returned to the browser.</p>
-        </div>
-        <Badge value={data?.configured ? "READY" : "PENDING"} />
-      </div>
-      {error && <ErrorNotice message={error} />}
-      {data?.configuration_warning && <ErrorNotice message={data.configuration_warning} />}
-      <form
-        onSubmit={async (e) => {
-          e.preventDefault();
-          setPending(true);
-          try {
-            await api("/connector", {
-              method: "PUT",
-              body: JSON.stringify({
-                api_key: key || null,
-                base_url: base,
-                project_id: project,
-                organization_id: org,
-                ...numericConnectorValues(data?.numeric_fields || [], data?.options || {}, advanced),
-              }),
-            });
-            setKey(""); setAdvanced({});
-            notify("Connector saved. Retry waiting documents from their case.");
-            await refresh();
-          } catch (err) {
-            notify(
-              err instanceof Error ? err.message : "Unable to save connector.",
-              "error",
-            );
-          } finally {
-            setPending(false);
-          }
-        }}
-      >
-        <label>
-          {data?.configured
-            ? "Replace API key (leave blank to retain)"
-            : "API key"}
-          <input
-            type="password"
-            value={key}
-            autoComplete="new-password"
-            onChange={(e) => setKey(e.target.value)}
-            placeholder="llx-…"
-          />
-        </label>
-        <label>
-          Regional / private API base URL
-          <input
-            type="url"
-            value={base}
-            onChange={(e) => setBase(e.target.value)}
-            placeholder="Leave blank for the SDK default"
-          />
-        </label>
-        <div className="form-row">
-          <label>
-            Project scope
-            <input
-              value={project}
-              onChange={(e) => setProject(e.target.value)}
-              placeholder="Optional"
-            />
-          </label>
-          <label>
-            Provider organization scope
-            <input
-              value={org}
-              onChange={(e) => setOrg(e.target.value)}
-              placeholder="Optional"
-            />
-          </label>
-        </div>
-        <div className="info-note">
-          Use the same key, region and scope as your working SDK example.
-          Classification runs after filename grouping and may incur parsing
-          charges in addition to the specialized extraction parse.
-        </div>
-        <ConnectorOptions fields={data?.numeric_fields || []} options={data?.options || {}} draft={advanced} onChange={setAdvanced} />
-        <button className="primary" disabled={pending}>
-          <Save size={16} />
-          {pending ? "Saving…" : "Save connector"}
-        </button>
-      </form>
-    </section>
   );
 }
 function AccessManager() {

@@ -63,7 +63,7 @@ def test_classification_only_result_and_provider_exception_are_preserved():
     assert caught.value is failure
 
 
-@pytest.mark.parametrize("provider,target", [("llama", "app.provider.run_llama"), ("fixture", "app.provider.run_fixture"), ("spider-ai", "app.spider_provider.run_spider")])
+@pytest.mark.parametrize("provider,target", [("fixture", "app.provider.run_fixture"), ("spider-ai", "app.spider_provider.run_spider")])
 def test_legacy_facade_dispatches_through_registered_adapters(monkeypatch, provider, target):
     called = []
     def run(doc, cfg, heartbeat):
@@ -72,3 +72,36 @@ def test_legacy_facade_dispatches_through_registered_adapters(monkeypatch, provi
     monkeypatch.setattr(target, run)
     assert run_provider(SimpleNamespace(id="doc"), {"provider": provider}, lambda: None) == ({"extract_result": {}}, {"type": "custom"})
     assert called == [("doc", provider)]
+
+
+def test_removed_llama_cannot_dispatch_even_with_injected_adapter():
+    adapter = Adapter()
+    cfg = {"provider": "llama", "profiles": {}}
+    with pytest.raises(ProcessingIssue, match="removed"):
+        extract_document(SimpleNamespace(), cfg, lambda: None, adapters={"llama": adapter})
+    assert adapter.requests == []
+    assert cfg["provider"] == "llama"
+
+
+def test_supported_registry_excludes_llama():
+    from app.extraction.adapters import default_adapters
+    assert set(default_adapters()) == {"spider-ai", "fixture"}
+
+
+def test_removed_llama_compatibility_entry_point_cannot_submit():
+    from app.provider import run_llama
+    with pytest.raises(ProcessingIssue, match="removed"):
+        run_llama(None, {}, None)
+
+
+def test_removed_connector_rejects_reads_and_writes(signed):
+    for method in (signed.get, signed.put):
+        response = method("/api/connector")
+        assert response.status_code == 410
+        assert "removed" in response.json()["detail"]
+
+
+def test_removed_llama_selected_fields_fail_before_database_or_provider_access():
+    from app.field_reprocessing import extract_selected
+    with pytest.raises(ProcessingIssue, match="removed"):
+        extract_selected(None, SimpleNamespace(payload={"config": {"provider": "llama"}}), None)

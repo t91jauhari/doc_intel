@@ -25,11 +25,12 @@ def selected_schema(profile, fields):
 
 
 def extract_selected(doc, request, heartbeat):
-    from .db import Connector, SpiderConnector
     from .security import decrypt
     from .spider_provider import completion, content_json, render_pages, field_guidance, field_catalog, field_types
-    from .extraction_prompts import system_instruction, reading_instructions, llama_extract_instructions, prompt_manifest, saved_location_guidance
+    from .extraction_prompts import system_instruction, reading_instructions, prompt_manifest, saved_location_guidance
     cfg = request.payload['config']
+    if cfg.get('provider') not in {'spider-ai', 'fixture'}:
+        raise ProcessingIssue('Llama provider has been removed. Upgrade the case to a Spider-AI configuration before reprocessing fields.')
     from .document_families import extraction_config
     with SessionLocal() as db:
         flow_id=db.get(Case,doc.case_id).template
@@ -43,6 +44,8 @@ def extract_selected(doc, request, heartbeat):
     if not request.payload.get('guidance_saved_to_profile'):
         instruction += '\nReviewer extraction guidance: '+request.payload.get('instruction','')
     provider = cfg['provider']
+    if provider not in {'spider-ai', 'fixture'}:
+        raise ProcessingIssue('Llama provider has been removed. Upgrade the case to a Spider-AI configuration before reprocessing fields.')
     if provider == 'fixture':
         from .provider import fixture_response
         raw = fixture_response(doc.doc_type)['extract_result']
@@ -83,42 +86,6 @@ def extract_selected(doc, request, heartbeat):
         from .spatial_grounding import normalize_response
         localized = normalize_response({'extract_result':raw})
         return pack_spatial_patch({k:localized['extract_result'][k] for k in request.payload['fields'] if k in localized['extract_result']}, localized['extract_metadata'])
-    from llama_cloud import LlamaCloud
-    from .spatial_grounding import spatial_schema
-    from .provider import state_of
-    parse_id = doc.provider_state.get('parse_job_id')
-    if not parse_id:
-        raise ProcessingIssue('A saved LlamaCloud parse is required for field reprocessing.')
-    state_key = 'field_extract_'+request.id
-    stage = state_of(doc.id)
-    extract_id = stage.get(state_key)
-    manifest=prompt_manifest(profile,schema,instruction,guidance)
-    if extract_id and stage.get(state_key+'_prompt_manifest') and stage[state_key+'_prompt_manifest']!=manifest:
-        raise ProcessingIssue('Saved selected-field job used different prompts. Start a new field request; no paid call was made.')
-    scope = {k:options[k] for k in ['project_id','organization_id'] if options.get(k)}
-    client = LlamaCloud(api_key=key, max_retries=0, timeout=options['timeout_seconds'], **({'base_url':options['base_url']} if options.get('base_url') else {}))
-    if not extract_id:
-        if stage.get('pending_create'):
-            raise ProcessingIssue('Reconcile the uncertain selected-field submission before retrying.')
-        checkpoint(doc.id,pending_create=state_key)
-        created = client.extract.create(file_input=parse_id, configuration={
-            'tier':cfg['extract_tier'], 'data_schema':spatial_schema(schema),
-            'system_prompt':llama_extract_instructions(profile,task=instruction,guidance=guidance),
-        }, **scope)
-        extract_id = created.id
-        checkpoint(doc.id,**{state_key:extract_id,state_key+'_prompt_manifest':manifest,'pending_create':None})
-    for _ in range(240):
-        heartbeat()
-        result = client.extract.get(extract_id, **scope).model_dump(mode='json')
-        status = result.get('status', result.get('job',{}).get('status'))
-        if result.get('extract_result') is not None:
-            from .spatial_grounding import normalize_response
-            localized = normalize_response(result)
-            return pack_spatial_patch(localized['extract_result'], localized['extract_metadata'])
-        if status in ['ERROR','FAILED','CANCELLED']:
-            raise ProcessingIssue('Selected-field extraction failed; original results are retained.')
-        time.sleep(2)
-    raise ProcessingIssue('Selected-field extraction is still pending; saved job ID is retained.')
 
 
 def process_fields(job_id, heartbeat=lambda:None):

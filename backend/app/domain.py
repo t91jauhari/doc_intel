@@ -330,8 +330,8 @@ def validate_config(payload):
             candidate = copy.deepcopy(base)
             candidate["profiles"][name] = variant["profile"]
             validate_config(candidate)
-    if payload.get("provider") not in {"spider-ai", "llama", "fixture"}:
-        raise ValueError("Select spider-ai, llama or fixture provider.")
+    if payload.get("provider") not in {"spider-ai", "fixture"}:
+        raise ValueError("Select spider-ai or fixture provider. Llama provider has been removed.")
     if payload["provider"] == "fixture" and settings.environment != "development":
         raise ValueError("Fixture mode is development-only.")
     # Phase 2 — Configurable SOP Review Bypass (§3.2.1)

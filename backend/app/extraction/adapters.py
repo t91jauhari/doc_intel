@@ -2,12 +2,6 @@
 from .contracts import ExtractionRequest
 
 
-class LlamaAdapter:
-    def extract(self, request: ExtractionRequest):
-        from app.provider import run_llama
-        return run_llama(request.document, request.configuration, request.heartbeat)
-
-
 class SpiderAdapter:
     def extract(self, request: ExtractionRequest):
         from app.spider_provider import run_spider
@@ -21,4 +15,4 @@ class FixtureAdapter:
 
 
 def default_adapters():
-    return {"llama": LlamaAdapter(), "spider-ai": SpiderAdapter(), "fixture": FixtureAdapter()}
+    return {"spider-ai": SpiderAdapter(), "fixture": FixtureAdapter()}

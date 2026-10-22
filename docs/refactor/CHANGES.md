@@ -416,3 +416,11 @@ Files:
 
 Changes: optional external --reference-file imports require --organization and explicit expected database; bounded50MBJSON parse/typed validation without logging source values; transactional immutable registration remains authoritative. Public export includes new synthetic enum/settings/dataset tests and documents private import/new immutable IDs.
 Verification:11 dataset registry/API/import tests passed30.62s. Public candidate1 remains previous-head and not for release. Remaining tail session39864 running from test_parse_evidence; no runtime mutation of imported tail modules. No private data in Git or public push.
+
+
+## Step 32 — Remove Llama application provider
+User requested removal of Llama, superseding the Step 31 custom-profile Llama support gap. Removed its adapter, paid execution implementation, connector settings form, and unused parser tier/version controls. New configuration publication accepts Spider-AI or development fixtures only. Historical Llama configurations remain readable; extraction and selected-field reprocessing fail explicitly before submission and require an explicit case upgrade. Legacy connector routes return HTTP 410, without deleting stored credentials or historical receipts. Native deterministic validation remains available. Standalone engine compatibility and historical SDK error decoding are not application provider integrations.
+
+Files: backend/app/{domain,main,provider,field_reprocessing}.py; backend/app/extraction/{adapters,service,connector_repository}.py; frontend/app/settings/page.tsx; frontend/components/spider-connector.tsx; backend/tests/test_extraction_service.py; docs/refactor/{CHECKPOINT,CHANGES,VERIFICATION}.md.
+
+Verification: 14 focused extraction/removal tests passed; frontend TypeScript check passed; git diff --check passed. Original live stack unchanged; this change is implemented in the isolated refactor only, not deployed. Earlier broad backend tail run was stopped on this owned test runner when scope changed; old Llama integration tests require retirement/replacement before a full-suite acceptance claim. Broader refactor phases remain pending. No provider calls, data migrations, paid jobs, or public pushes performed.

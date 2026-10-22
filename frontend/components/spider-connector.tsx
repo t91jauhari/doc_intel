@@ -89,7 +89,7 @@ export function SpiderConnectorForm() {
         </label>
         <p>
           All PDF pages are rendered to images before classification and
-          extraction. LlamaCloud is not called by this provider.
+          extraction.
         </p>
         <ConnectorOptions fields={data.numeric_fields || []} options={data.options} draft={advanced} onChange={setAdvanced} title="Advanced request and image settings" />
         <button className="primary" disabled={busy}>

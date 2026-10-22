@@ -8,6 +8,8 @@ from .contracts import ExtractionAdapter, ExtractionRequest, ExtractionResult, P
 
 
 def extract_document(document, configuration, heartbeat, *, adapters: Mapping[str, ExtractionAdapter] | None = None):
+    if configuration.get("provider") == "llama":
+        raise ProcessingIssue("Llama provider has been removed. Publish a Spider-AI configuration and explicitly upgrade the case before retrying. Historical results are retained.")
     registry = default_adapters() if adapters is None else adapters
     provider_id = configuration.get("provider")
     adapter = registry.get(provider_id) if isinstance(provider_id, str) else None

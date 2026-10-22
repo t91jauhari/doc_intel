@@ -1,6 +1,6 @@
 from .configuration.repository import get_revision
 from .configuration.profiles import profile_schema, validate_shape
-from .extraction.connector_contracts import ConnectorInput, SpiderConnectorInput, normalized_options, administrative_options
+from .extraction.connector_contracts import SpiderConnectorInput, normalized_options, administrative_options
 import copy
 import csv
 import hashlib
@@ -43,7 +43,6 @@ from .db import (
     CaseContext,
     CaseRun,
     Config,
-    Connector,
     SpiderConnector,
     Document,
     DatasetComparison,
@@ -682,39 +681,9 @@ def failure_summary(since: float = 0, user=Depends(current_user)):
 
 
 @app.get("/api/connector")
-def connector(user=Depends(ADMIN)):
-    with SessionLocal() as db:
-        item = db.scalar(select(Connector).where(Connector.org == user.org))
-        return {
-            "configured": bool(item and item.encrypted),
-            **administrative_options("llama", item.options if item else {}),
-        }
-
-
 @app.put("/api/connector")
-def save_connector(data: ConnectorInput, user=Depends(ADMIN)):
-    with SessionLocal.begin() as db:
-        item = db.scalar(select(Connector).where(Connector.org == user.org))
-        if not item:
-            item = Connector(org=user.org, encrypted="", options={})
-            db.add(item)
-        if data.api_key is not None:
-            item.encrypted = encrypt(data.api_key)
-        changes = data.model_dump(exclude={"api_key"}, exclude_unset=True)
-        candidate = {**(item.options or {}), **changes}
-        try:
-            validated = normalized_options("llama", candidate)
-        except ValueError:
-            raise HTTPException(422, "Connector settings are invalid. Review all configured options.") from None
-        item.options = {**candidate, **validated}
-        audit(
-            db,
-            user.org,
-            user.id,
-            "connector.updated",
-            credential_changed=data.api_key is not None,
-        )
-        return {"configured": bool(item.encrypted), "options": validated}
+def removed_connector(user=Depends(ADMIN)):
+    raise HTTPException(410, "Llama provider has been removed. Configure Spider-AI instead.")
 
 
 def case_view(c, db):
