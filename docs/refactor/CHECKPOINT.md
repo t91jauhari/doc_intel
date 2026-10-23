@@ -594,3 +594,33 @@ affected evidence/spatial/field-rerun/prompt suite session95896 currently runnin
 Full backend initial pass:144+187+216=547 passed,8 PostgreSQL skips; separate PG11
 covers those8; Temporal3. Unique coverage558 before final new crop test,559 after
 its affected suite passes. No engine/frontend changes; previous evidence retained.
+
+## Step44 complete — 2026-10-23
+Source commit3a90a46aa3fe9a6925a855f08442990ba5ac68c0. Final targeted evidence,
+spatial,field-reprocessing,prompt suite36passed, including extra wrapper crop test.
+Unique backend coverage559:547fullshard passes+8database cases covered byPG11+
+3Temporal+1newwrapper regression. No outstanding test failures. Engine/frontend
+unchanged; accepted Step42 evidence applies. Six export safety guards passed.
+
+Fresh sanitized export356files/2368687bytes plus manifest;0blockers; every manifest
+hash verified. Final image9aa5bcc27decdb0f11dfc103df8df1eb6cd21de5cbae573cf5ff7234a3b0d52a
+built from export. All247backend/app and engine files in running API match manifest.
+API/worker both sqe-refactor-api:step44-final healthy/running; frontend3100 retained.
+Shared Temporal namespace:DocumentWorkflow1+CaseSOPWorkflow3 COMPLETED. Selected
+field request completed; original source SHA and5crop SHAs verified after restart.
+HTTP source/page and PDF/XLSX/JSON report exports passed200/parse. Browser final
+refresh shows5available crops (no .complete or parent/.raw duplicates), latest
+reportv5. Deliberately incomplete package remains4PASS/39FAIL; no fabricated review.
+Screenshot ../private/phase44/corrected-crops.png. No further paid model requests.
+Original API/web/worker remain running unchanged. Preview state/credentials/backups
+remain private. Two unused intermediate images created this phase removed; final
+image and necessary baseline/recovery artifacts retained. Temporary tests --rm.
+
+Public mainc1f4235f2ea61aec3824125d21bf62f2ae105591, independently ls-remote verified;
+parentc1e41c4, non-force expected-head update. Delta8files including manifest;
+no private history/customer documents/references/secrets included. No PR created.
+All backend refactor/local capability acceptance work is complete. Full live
+customer dataset accuracy evaluation is separate and not claimed completed;
+remote production deployment awaits user server details. Never rerun one-time
+migration helper blindly. Recovery evidence and file list in STEP44_FILES.md,
+LEGACY_CAPABILITY_PARITY.md,VERIFICATION.md. No background tests/model jobs remain.

@@ -735,3 +735,9 @@ Created docs/refactor/LEGACY_CAPABILITY_PARITY.md. Updated PLAN.md, CHECKPOINT.m
 VERIFICATION.md and this change log with acceptance evidence. Private one-time
 migration, test receipts and backups remain outside Git. No new business table
 or extraction flow changes were needed. No original application source changed.
+
+Step44 accepted source3a90a46; publicc1f4235 independently verified. Final affected
+suite36passed;559unique backend cases covered. Exact exported image activated
+locally, browser crop fix verified; checkpoint includes private evidence locations.
+Two unused intermediate images removed. Closure changes only PLAN/CHECKPOINT/
+VERIFICATION/CHANGES; no additional runtime modification.

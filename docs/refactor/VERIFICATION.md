@@ -310,3 +310,11 @@ Step44 runtime evidence: authenticated HTTP handlers returned200 for stored sour
 PDF/page PNG and PDF/XLSX/JSON reports backed by shared MinIO. Exports parsed;
 XLSX9sheets and filenames include synthetic customer label. No model call made
 for export/crop refresh checks. Six public-export safety guards passed again.
+
+Final Step44 affected suite36passed. Unique backend coverage559 with database
+skips independently covered; no outstanding failures. Final browser5available
+crops, reportv5; all247running backend/engine files match the accepted sanitized
+export. Source3a90a46; publicc1f4235 verified. Final image9aa5bcc; APIhealthy and
+worker running. Shared namespace1Document+3SOP workflowsCOMPLETED. Restart retained
+state,original/crop SHA checks and parsed PDF/XLSX/JSON200exports. Screenshotprivate
+phase44/corrected-crops.png. Unused intermediate images removed; backups retained.

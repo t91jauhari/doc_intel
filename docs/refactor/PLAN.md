@@ -44,3 +44,9 @@ Full regression passed; final discovered wrapper-crop fix is under targeted
 verification, followed by accepted-source image and sanitized publication.
 Remote production deployment remains deferred pending server details. Full real
 customer/model accuracy evaluation remains distinct from backend capability parity.
+
+Step44 complete:559unique backend cases covered;36affected regression cases passed;
+shared Temporal/MinIO live acceptance, restart, export and exact-source checks
+passed. Source3a90a46; publicc1f4235 verified. Backend/local capability phase complete.
+Complete live customer dataset accuracy evaluation remains a separate acceptance
+scope; remote deployment is pending the user's server details.
