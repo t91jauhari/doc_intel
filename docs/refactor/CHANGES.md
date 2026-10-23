@@ -568,3 +568,29 @@ backups and accepted image/source artifacts retained; small cleanup-blocked
 folders remain excluded. Never retry rejected deletion without renewed approval.
 Documentation closure changes:docs/refactor/{PLAN,INVENTORY,CHECKPOINT,CHANGES,
 VERIFICATION,STEP42_FILES,FINAL_ACCEPTANCE}. No runtime change after acceptance.
+
+
+## Step43 started — operational local preview
+User asked to move to the next phase and whether uploads already process.
+Verified live preview: local file storage, local workflow driver,0documents,
+0jobs, no Spider credential, no worker container. Saved connector model is still
+3.8-flash-high. Therefore uploads can be accepted/stored but cannot finish
+extraction. Original app's connector is configured with gemini-4-argon.
+No credential value was read or printed; no model requests were sent.
+
+Created compose.preview.yaml and docs/refactor/OPERATIONAL_PREVIEW.md: separate
+project, persistent volume, API8100 and explicitly enabled worker profile, local
+DB/files, bounded concurrency2, required external preview secret. Compose schema
+validation passed. This prepares an operational stack; it has not started or
+replaced the current preview. Original application remains unchanged.
+
+Asked asynchronously whether to reuse the existing Spider connection (shared
+billing/limits) or configure a separate one. Do not copy credentials or enable
+paid processing until the answer arrives. Independent next steps: preserve
+preview DB/files/secret; stage persistent state; cut over isolated API/worker;
+verify readiness and run an explicitly authorized browser document test. Keep
+provider quality distinct from job completion. Never use restored customer DB
+for a worker. Existing Step42 local code acceptance remains complete; Step43 is
+an operational enablement phase, not retroactive completion of paid extraction.
+Files this step:compose.preview.yaml;docs/refactor/{OPERATIONAL_PREVIEW,
+CHECKPOINT,CHANGES}. No runtime source changes.
