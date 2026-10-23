@@ -411,87 +411,20 @@ def publish_config(data: ConfigInput, user=Depends(ADMIN)):
 
 @app.post("/api/config/test")
 def test_config(data: ConfigInput, user=Depends(ADMIN)):
-    from .provider import validate_extraction
-
+    from .configuration.replay import replay_configuration
     try:
         validate_config(data.payload)
     except (ValueError, TypeError, KeyError) as exc:
         raise HTTPException(422, str(exc))
     with SessionLocal() as db:
-        docs = db.scalars(
-            select(Document)
-            .where(Document.org == user.org, Document.status == "COMPLETED")
-            .order_by(Document.created_at.desc())
-            .limit(20)
-        ).all()
-        results = []
-        for d in docs:
-            try:
-                response = {
-                    "extract_result": d.raw,
-                    "extract_metadata": d.metadata_json,
-                    "id": d.provider_state.get("extract_job_id"),
-                }
-                result = validate_extraction(d, data.payload, response)
-                results.append(
-                    {
-                        "filename": d.filename,
-                        "batch_id": d.batch_id,
-                        "before": d.validation_status,
-                        "after": result["status"],
-                        "issues": sum(
-                            len(x["issues"]) for x in result["fields"].values()
-                        ),
-                    }
-                )
-            except Exception as exc:
-                results.append(
-                    {
-                        "filename": d.filename,
-                        "before": d.validation_status,
-                        "after": "ERROR",
-                        "error": type(exc).__name__,
-                    }
-                )
-        from .case_processing import inputs
-        from .sop import evaluate
-
-        sop_results = []
-        for c in db.scalars(
-            select(Case)
-            .where(Case.org == user.org)
-            .order_by(Case.updated_at.desc())
-            .limit(20)
-        ):
-            frozen = inputs(db, c)
-            from .transaction_flows import scope_configuration, score_configuration
-
-            scoped_cfg = scope_configuration(data.payload, c.template)
-            findings = evaluate(frozen["documents"], scoped_cfg, frozen["case_context"])
-            from .sop_scoring import point_summary
-            from .forex_sop import package_summary
-            sop_results.append(
-                {
-                    "case_id": c.id,
-                    "customer": c.customer,
-                    "scores": score_configuration(scoped_cfg, c.template, findings),
-                    "sop_summary": point_summary(findings),
-                    "sop_packages": package_summary(findings),
-                    "findings": findings,
-                }
-            )
-        return {
-            "sop_results": sop_results,
-            "tested": len(results),
-            "results": results,
-            "note": "Read-only replay of stored extraction. No cloud jobs or existing case changes.",
-        }
+        return replay_configuration(db, organization=user.org, payload=data.payload)
 
 
 @app.get("/api/config/catalog")
 def configuration_catalog(case_id: str | None = None, user=Depends(current_user)):
     from .sop import CATEGORIES, OPERATORS, fields, approved_scope
     from .configuration.contexts import definitions, enum_options
+    from .configuration.dataset_policy import comparison_policy
     with SessionLocal() as db:
         case = authorized(db, Case, case_id, user) if case_id else None
         config = get_revision(db, case.config_id) if case else latest_config(db, user.org)
@@ -504,6 +437,7 @@ def configuration_catalog(case_id: str | None = None, user=Depends(current_user)
         "context": enum_options(config.payload, family),
         "context_definitions": {key: value.model_dump(mode="json") for key, value in context_definitions.items()},
         "config_version": config.version,
+        "dataset_comparison_policy": comparison_policy().model_dump(mode="json"),
         "categories": (*CATEGORIES, "DOCUMENT_VERIFICATION", "OBSERVATIONS"),
     }
 
@@ -1195,7 +1129,9 @@ def comparison_view(db, case, state):
         .where(Document.case_id == case.id)
         .order_by(Document.created_at)
     ).all()
-    return compare(case, docs, state, dataset_for_case(db, case))
+    from .configuration.dataset_policy import comparison_policy
+    policy = comparison_policy(get_revision(db, case.config_id).payload, case.template)
+    return compare(case, docs, state, dataset_for_case(db, case), policy=policy)
 
 
 @app.get("/api/cases/{case_id}/comparison")
@@ -2473,32 +2409,10 @@ def events(after: float = 0, user=Depends(current_user)):
 
 @app.get("/api/reports")
 def reports(user=Depends(current_user)):
+    from .report_queries import ReportAudience, ReportQueries
+    audience = ReportAudience(user.org, None if user.role == "bank_admin" else tuple(user.branches))
     with SessionLocal() as db:
-        # One current report per customer, branch and service; rank only reports
-        # the caller is allowed to see, before selecting the latest rows.
-        ranked=scoped(select(Report.id.label('id'),func.row_number().over(
-            partition_by=(Case.branch_id,Case.template,func.lower(func.trim(Case.customer))),
-            order_by=(Report.created_at.desc(),Report.version.desc(),Report.id.desc())
-        ).label('position')).join(Case,Case.id==Report.case_id).where(Case.status!='MERGED'),Report,user).subquery()
-        rows = db.scalars(
-            select(Report).join(ranked,Report.id==ranked.c.id).where(ranked.c.position==1)
-            .order_by(Report.created_at.desc())
-        ).all()
-        return [
-            {
-                "id": r.id,
-                "case_id": r.case_id,
-                "version": r.version,
-                "state": r.state,
-                "created_at": r.created_at,
-                "customer": r.snapshot["customer"],
-                "validation_status": r.snapshot["validation_status"],
-                "provider": r.snapshot["provider"],
-                "reference":r.snapshot.get('reference',''),
-                "transaction_flow":db.get(Case,r.case_id).template,
-            }
-            for r in rows
-        ]
+        return ReportQueries(db, audience).current()
 
 
 @app.get("/api/reports/kertas-kerja")

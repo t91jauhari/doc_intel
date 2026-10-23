@@ -28,20 +28,10 @@ def dataset_for_case(db, case):
 MISSING = object()
 
 
-def fuzzy_text(expected, actual, kind, field):
-    if field in {
-        "currency",
-        "gender",
-        "blood_type",
-        "religion",
-        "marital_status",
-        "citizenship",
-        "account_type",
-        "payment_type",
-        "transaction_type",
-        "beneficiary_status",
-        "payer_status",
-    } or (field or "").endswith(("_code", "_id", "_number")):
+def fuzzy_text(expected, actual, kind, field, policy=None):
+    from .configuration.dataset_policy import comparison_policy
+    policy = policy or comparison_policy()
+    if not policy.enabled or field in policy.excluded_fields or (field or "").endswith(tuple(policy.excluded_suffixes)):
         return None
     if kind != "text" or not isinstance(expected, str) or not isinstance(actual, str):
         return None
@@ -60,11 +50,11 @@ def fuzzy_text(expected, actual, kind, field):
         }
     if (
         len(tokens_a) != len(tokens_b)
-        or min(len(a), len(b)) < 8
-        or max(len(a), len(b)) > 2000
+        or min(len(a), len(b)) < policy.minimum_length
+        or max(len(a), len(b)) > policy.maximum_length
     ):
         return None
-    limit = 2 if min(len(a), len(b)) >= 40 else 1
+    limit = policy.long_edit_limit if min(len(a), len(b)) >= policy.long_text_length else policy.short_edit_limit
     if abs(len(a) - len(b)) > limit:
         return None
     previous = list(range(len(b) + 1))
@@ -82,19 +72,9 @@ def fuzzy_text(expected, actual, kind, field):
         previous = current
     distance = previous[-1]
     score = SequenceMatcher(None, a, b, autojunk=False).ratio()
-    if score < 0.90 or distance > limit:
+    if score < policy.minimum_similarity or distance > limit:
         return None
-    descriptive = field in {
-        "notes",
-        "details",
-        "occupation",
-        "document_place",
-        "creation_place",
-        "birth_place",
-        "village",
-        "district",
-    }
-    accepted = descriptive and score >= 0.96 and min(len(a), len(b)) >= 20
+    accepted = field in policy.descriptive_fields and score >= policy.acceptance_similarity and min(len(a), len(b)) >= policy.acceptance_minimum_length
     return {
         "status": "FUZZY_MATCH" if accepted else "REVIEW",
         "similarity": round(score * 100, 2),
@@ -318,7 +298,9 @@ def project(doc, field, kind):
     return value
 
 
-def compare(case, docs, state, dataset=None):
+def compare(case, docs, state, dataset=None, *, policy=None):
+    from .configuration.dataset_policy import comparison_policy
+    policy = policy or comparison_policy()
     DATASET = dataset if dataset is not None else __getattr__("DATASET")
     sample = state.get("sample_id")
     if sample not in {s["id"] for s in DATASET["samples"]}:
@@ -466,7 +448,7 @@ def compare(case, docs, state, dataset=None):
                             message="Numeric value compared; reference currency is unspecified.",
                         )
                     else:
-                        fuzzy = fuzzy_text(expected, value, source["kind"], field)
+                        fuzzy = fuzzy_text(expected, value, source["kind"], field, policy)
                         row.update(
                             fuzzy
                             or {
@@ -499,6 +481,7 @@ def compare(case, docs, state, dataset=None):
         json.dumps(
             {
                 "dataset_sha256": DATASET["sha256"],
+                "comparison_policy": policy.model_dump(mode="json"),
                 "sample": sample,
                 "state": state,
                 "rows": rows,
@@ -513,6 +496,7 @@ def compare(case, docs, state, dataset=None):
     ).hexdigest()
     return {
         "case_id": case.id,
+        "comparison_policy": policy.model_dump(mode="json"),
         "customer": case.customer,
         "dataset_id": DATASET["id"],
         "dataset_sha256": DATASET["sha256"],

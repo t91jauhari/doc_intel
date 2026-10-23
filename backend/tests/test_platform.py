@@ -8,6 +8,10 @@ from sqlalchemy import select
 PDF = b"%PDF-1.4\n% synthetic test upload; fixture mode does not inspect content\n%%EOF"
 
 
+def uploaded_pdf(name):
+    return PDF + b"\n% " + name.encode()
+
+
 def publish_fixture(client):
     cfg = client.get("/api/config").json()
     cfg["payload"]["provider"] = "fixture"
@@ -31,7 +35,7 @@ def upload(
         data={"branch_id": branch, "template": template},
         # Distinct fixture documents need distinct bytes; otherwise upload hash
         # deduplication correctly collapses all files into one document.
-        files=[("files", (name, PDF + b"\n% " + name.encode(), "application/pdf")) for name in names],
+        files=[("files", (name, uploaded_pdf(name), "application/pdf")) for name in names],
         headers={"Idempotency-Key": key},
     )
 

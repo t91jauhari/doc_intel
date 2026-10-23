@@ -65,7 +65,7 @@ def test_development_bucket_bootstrap_once():
 
 def test_api_worker_and_report_roundtrip_through_minio_adapter(signed, monkeypatch):
     from app.storage import store
-    from test_platform import PDF, process_all, publish_fixture, upload
+    from test_platform import uploaded_pdf, process_all, publish_fixture, upload
 
     objects = {}
     client = Mock()
@@ -90,7 +90,7 @@ def test_api_worker_and_report_roundtrip_through_minio_adapter(signed, monkeypat
     process_all()
     detail = signed.get("/api/cases/" + case_id).json()
     doc_id = detail["documents"][0]["id"]
-    assert signed.get("/api/documents/" + doc_id + "/file").content == PDF
+    assert signed.get("/api/documents/" + doc_id + "/file").content == uploaded_pdf("minio_ektp.pdf")
     assert any(key.endswith("draft.pdf") for key in objects)
     assert any(key.endswith("draft.xlsx") for key in objects)
     assert any(key.endswith("draft.json") for key in objects)
