@@ -24,9 +24,9 @@ def test_added_schema_fields_and_provider_contracts():
     schema=cfg['profiles']['ektp']['schema']
     schema['properties']['name']={'type':['string','null'],'description':'Printed name'}
     validate_config(cfg)
-    cfg['provider']='llama'
+    cfg['provider']='fixture'
     with pytest.raises(ValueError,match='Native'):validate_config(cfg)
-    cfg=apply_quality(default_config());cfg['provider']='llama';validate_config(cfg)
+    cfg=apply_quality(default_config());cfg['provider']='fixture';validate_config(cfg)
 
 
 def test_reprocess_preserves_other_fields_and_has_history(signed,monkeypatch):
@@ -183,33 +183,6 @@ def test_uncertain_field_retry_requires_explicit_ack(signed):
     with SessionLocal() as db:assert db.get(Document,doc.id).provider_state['pending_create'] is None
 
 
-def test_llama_selected_fields_reuse_saved_parse_and_extract_id(signed,monkeypatch):
-    from types import SimpleNamespace
-    from app.field_reprocessing import extract_selected
-    doc=completed(signed)
-    assert signed.put('/api/connector',json={'api_key':'llx-not-live-field-test'}).status_code==200
-    doc.provider_state={'parse_job_id':'parse-existing'}
-    with SessionLocal.begin() as db:db.get(Document,doc.id).provider_state=doc.provider_state
-    cfg=default_config();cfg['provider']='llama'
-    req=SimpleNamespace(id='field-sdk-test',payload={'config':cfg,'fields':['nik'],'instruction':''})
-    calls=[]
-    def create(**kwargs):
-        calls.append('create')
-        assert kwargs['file_input']=='parse-existing'
-        assert set(kwargs['configuration']['data_schema']['properties'])=={'nik','_field_locations'}
-        assert kwargs['configuration']['data_schema']['required']==['nik']
-        return SimpleNamespace(id='selected-existing')
-    def get(job_id,**kwargs):
-        calls.append('get');assert job_id=='selected-existing'
-        return SimpleNamespace(model_dump=lambda **kw:{'extract_result':{'nik':'000123'}})
-    class Client:
-        def __init__(self,**kwargs):
-            assert kwargs['max_retries']==0
-            self.extract=SimpleNamespace(create=create,get=get)
-    monkeypatch.setattr('llama_cloud.LlamaCloud',Client)
-    assert extract_selected(doc,req,lambda:None)['nik']=='000123'
-    assert extract_selected(doc,req,lambda:None)['nik']=='000123'
-    assert calls==['create','get','get']
 
 
 def test_cached_result_cannot_overwrite_newer_review(signed,monkeypatch):

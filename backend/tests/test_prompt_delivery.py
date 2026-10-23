@@ -88,64 +88,8 @@ def test_selected_spider_delivers_all_prompts_and_only_selected_field_descriptio
     assert len(calls)==2
 
 
-def test_llama_parse_and_extract_deliver_system_parser_profile_and_schema_prompts(signed,monkeypatch):
-    doc,cfg,p=configured(signed,'llama')
-    assert signed.put('/api/connector',json={'api_key':'llx-mocked-prompt-test'}).status_code==200
-    calls=[]
-    def parse_create(**kw):
-        calls.append(('parse',kw));return SimpleNamespace(id='parse-prompts')
-    def extract_create(**kw):
-        calls.append(('extract',kw));return SimpleNamespace(id='extract-prompts')
-    class Client:
-        def __init__(self,**kw):
-            self.files=SimpleNamespace(create=lambda **kw:SimpleNamespace(id='file-prompts'))
-            self.parsing=SimpleNamespace(create=parse_create,get=lambda *a,**kw:SimpleNamespace(job=SimpleNamespace(status='COMPLETED'),model_dump=lambda **kw:{'job':{'status':'COMPLETED'}}))
-            self.extract=SimpleNamespace(create=extract_create,get=lambda *a,**kw:SimpleNamespace(status='COMPLETED',model_dump=lambda **kw:{'id':'extract-prompts','extract_result':fixture_response('application')['extract_result']}))
-        def __enter__(self):return self
-        def __exit__(self,*args):pass
-    monkeypatch.setattr('app.provider.LlamaCloud',Client)
-    response,_=run_provider(doc,cfg,lambda:None)
-    parse=calls[0][1]['agentic_options']['custom_prompt']
-    assert 'SYSTEM_SENTINEL' in parse and 'PARSER_SENTINEL' in parse
-    extraction=calls[1][1]['configuration']
-    for sentinel in ['SYSTEM_SENTINEL','PARSER_SENTINEL','EXTRACTION_SENTINEL']:
-        assert sentinel in extraction['system_prompt']
-    for sentinel in ['ROOT_SENTINEL','FIELD_SENTINEL','CHILD_SENTINEL','ARRAY_CHILD_SENTINEL']:
-        assert sentinel in json.dumps(extraction['data_schema'])
-    assert all(r['status']=='RECORDED' for r in response['extract_metadata']['prompt_usage'].values())
-    run_provider(doc,cfg,lambda:None)
-    assert len(calls)==2
-    p['system_instruction']+=' New published system instruction.'
-    with pytest.raises(ProcessingIssue,match='different profile prompts'):
-        run_provider(doc,cfg,lambda:None)
-    assert len(calls)==2
 
 
-@pytest.mark.parametrize('saved_guidance',[False,True])
-def test_llama_selected_extract_delivers_all_current_profile_prompts(signed,monkeypatch,saved_guidance):
-    doc,cfg,p=configured(signed,'llama')
-    assert signed.put('/api/connector',json={'api_key':'llx-mocked-prompt-test'}).status_code==200
-    doc.provider_state={'parse_job_id':'original-parse'}
-    with SessionLocal.begin() as db:db.get(Document,doc.id).provider_state=doc.provider_state
-    req=SimpleNamespace(id='llama-wire-fields',payload={'config':cfg,'fields':['branch','beneficiary'],'instruction':'REVIEWER_SENTINEL'})
-    if saved_guidance:
-        p['system_instruction']+='\nReusable extraction guidance (fields: beneficiary, branch):\n'+req.payload['instruction']
-        req.payload['guidance_saved_to_profile']=True
-    calls=[]
-    def create(**kw):
-        calls.append(kw);return SimpleNamespace(id='selected-extract')
-    class Client:
-        def __init__(self,**kw):self.extract=SimpleNamespace(create=create,get=lambda *a,**kw:SimpleNamespace(model_dump=lambda **kw:{'extract_result':{'branch':'Jakarta','beneficiary':None}}))
-    monkeypatch.setattr('llama_cloud.LlamaCloud',Client)
-    assert extract_selected(doc,req,lambda:None)['branch']=='Jakarta'
-    config=calls[0]['configuration'];wire=json.dumps(config)
-    for sentinel in ['SYSTEM_SENTINEL','PARSER_SENTINEL','EXTRACTION_SENTINEL','ROOT_SENTINEL','FIELD_SENTINEL','CHILD_SENTINEL','REVIEWER_SENTINEL']:
-        assert sentinel in wire
-    assert 'UNSELECTED_SENTINEL' not in wire
-    from app.spatial_grounding import spatial_schema
-    assert config['data_schema']==spatial_schema(selected_schema(p,['branch','beneficiary']))
-    extract_selected(doc,req,lambda:None)
-    assert len(calls)==1
 
 
 def test_location_guidance_is_scoped_to_selected_fields_and_frozen_for_retries(signed,monkeypatch):

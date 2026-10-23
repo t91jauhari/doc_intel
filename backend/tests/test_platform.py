@@ -245,19 +245,13 @@ def test_csvs_are_separate_and_keep_leading_zero(signed):
 
 
 def test_connector_key_encrypted_and_never_returned(signed):
-    assert (
-        signed.put(
-            "/api/connector", json={"api_key": "llx-test-key-not-live"}
-        ).status_code
-        == 200
-    )
-    assert "llx-test-key-not-live" not in signed.get("/api/connector").text
+    from app.db import SpiderConnector
+    endpoint = "/api/connectors/spider-ai"
+    assert signed.put(endpoint, json={"api_key": "synthetic-test-key"}).status_code == 200
+    assert "synthetic-test-key" not in signed.get(endpoint).text
     with SessionLocal() as db:
-        assert "llx-test-key-not-live" not in db.scalar(select(Connector)).encrypted
-    assert (
-        signed.put("/api/connector", json={"api_key": "Bearer llx-test"}).status_code
-        == 422
-    )
+        assert "synthetic-test-key" not in db.scalar(select(SpiderConnector)).encrypted
+    assert signed.put(endpoint, json={"api_key": "Bearer secret"}).status_code == 422
 
 
 def test_cross_branch_access_denied_everywhere(signed):
@@ -314,19 +308,6 @@ def test_cross_branch_access_denied_everywhere(signed):
     )
 
 
-def test_uncertain_submission_blocks_duplicate_creation(signed):
-    cfg=signed.get('/api/config').json()
-    cfg['payload']['provider']='llama'
-    assert signed.post('/api/config/publish',json={'expected_version':cfg['version'],'payload':cfg['payload']}).status_code==200
-    signed.put("/api/connector", json={"api_key": "llx-not-live"})
-    case_id = upload(signed, names=("poko_transaction.pdf",)).json()["case_ids"][0]
-    with SessionLocal.begin() as db:
-        d = db.scalar(select(Document))
-        d.provider_state = {"pending_create": "file_id"}
-    process_all()
-    doc = signed.get("/api/cases/" + case_id).json()["documents"][0]
-    assert doc["status"] == "ERROR" and "uncertain" in doc["error"]
-    assert signed.post("/api/documents/" + doc["id"] + "/retry").status_code == 409
 
 
 def test_bulk_retry_requeues_all_failed_documents_in_case(signed):
@@ -467,49 +448,6 @@ def test_bulk_retry_requeues_documents_in_any_state(signed):
 
 
 
-def test_classification_mismatch_stops_before_extraction(signed, monkeypatch):
-    import app.provider as provider
-    cfg=signed.get('/api/config').json()
-    cfg['payload']['provider']='llama'
-    assert signed.post('/api/config/publish',json={'expected_version':cfg['version'],'payload':cfg['payload']}).status_code==200
-
-    called = []
-
-    class Model:
-        id = "classify-test"
-        status = "COMPLETED"
-        result = SimpleNamespace(
-            model_dump=lambda **_: {
-                "type": "invoice",
-                "confidence": 0.99,
-                "reasoning": "Invoice table and payment instructions",
-            }
-        )
-
-    class FakeClient:
-        def __init__(self, **_):
-            self.files = SimpleNamespace(
-                create=lambda **kw: SimpleNamespace(id="file-test")
-            )
-            self.classify = SimpleNamespace(
-                create=lambda **kw: SimpleNamespace(id="classify-test"),
-                get=lambda *a, **kw: Model(),
-            )
-            self.parsing = SimpleNamespace(create=lambda **kw: called.append("parse"))
-
-        def __enter__(self):
-            return self
-
-        def __exit__(self, *_):
-            pass
-
-    monkeypatch.setattr(provider, "LlamaCloud", FakeClient)
-    signed.put("/api/connector", json={"api_key": "llx-not-live"})
-    case_id = upload(signed, names=("poko_transaction.pdf",)).json()["case_ids"][0]
-    process_all()
-    doc = signed.get("/api/cases/" + case_id).json()["documents"][0]
-    assert doc["status"] == "NEEDS_CLASSIFICATION" and not called
-    assert doc["classification"]["type"] == "invoice"
 
 
 def test_read_inbox_does_not_resolve_case(signed):
@@ -544,111 +482,3 @@ def test_failed_sop_report_cannot_be_released(signed):
     process_all()
     report = signed.get("/api/cases/" + case_id).json()["reports"][0]
     assert signed.post("/api/reports/" + report["id"] + "/approve").status_code == 409
-
-
-def test_classify_selects_schema_and_extract_reuses_parse_id(signed, monkeypatch):
-    import app.provider as provider
-
-    config = signed.get("/api/config").json()
-    config['payload']['provider']='llama'
-    instruction = "Extract the complete entered bank branch name from the labelled branch field."
-    config["payload"]["profiles"]["application"]["schema"]["properties"]["branch"]["description"] = instruction
-    assert signed.post("/api/config/publish", json={"expected_version": config["version"], "payload": config["payload"]}).status_code == 200
-
-    calls = []
-    response = provider.fixture_response("application")
-
-    class FakeClient:
-        def __init__(self, **_):
-            def upload(**kwargs):
-                calls.append("upload")
-                return SimpleNamespace(id="file-test")
-
-            def classify(**kwargs):
-                calls.append("classify")
-                assert kwargs["file_input"] == "file-test"
-                assert {x["type"] for x in kwargs["configuration"]["rules"]} == set(
-                    signed.get("/api/config").json()["payload"]["profiles"]
-                )
-                return SimpleNamespace(id="classify-test")
-
-            def parse(**kwargs):
-                calls.append("parse")
-                assert (
-                    kwargs["file_id"] == "file-test"
-                    and kwargs["tier"] == "agentic_plus"
-                )
-                return SimpleNamespace(id="parse-test")
-
-            def extract(**kwargs):
-                calls.append("extract")
-                assert kwargs["file_input"] == "parse-test"
-                assert kwargs["configuration"]["tier"] == "agentic_plus"
-                properties = kwargs["configuration"]["data_schema"]["properties"]
-                assert len(set(properties) - {"_field_locations"}) == 23
-                assert "_field_locations" in properties
-                assert kwargs["configuration"]["data_schema"]["properties"]["branch"]["description"] == instruction
-                assert "_visual_evidence" not in kwargs["configuration"]["data_schema"]["properties"]
-                return SimpleNamespace(id="extract-test")
-
-            self.files = SimpleNamespace(create=upload)
-            self.classify = SimpleNamespace(
-                create=classify,
-                get=lambda *a, **kw: SimpleNamespace(
-                    status="COMPLETED",
-                    result=SimpleNamespace(
-                        model_dump=lambda **_: {
-                            "type": "application",
-                            "confidence": 0.99,
-                            "reasoning": "Bank transaction form",
-                        }
-                    ),
-                ),
-            )
-            self.parsing = SimpleNamespace(
-                create=parse,
-                get=lambda *a, **kw: SimpleNamespace(
-                    job=SimpleNamespace(status="COMPLETED"),
-                    model_dump=lambda **_: {"job": {"id": "parse-test", "status": "COMPLETED"}, "items": {"pages": []}, "forms": {"pages": []}}
-                ),
-            )
-            self.extract = SimpleNamespace(
-                create=extract,
-                get=lambda *a, **kw: SimpleNamespace(
-                    status="COMPLETED", model_dump=lambda **_: response
-                ),
-            )
-
-        def __enter__(self):
-            return self
-
-        def __exit__(self, *_):
-            pass
-
-    monkeypatch.setattr(provider, "LlamaCloud", FakeClient)
-    signed.put("/api/connector", json={"api_key": "llx-not-live"})
-    case_id = upload(signed, names=("poko_transaction.pdf",), template="custom").json()[
-        "case_ids"
-    ][0]
-    process_all()
-    doc = signed.get("/api/cases/" + case_id).json()["documents"][0]
-    assert doc["status"] == "COMPLETED" and calls == [
-        "upload",
-        "classify",
-        "parse",
-        "extract",
-    ]
-    assert doc["provider_state"]["extract_job_id"] == "extract-test"
-    assert (
-        signed.post(
-            "/api/documents/" + doc["id"] + "/corrections",
-            json={
-                "field": "branch",
-                "value": "KCP Reviewed Branch",
-                "reason": "Verified printed branch name",
-            },
-        ).status_code
-        == 202
-    )
-    process_all()
-    assert calls == ["upload", "classify", "parse", "extract"]

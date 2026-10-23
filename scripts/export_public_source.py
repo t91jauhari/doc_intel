@@ -42,7 +42,10 @@ def allowed(path):
 def findings(path, content):
     if path.endswith(('.png', '.jpg', '.jpeg', '.pdf', '.xlsx', '.xls', '.dump', '.zip')):
         return ['binary evidence is outside the source allowlist']
-    text = content.decode('utf-8')
+    try:
+        text = content.decode('utf-8')
+    except UnicodeDecodeError:
+        return ['source must use UTF-8 encoding before it can be inspected']
     problems = []
     for label, pattern in [
         ('16-digit literal requiring manual review', r'(?<!\d)\d{16}(?!\d)'),

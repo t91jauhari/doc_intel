@@ -10,7 +10,7 @@ from test_platform import upload, process_all
 
 def configured(payload=None):
     cfg = copy.deepcopy(payload) if payload is not None else default_config()
-    cfg["provider"] = "llama"
+    cfg["provider"] = "spider-ai"
     cfg["profiles"]["custom_note"] = {
         "label": "Custom note", "validation_adapter": "schema", "policy": {},
         "classification_description": "A synthetic custom note with two printed names.",

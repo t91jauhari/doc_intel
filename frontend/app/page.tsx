@@ -198,7 +198,7 @@ export default function Overview() {
                       <dd>
                         {data.provider === "fixture"
                           ? "Synthetic fixtures"
-                          : "LlamaCloud"}
+                          : data.provider === "spider-ai" ? "Spider-AI" : "Historical provider"}
                       </dd>
                     </div>
                     <div>

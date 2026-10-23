@@ -1257,8 +1257,7 @@ function ActionModal({
         {action.kind === "reconcile" && (
           <>
             <p className="muted">
-              Verify the existing job in LlamaCloud before supplying its ID.
-              This resumes that job instead of creating another.
+              Reconcile only a saved job for a supported provider. Historical Llama submissions cannot resume; upgrade the case to Spider-AI before retrying.
             </p>
             <label>
               {String(action.doc.provider_state.pending_create)}

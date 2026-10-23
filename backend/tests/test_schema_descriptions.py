@@ -20,7 +20,7 @@ def test_descriptions_edit_all_nested_nodes_without_changing_contract():
     assert config["profiles"]["ektp"]["schema_version"] == original["profiles"]["ektp"]["schema_version"]
     for change in ["type", "required", "extra"]:
         bad = copy.deepcopy(config)
-        bad['provider']='llama'
+        bad['provider']='fixture'
         schema = bad["profiles"]["ektp"]["schema"]
         if change == "type":
             schema["properties"]["nik"]["type"] = "number"

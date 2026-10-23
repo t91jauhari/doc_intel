@@ -85,7 +85,7 @@ def test_approved_alias_uses_saved_raw_and_records_transformation():
     from test_ektp import evidence, metadata, comparison_context
 
     cfg = default_config()
-    cfg['provider'] = 'llama'  # This test exercises the native enum validator.
+    cfg['provider'] = 'fixture'  # This test exercises the native enum validator.
     raw = evidence()
     raw["religion"] = "KATHOLIK"
     doc = SimpleNamespace(doc_type="ektp", overrides={}, provider_state={})
@@ -193,7 +193,7 @@ def test_religion_canonical_or_raw_fallback(value, expected):
     from test_ektp import evidence, metadata
 
     cfg = default_config()
-    cfg['provider'] = 'llama'  # Spider preserves model values unless explicitly revalidated.
+    cfg['provider'] = 'fixture'  # Spider preserves model values unless explicitly revalidated.
     raw = evidence()
     raw["religion"] = value
     doc = SimpleNamespace(doc_type="ektp", overrides={}, provider_state={})

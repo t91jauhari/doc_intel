@@ -26,6 +26,10 @@ class PublicSourceContract(unittest.TestCase):
     def test_normal_configuration_is_not_rejected(self):
         self.assertEqual(findings('source.py', b"digits = 16; model = 'configured-model'"), [])
 
+    def test_invalid_encoding_is_blocked_instead_of_bypassing_inspection(self):
+        self.assertEqual(findings('source.tsx', b'unsafe\xb7text'),
+                         ['source must use UTF-8 encoding before it can be inspected'])
+
 
 if __name__ == '__main__':
     unittest.main()

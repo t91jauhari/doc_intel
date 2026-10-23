@@ -435,7 +435,7 @@ function UploadForm() {
               </li>
               <li>
                 <strong>Classify next</strong>
-                <span>LlamaCloud verifies the actual document type.</span>
+                <span>The configured provider verifies the document type.</span>
               </li>
               <li>
                 <strong>Extract and check</strong>

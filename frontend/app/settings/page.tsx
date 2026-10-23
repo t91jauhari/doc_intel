@@ -519,7 +519,7 @@ export default function Settings() {
                           <option value="spider-ai">
                             Spider-AI (recommended) · image-based extraction
                           </option>
-                          {draft.provider === "llama" && <option value="llama" disabled>Llama � removed (select Spider-AI)</option>}
+                          {draft.provider === "llama" && <option value="llama" disabled>Llama removed - select Spider-AI</option>}
                           <option value="fixture">
                             Synthetic fixtures · development only
                           </option>

@@ -34,15 +34,6 @@ def test_key_rotation_preserves_selected_model_and_advanced_options(signed):
     assert SqlConnectorRepository(SessionLocal, lambda value: value).read('another-org', 'spider-ai').api_key == ''
 
 
-def test_native_key_rotation_preserves_scope_and_timeout(signed):
-    endpoint = '/api/connector'
-    assert signed.put(endpoint, json={'project_id': 'project', 'organization_id': 'organization',
-                                     'timeout_seconds': 120}).status_code == 200
-    assert signed.put(endpoint, json={'api_key': 'synthetic-native-key'}).status_code == 200
-    options = signed.get(endpoint).json()['options']
-    assert options['project_id'] == 'project'
-    assert options['organization_id'] == 'organization'
-    assert options['timeout_seconds'] == 120
 
 
 @pytest.mark.parametrize('change', [
