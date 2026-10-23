@@ -5,7 +5,7 @@ from dataclasses import dataclass, field
 from pydantic import ValidationError
 from sqlalchemy import select
 
-from app.db import Connector, SpiderConnector
+from app.db import SpiderConnector
 from .connector_contracts import normalized_options
 from .contracts import ProcessingIssue
 

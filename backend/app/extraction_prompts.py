@@ -1,8 +1,8 @@
-"""One prompt contract for image extraction and LlamaCloud extraction.
+"""Prompt contract for full-document and selected-field image extraction.
 
 Only the active/pinned profile is compiled. Named draft variants and reference
 answers are never model instructions. Schema descriptions travel with the schema
-in LlamaCloud and as explicit path instructions in Spider-AI.
+as explicit path instructions in Spider-AI.
 """
 import hashlib
 import json
@@ -30,14 +30,6 @@ def reading_instructions(profile):
         + '\n\nReturn the requested extraction JSON. The declared field schema and saved field descriptions '
           'govern field scope, JSON types and absence representation. Parser/layout notes do not change the output contract.'
     )
-
-
-def llama_parse_instructions(profile, guidance=''):
-    return system_instruction(profile) + '\n\nSaved parser/layout instructions:\n' + profile.get('parse_prompt', '') + guidance
-
-
-def llama_extract_instructions(profile, task='', guidance=''):
-    return system_instruction(profile) + '\n\n' + reading_instructions(profile) + ('\n\n'+task if task else '') + guidance
 
 
 def prompt_manifest(profile, schema, task='', guidance=''):

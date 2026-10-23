@@ -1,6 +1,5 @@
 from .configuration.repository import get_revision
 from .configuration.profiles import profile_schema, validate_shape
-from .extraction.connector_contracts import SpiderConnectorInput, normalized_options, administrative_options
 import copy
 import csv
 import hashlib
@@ -43,7 +42,6 @@ from .db import (
     CaseContext,
     CaseRun,
     Config,
-    SpiderConnector,
     Document,
     DatasetComparison,
     Inbox,
@@ -71,7 +69,6 @@ from .security import (
     branch_allowed,
     current_user,
     digest,
-    encrypt,
     hash_password,
     require_roles,
     scoped,
@@ -99,6 +96,8 @@ async def lifespan(_):
 app = FastAPI(title="SQE Document Automation API", version="0.2.0", lifespan=lifespan)
 from .configuration.api import router as configuration_router
 app.include_router(configuration_router)
+from .extraction.api import router as extraction_settings_router
+app.include_router(extraction_settings_router)
 from .configuration.routes import router as configuration_upgrade_router, compatibility_router
 
 app.include_router(configuration_upgrade_router)
@@ -382,42 +381,6 @@ def preview_upload(data: PreviewInput, user=Depends(WRITE)):
     return plan_grouping(data.filenames, cfg)
 
 
-@app.get("/api/connectors/spider-ai")
-def spider_connector(user=Depends(ADMIN)):
-    with SessionLocal() as db:
-        item = db.scalar(select(SpiderConnector).where(SpiderConnector.org == user.org))
-        return {
-            "configured": bool(item and item.encrypted),
-            **administrative_options("spider-ai", item.options if item else {}),
-        }
-
-
-@app.put("/api/connectors/spider-ai")
-def save_spider_connector(data: SpiderConnectorInput, user=Depends(ADMIN)):
-    with SessionLocal.begin() as db:
-        item = db.scalar(select(SpiderConnector).where(SpiderConnector.org == user.org))
-        if not item:
-            item = SpiderConnector(org=user.org, encrypted="", options={})
-            db.add(item)
-        if data.api_key is not None:
-            item.encrypted = encrypt(data.api_key)
-        changes = data.model_dump(exclude={"api_key"}, exclude_unset=True)
-        candidate = {**(item.options or {}), **changes}
-        try:
-            validated = normalized_options("spider-ai", candidate)
-        except ValueError:
-            raise HTTPException(422, "Connector settings are invalid. Review all configured options.") from None
-        item.options = {**candidate, **validated}
-        audit(
-            db,
-            user.org,
-            user.id,
-            "spider.connector_updated",
-            credential_changed=data.api_key is not None,
-        )
-        return {"configured": bool(item.encrypted), "options": validated}
-
-
 class SpiderResubmit(BaseModel):
     reason: str = Field(min_length=5, max_length=1000)
     accept_possible_duplicate_charge: bool
@@ -500,11 +463,6 @@ def failure_summary(since: float = 0, user=Depends(current_user)):
             entry["first_seen"] = min(entry["first_seen"], d.created_at)
         return sorted(grouped.values(), key=lambda g: -g["count"])
 
-
-@app.get("/api/connector")
-@app.put("/api/connector")
-def removed_connector(user=Depends(ADMIN)):
-    raise HTTPException(410, "Llama provider has been removed. Configure Spider-AI instead.")
 
 
 def case_view(c, db):

@@ -57,39 +57,26 @@ class SpiderOptions(BaseModel):
         return value.strip()
 
 
-class LlamaOptions(BaseModel):
-    model_config = ConfigDict(extra="ignore", frozen=True)
-    base_url: str = Field(default="", max_length=2000)
-    project_id: str = Field(default="", max_length=200)
-    organization_id: str = Field(default="", max_length=200)
-    timeout_seconds: int = Field(default_factory=lambda: defaults("llama")["timeout_seconds"], ge=1, le=1800, strict=True)
-
-    @field_validator("base_url")
-    @classmethod
-    def optional_url(cls, value):
-        return secure_url(value) if value.strip() else ""
-
-
 class SpiderConnectorInput(SpiderOptions):
     model_config = ConfigDict(extra="forbid", frozen=True)
     api_key: str | None = Field(default=None, max_length=500, repr=False)
     _key = field_validator("api_key")(bare_key)
 
 
-class ConnectorInput(LlamaOptions):
-    model_config = ConfigDict(extra="forbid", frozen=True)
-    api_key: str | None = Field(default=None, max_length=500, repr=False)
-    _key = field_validator("api_key")(bare_key)
+def _options_model(provider):
+    if provider != 'spider-ai':
+        raise ValueError('This extraction provider is no longer supported.')
+    return SpiderOptions
 
 
 def normalized_options(provider, options):
-    model = {"spider-ai": SpiderOptions, "llama": LlamaOptions}[provider]
+    model = _options_model(provider)
     return model.model_validate(options).model_dump(exclude_none=True)
 
 
 def numeric_option_fields(provider="spider-ai"):
     result = []
-    model = {"spider-ai": SpiderOptions, "llama": LlamaOptions}[provider]
+    model = _options_model(provider)
     for key, field in model.model_json_schema()["properties"].items():
         variants = field.get("anyOf", [field])
         numeric = next((value for value in variants if value.get("type") in {"integer", "number"}), None)
