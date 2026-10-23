@@ -10,7 +10,7 @@ From `tools/sinarmas_extraction_test/`, keeping your working `.env`:
 .\run_invoice.bat --env-file .env
 ```
 
-This processes the included `samples/bayu_birdless_invoice.pdf`. For another invoice:
+This processes the included `samples/customer_invoice.pdf`. For another invoice:
 
 ```powershell
 .\run_invoice.bat --env-file .env --pdf "C:\documents\customer_invoice.pdf"

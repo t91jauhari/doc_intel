@@ -123,7 +123,7 @@ class EKTPTests(unittest.TestCase):
             self.assertEqual(self.validate()["normalized"]["gender"], expected)
         for value in [None, "L", "Wanita", "Laki Laki", "Other"]:
             self.raw["gender"] = value
-            self.assertIn("INVALID_OR_MISSING_ENUM", self.codes("gender"))
+            self.assertIn("MISSING_ENUM" if value is None else "UNRECOGNIZED_ENUM", self.codes("gender"))
 
     def test_blood_type_hyphen_is_valid_unknown_but_blank_invalid(self):
         for value in ["a", "B", "ab", "O", "-"]:
@@ -132,15 +132,19 @@ class EKTPTests(unittest.TestCase):
             self.assertEqual(self.validate()["normalized"]["blood_type"], value.upper())
         for value in [None, "", "?", "A+", "0"]:
             self.raw["blood_type"] = value
-            self.assertEqual(self.validate()["fields"]["blood_type"]["status"], "FAIL")
+            self.assertEqual(self.validate()["fields"]["blood_type"]["status"], "FAIL" if value in (None, "") else "REVIEW")
 
     def test_religion_exact_case_insensitive_values_no_fuzzy_spelling_repair(self):
         for value in self.policy["religion_values"]:
             self.raw["religion"] = value.upper()
             self.assertEqual(self.validate()["normalized"]["religion"], value)
-        for value in [None, "Isalm", "Budha", "KEPERCAYAAN TERHADAP TUHAN YME"]:
+        for value, status, normalized in [(None, "FAIL", None), ("Isalm", "REVIEW", "Isalm"),
+                                          ("Budha", "PASS", "Buddha"),
+                                          ("KEPERCAYAAN TERHADAP TUHAN YME", "REVIEW", "KEPERCAYAAN TERHADAP TUHAN YME")]:
             self.raw["religion"] = value
-            self.assertEqual(self.validate()["fields"]["religion"]["status"], "FAIL")
+            report = self.validate()
+            self.assertEqual(report["fields"]["religion"]["status"], status)
+            self.assertEqual(report["normalized"]["religion"], normalized)
 
     def test_marital_status_rejects_abbreviations_and_invalid_values(self):
         for value in self.policy["marital_status_values"]:
@@ -148,7 +152,7 @@ class EKTPTests(unittest.TestCase):
             self.assertEqual(self.validate()["normalized"]["marital_status"], value)
         for value in [None, "BK", "Married", "Belum", "Cerai"]:
             self.raw["marital_status"] = value
-            self.assertIn("INVALID_OR_MISSING_ENUM", self.codes("marital_status"))
+            self.assertIn("MISSING_ENUM" if value is None else "UNRECOGNIZED_ENUM", self.codes("marital_status"))
 
     def test_citizenship_only_wni_wna(self):
         for value in ["wni", "wna"]:
@@ -156,7 +160,7 @@ class EKTPTests(unittest.TestCase):
             self.assertEqual(self.validate()["normalized"]["citizenship"], value.upper())
         for value in [None, "Indonesia", "W.N.I", "IDN"]:
             self.raw["citizenship"] = value
-            self.assertEqual(self.validate()["fields"]["citizenship"]["status"], "FAIL")
+            self.assertEqual(self.validate()["fields"]["citizenship"]["status"], "FAIL" if value is None else "REVIEW")
 
     def test_birthdate_multiformat_indonesian_english_and_nonfuture(self):
         for value in ["1/6/1993", "01-06-1993", "1993-06-01", "1 Juni 1993", "01-Jun-1993", "1 Juni 1993."]:

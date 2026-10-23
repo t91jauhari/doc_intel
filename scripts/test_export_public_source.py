@@ -30,6 +30,11 @@ class PublicSourceContract(unittest.TestCase):
         self.assertEqual(findings('source.tsx', b'unsafe\xb7text'),
                          ['source must use UTF-8 encoding before it can be inspected'])
 
+    def test_private_document_links_are_not_published(self):
+        link = 'https://' + 'drive.google.com' + '/file/d/synthetic'
+        self.assertIn('private document link requires configuration outside source',
+                      findings('policy.json', link.encode()))
+
 
 if __name__ == '__main__':
     unittest.main()

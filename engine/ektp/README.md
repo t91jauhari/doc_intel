@@ -4,19 +4,19 @@ The eKTP profile has its own schema, Parse/Extract prompts, policy and validator
 
 ## Run your PDF
 
-No real eKTP sample PDF was supplied with this change. Put your card PDF directly in `samples/`, with a filename ending in `_ektp.pdf`, such as `poko_ektp.pdf`.
+No real eKTP sample PDF was supplied with this change. Put your card PDF directly in `samples/`, with a filename ending in `_ektp.pdf`, such as `customer_ektp.pdf`.
 
 ```powershell
-.\run_ektp.bat --env-file .env --pdf .\samples\poko_ektp.pdf
+.\run_ektp.bat --env-file .env --pdf .\samples\customer_ektp.pdf
 ```
 
 Linux/WSL:
 
 ```bash
-bash run_ektp.sh --env-file .env --pdf samples/poko_ektp.pdf
+bash run_ektp.sh --env-file .env --pdf samples/customer_ektp.pdf
 ```
 
-Equivalent: `python run.py --document-type ektp --env-file .env --pdf samples/poko_ektp.pdf`. Without `--pdf`, the profile looks for `samples/customer_ektp.pdf`; it is not included. File/job reuse, offline replay, `--as-of`, policy override and dry run work as for the other profiles.
+Equivalent: `python run.py --document-type ektp --env-file .env --pdf samples/customer_ektp.pdf`. Without `--pdf`, the profile looks for `samples/customer_ektp.pdf`; it is not included. File/job reuse, offline replay, `--as-of`, policy override and dry run work as for the other profiles.
 
 Mixed batch:
 
@@ -94,7 +94,7 @@ Photo validation checks portrait presence, face visibility and whether the **fac
 
 ## Linked stamp requirement number 6
 
-The supplied [Drive folder](https://drive.google.com/drive/folders/1e6MMUFJF_2uY-UuMMn6GjLQjLlGJw1Sq) could not be read when adding this profile. Its content and requirement number 6 are therefore **not inferred**. `policy.json` retains the reference URL and requirement number. Default `stamp_rule_confirmed=false`, `stamp_required=null` produces **`STAMP_REQUIREMENT_NUMBER_6_NOT_CONFIGURED`** and REVIEW without assuming every eKTP requires an ink stamp.
+The supplied [Drive folder](a reference configured in the profile policy) could not be read when adding this profile. Its content and requirement number 6 are therefore **not inferred**. `policy.json` retains the reference URL and requirement number. Default `stamp_rule_confirmed=false`, `stamp_required=null` produces **`STAMP_REQUIREMENT_NUMBER_6_NOT_CONFIGURED`** and REVIEW without assuming every eKTP requires an ink stamp.
 
 Once the actual criterion is available, configure the applicable visible presence/text checks in a copy of the full policy, for example:
 

@@ -420,11 +420,11 @@ function UploadForm() {
               Review uncertain assignments before processing.
             </p>
             <div className="filename-example">
-              poko_transaction.pdf
+              customer_transaction.pdf
               <br />
-              poko_lld.pdf
+              customer_lld.pdf
               <br />
-              poko_invoice.pdf
+              customer_invoice.pdf
             </div>
             <ol>
               <li>

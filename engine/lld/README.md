@@ -10,7 +10,7 @@ Unzip the package into your project. From `tools/sinarmas_extraction_test/`, use
 .\run_lld.bat --env-file .env
 ```
 
-If this is a new installation, first copy `.env.example` to `.env` and fill in the key. The launcher installs the pinned requirements into `.venv` and processes `samples/poko_lld.pdf`.
+If this is a new installation, first copy `.env.example` to `.env` and fill in the key. The launcher installs the pinned requirements into `.venv` and processes `samples/customer_lld.pdf`.
 
 To choose another LLD PDF or explicitly set both tiers:
 

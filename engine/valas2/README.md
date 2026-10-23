@@ -4,21 +4,21 @@ This profile uses the ten requested fields and their supplied rules. Currency me
 
 ## Run your PDF
 
-Put the declaration directly in `samples/` (or your chosen `sample` folder) with a name ending in `_valas2.pdf`, for example `poko_valas2.pdf`. No actual Valas 2 sample PDF was supplied with this change; add your PDF before running a cloud extraction.
+Put the declaration directly in `samples/` (or your chosen `sample` folder) with a name ending in `_valas2.pdf`, for example `customer_valas2.pdf`. No actual Valas 2 sample PDF was supplied with this change; add your PDF before running a cloud extraction.
 
 From the package folder:
 
 ```powershell
-.\run_valas2.bat --env-file .env --pdf .\samples\poko_valas2.pdf
+.\run_valas2.bat --env-file .env --pdf .\samples\customer_valas2.pdf
 ```
 
 On Linux/WSL:
 
 ```bash
-bash run_valas2.sh --env-file .env --pdf samples/poko_valas2.pdf
+bash run_valas2.sh --env-file .env --pdf samples/customer_valas2.pdf
 ```
 
-Equivalent: `python run.py --document-type valas_declaration_2 --env-file .env --pdf samples/poko_valas2.pdf`. Without `--pdf`, this profile looks for `samples/customer_valas2.pdf`; that file is not included. `--file-id`, `--parse-job-id`, `--extract-job-id`, `--replay`, `--policy`, `--as-of` and `--dry-run` work as for the other profiles.
+Equivalent: `python run.py --document-type valas_declaration_2 --env-file .env --pdf samples/customer_valas2.pdf`. Without `--pdf`, this profile looks for `samples/customer_valas2.pdf`; that file is not included. `--file-id`, `--parse-job-id`, `--extract-job-id`, `--replay`, `--policy`, `--as-of` and `--dry-run` work as for the other profiles.
 
 Run every supported document in your directory:
 

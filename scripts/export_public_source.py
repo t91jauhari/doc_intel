@@ -52,6 +52,7 @@ def findings(path, content):
         ('16-digit literal requiring manual review', r'(?<!\d)\d{16}(?!\d)'),
         ('private key material', r'-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----'),
         ('credential-shaped value', r'\b(?:sk-[A-Za-z0-9]{20,}|llx-[A-Za-z0-9_-]{20,}|AKIA[A-Z0-9]{16})\b'),
+        ('private document link requires configuration outside source', r'https?://(?:drive|docs)\.google\.com/'),
     ]:
         if re.search(pattern, text):
             problems.append(label)
@@ -120,6 +121,10 @@ PUBLIC_README = '''# SQE Document Platform
 
 Python/FastAPI document processing, configurable document profiles, SOP controls,
 audited review and Kertas Kerja reports, with a Next.js interface.
+
+Refactoring is in progress. Native compatibility and remaining API services,
+browser acceptance, and deployment activation are still tracked separately.
+This snapshot is not a completed production release.
 
 This source export deliberately omits customer documents, extraction fixtures,
 reference workbook values, browser screenshots, secrets and previous Git history.

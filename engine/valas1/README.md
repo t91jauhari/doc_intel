@@ -4,19 +4,19 @@ This profile extracts exactly the **16 supplied columns**, in the supplied order
 
 ## Run your document
 
-No actual Valas 1 PDF was supplied with this change. Put your document directly in `samples/` or your selected `sample` directory with a filename ending in `_valas1.pdf`, for example `poko_valas1.pdf`.
+No actual Valas 1 PDF was supplied with this change. Put your document directly in `samples/` or your selected `sample` directory with a filename ending in `_valas1.pdf`, for example `customer_valas1.pdf`.
 
 ```powershell
-.\run_valas1.bat --env-file .env --pdf .\samples\poko_valas1.pdf
+.\run_valas1.bat --env-file .env --pdf .\samples\customer_valas1.pdf
 ```
 
 Linux/WSL:
 
 ```bash
-bash run_valas1.sh --env-file .env --pdf samples/poko_valas1.pdf
+bash run_valas1.sh --env-file .env --pdf samples/customer_valas1.pdf
 ```
 
-Equivalent: `python run.py --document-type valas_declaration_1 --env-file .env --pdf samples/poko_valas1.pdf`. Without an explicit `--pdf`, the profile looks for `samples/customer_valas1.pdf`; this file is not included. File/job reuse, replay and dry run work as for the other profiles.
+Equivalent: `python run.py --document-type valas_declaration_1 --env-file .env --pdf samples/customer_valas1.pdf`. Without an explicit `--pdf`, the profile looks for `samples/customer_valas1.pdf`; this file is not included. File/job reuse, replay and dry run work as for the other profiles.
 
 Process all six supported document types in your directory:
 

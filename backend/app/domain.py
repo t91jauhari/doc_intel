@@ -626,8 +626,8 @@ def route(filename, cfg):
         if best_ratio >= 0.80:
             matched.append(best_label)
     customer = re.sub(r"[_\s]+", " ", customer).strip(" -")
-    # Strip residual connector words (e.g. "Artha Milani-Form" after removing
-    # the "EDD" label from "Artha Milani-Form EDD"). A customer name never
+    # Strip residual connector words (e.g. "Synthetic Customer-Form" after removing
+    # the "EDD" label from "Synthetic Customer-Form EDD"). A customer name never
     # ends/starts with these generic document words.
     customer = re.sub(
         r"[\s_-]+(?:form|formulir|dokumen|document|doc)$", "", customer, flags=re.I

@@ -2,7 +2,7 @@
 
 Ten fields follow the supplied column list exactly. Run from the engine directory:
 
-    python run.py --document-type riplay --pdf samples/indah_laruna_riplay.pdf --parse-tier agentic_plus --extract-tier agentic_plus
+    python run.py --document-type riplay --pdf samples/customer_riplay.pdf --parse-tier agentic_plus --extract-tier agentic_plus
 
 Or use run_riplay.bat on Windows / bash run_riplay.sh on Linux. The attached sample is included under the filename above. Configure the existing LlamaCloud API key in engine/.env as for the other profiles. No API key is included in this package.
 

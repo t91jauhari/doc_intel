@@ -1,12 +1,13 @@
 # Application, LLD, Underlying Invoice, Valas 1/2 and eKTP extraction test
 
-Drop this folder into `tools/sinarmas_extraction_test/` in your project. It is a standalone Python 3.10+ CLI; it does not require changes to your FastAPI app. Included samples are `samples/poko_transaction.pdf`, `samples/poko_lld.pdf`, and `samples/bayu_birdless_invoice.pdf`.
+The application uses Spider-AI. This folder also retains a separate legacy CLI; its sample filenames below are placeholders. Customer PDFs are not distributed in the public source export. Supply your own files explicitly.
+Drop this folder into `tools/sinarmas_extraction_test/` in your project. It is a standalone Python 3.10+ CLI; it does not require changes to your FastAPI app. Example placeholder filenames are `samples/customer_transaction.pdf`, `samples/customer_lld.pdf`, and `samples/customer_invoice.pdf`.
 
 The implementation pins `llama-cloud==2.16.0` and uses v2 Parse/Extract APIs. It uploads once, explicitly configures Parse for Indonesian + English OCR, forms enrichment and layout, then passes the **completed Parse job ID** as Extract's `file_input`. Extract supports this input and reuses the Parse result. It does not feed Markdown into Extract or parse the PDF twice.
 
 ## Process all sample PDFs
 
-Keep your PDFs directly inside `samples/`, with filenames ending in `_lld.pdf`, `_transaction.pdf` or `_invoice.pdf`, plus `_valas2.pdf` and `_valas1.pdf` for the declarations, and `_ektp.pdf` for eKTP. Add as many named samples as needed, such as `indah_lld.pdf`, `indah_transaction.pdf`, or `Forex - Bayu_invoice.pdf`.
+Keep your PDFs directly inside `samples/`, with filenames ending in `_lld.pdf`, `_transaction.pdf` or `_invoice.pdf`, plus `_valas2.pdf` and `_valas1.pdf` for the declarations, and `_ektp.pdf` for eKTP. Add as many named samples as needed, such as `customer_lld.pdf`, `customer_transaction.pdf`, or `Forex - Customer_invoice.pdf`.
 
 From this folder, using your working `.env`:
 
@@ -25,7 +26,7 @@ Equivalent installed-environment command: `python run.py --batch --env-file .env
 | `_valas1.pdf` | Surat Pernyataan Pembelian Valas 1 schema, prompts and policy | 16 requested columns |
 | `_ektp.pdf` | eKTP schema, prompts and policy | 20 requested columns |
 
-Matching is case-insensitive. Only files directly in the selected directory are processed; subdirectories are not traversed. Unrelated or incorrectly named files such as `invoice.pdf` or a legacy `poko.pdf` are ignored and listed in the batch summary. The document type comes from the suffix; batch mode processes all six types automatically.
+Matching is case-insensitive. Only files directly in the selected directory are processed; subdirectories are not traversed. Unrelated or incorrectly named files such as `invoice.pdf` or a legacy `customer.pdf` are ignored and listed in the batch summary. The document type comes from the suffix; batch mode processes all six types automatically.
 
 If your input directory is named `sample` instead of `samples`, or is elsewhere:
 
@@ -37,9 +38,9 @@ Each batch creates `outputs/batch_<UTC timestamp>/`. Every matched PDF gets a se
 
 | Output path within the batch folder | Contents |
 |---|---|
-| `documents/0001_bayu_birdless_invoice/result.csv` | Underlying Invoice values, 19 columns |
-| `documents/0002_poko_lld/result.csv` | Poko LLD values, 36 columns |
-| `documents/0003_poko_transaction/result.csv` | Poko Application values, 23 columns |
+| `documents/0001_customer_invoice/result.csv` | Underlying Invoice values, 19 columns |
+| `documents/0002_customer_lld/result.csv` | Customer LLD values, 36 columns |
+| `documents/0003_customer_transaction/result.csv` | Customer Application values, 23 columns |
 | Each document folder's `raw.csv`, `validation.json`, metadata and `state.json` | Original evidence, rules, cloud responses and job IDs |
 | `application_result.csv` | All Application PDFs, one row per file; 8 metadata + 23 Application fields |
 | `lld_result.csv` | All LLD PDFs, one row per file; 8 metadata + 36 LLD fields |
@@ -89,7 +90,7 @@ Dry runs populate the grouped CSVs with DRY_RUN statuses and no extracted values
 The eKTP profile has exactly twenty fields. Add your card PDF with an `_ektp.pdf` suffix; no actual eKTP PDF was supplied with this change.
 
 ```powershell
-.\run_ektp.bat --env-file .env --pdf .\samples\poko_ektp.pdf
+.\run_ektp.bat --env-file .env --pdf .\samples\customer_ektp.pdf
 ```
 
 It preserves NIK digits, normalizes RT/RW to three digits, validates the supplied text/enums/date rules and records signature/photo evidence. Signature-reference matching requires a trusted comparison result; the inaccessible linked stamp requirement number 6 defaults to REVIEW until configured. See [eKTP setup and rules](ektp/README.md) for the complete field mapping, dated-validity rule, comparison context and synthetic replay example. Batch results go to a separate `ektp_result.csv`.
@@ -99,7 +100,7 @@ It preserves NIK digits, normalizes RT/RW to three digits, validates the supplie
 The new **Surat Pernyataan Pembelian Valas 1 (Diatas Jumlah Threshold)** profile has exactly sixteen fields. Add your document with an `_valas1.pdf` suffix; no real declaration PDF was supplied with this change.
 
 ```powershell
-.\run_valas1.bat --env-file .env --pdf .\samples\poko_valas1.pdf
+.\run_valas1.bat --env-file .env --pdf .\samples\customer_valas1.pdf
 ```
 
 It keeps usage/receipt purposes, dates, amounts and currencies separate; validates NPWP structure and preserves leading zeros; applies the supplied date rules; and shares the signatory/signature/meterai checks with Valas 2. The identity rule supplied as `N` remains configurable and defaults to REVIEW. See [Valas 1 setup and rules](valas1/README.md) for all fields, identity configuration, numeric storage and a synthetic offline replay example. Batch writes `valas_declaration_1_result.csv` separately from every other document type.
@@ -109,7 +110,7 @@ It keeps usage/receipt purposes, dates, amounts and currencies separate; validat
 The new profile is **Surat Pernyataan Pembelian Valas 2 (Paling Banyak Sebesar Jumlah Threshold)**, with exactly ten fields. Add your PDF under `samples/` with a filename ending in `_valas2.pdf`; no real declaration sample was supplied with this change.
 
 ```powershell
-.\run_valas2.bat --env-file .env --pdf .\samples\poko_valas2.pdf
+.\run_valas2.bat --env-file .env --pdf .\samples\customer_valas2.pdf
 ```
 
 It exports currency only (no amount), normalizes letter dates, validates conditional company signatory name/role/company, meterai denomination/completeness and mandatory handwritten signature evidence. Meterai authenticity requires a trusted external verification result; the separate tenth-column stamp criterion is configurable and defaults to REVIEW because no rule was supplied. See [Valas 2 setup and rules](valas2/README.md) for the exact field mapping, offline replay example and verification context. Batch output remains grouped by document type in `valas_declaration_2_result.csv`.
@@ -122,7 +123,7 @@ From this folder, using your existing `.env`:
 .\run_invoice.bat --env-file .env
 ```
 
-Equivalent: `.\run_sample.bat --document-type invoice --env-file .env`. On Linux/WSL use `bash run_invoice.sh --env-file .env`. Both stages default to `agentic_plus`. The supplied invoice is included as `samples/bayu_birdless_invoice.pdf`.
+Equivalent: `.\run_sample.bat --document-type invoice --env-file .env`. On Linux/WSL use `bash run_invoice.sh --env-file .env`. Both stages default to `agentic_plus`. An example invoice may be supplied at `samples/customer_invoice.pdf`.
 
 The profile has exactly **19 requested columns**, with all item rows preserved. It checks names/contact data, SWIFT/account formatting, business-day dates, invoice-number uniqueness, quantities/units, printed versus calculated subtotals, totals, tax/fee/discount adjustments and conditional Claim No.2 at 60%. Raw values stay unchanged; printed arithmetic discrepancies or uncertain separators are reported explicitly. See [Invoice setup and rules](invoice/README.md) for financial calculations, number-format configuration and absent fields.
 
@@ -149,7 +150,7 @@ notepad .env
 .\run_sample.bat
 ```
 
-The script creates an isolated virtual environment, installs pinned dependencies, and processes `samples/poko_transaction.pdf`. An existing `LLAMA_CLOUD_API_KEY` environment variable overrides `.env` by default; the runner prints its source and warns when the values differ. Use `--env-file .env` to make the file take priority. Set project/organization IDs only if required by your account. For EU or self-hosted deployments, set your correct regional `LLAMA_CLOUD_BASE_URL` as well; jobs/files must belong to the same region and scope.
+The script creates an isolated virtual environment, installs pinned dependencies, and processes `samples/customer_transaction.pdf`. An existing `LLAMA_CLOUD_API_KEY` environment variable overrides `.env` by default; the runner prints its source and warns when the values differ. Use `--env-file .env` to make the file take priority. Set project/organization IDs only if required by your account. For EU or self-hosted deployments, set your correct regional `LLAMA_CLOUD_BASE_URL` as well; jobs/files must belong to the same region and scope.
 
 ## Troubleshoot 401 when a direct SDK example works
 
@@ -185,7 +186,7 @@ Or manually:
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements.txt
-python run.py --pdf samples/poko_transaction.pdf
+python run.py --pdf samples/customer_transaction.pdf
 ```
 
 For another PDF:

@@ -30,7 +30,7 @@ def get_profile(name):
             "parse_prompt": schema.PARSE_PROMPT,
             "system_prompt": schema.SYSTEM_PROMPT,
             "policy": "policy.json",
-            "sample": "samples/poko_transaction.pdf",
+            "sample": "samples/customer_transaction.pdf",
             "validate": validator,
         }
     if name == "lld":
@@ -43,7 +43,7 @@ def get_profile(name):
             "parse_prompt": schema.PARSE_PROMPT,
             "system_prompt": schema.SYSTEM_PROMPT,
             "policy": "lld/policy.json",
-            "sample": "samples/poko_lld.pdf",
+            "sample": "samples/customer_lld.pdf",
             "validate": validator,
         }
     if name == "invoice":
@@ -56,7 +56,7 @@ def get_profile(name):
             "parse_prompt": schema.PARSE_PROMPT,
             "system_prompt": schema.SYSTEM_PROMPT,
             "policy": "invoice/policy.json",
-            "sample": "samples/bayu_birdless_invoice.pdf",
+            "sample": "samples/customer_invoice.pdf",
             "validate": validator,
         }
     if name == "valas_declaration_2":
@@ -108,7 +108,7 @@ def get_profile(name):
             "parse_prompt": schema.PARSE_PROMPT,
             "system_prompt": schema.SYSTEM_PROMPT,
             "policy": "riplay/policy.json",
-            "sample": "samples/indah_laruna_riplay.pdf",
+            "sample": "samples/customer_riplay.pdf",
             "validate": validator,
         }
     raise ValueError(f"Unknown document profile: {name}")
