@@ -55,11 +55,17 @@ def test_configured_fields_and_limits_control_acceptance_without_rewriting_value
 
 
 def test_comparison_uses_case_pin_after_new_family_policy_is_published(signed, monkeypatch):
-    from test_platform import upload
+    def upload_case(label):
+        branch = signed.get('/api/branches').json()[0]['id']
+        response = signed.post('/api/uploads', data={'branch_id': branch, 'template': 'forex'},
+            files=[('files', (label + '_ektp.pdf', b'%PDF-1.4\n% ' + label.encode(), 'application/pdf'))],
+            headers={'Idempotency-Key': label})
+        assert response.status_code == 202, response.text
+        return response.json()['case_ids'][0]
     monkeypatch.setattr('app.dataset_comparison.dataset_for_case', lambda *args: {})
     monkeypatch.setattr('app.dataset_comparison.compare',
                         lambda *args, policy: {'enabled': policy.enabled})
-    before = upload(signed, names=('Synthetic Before_ektp.pdf',), key='policy-before').json()['case_ids'][0]
+    before = upload_case('Synthetic Before')
     current = signed.get('/api/config').json()
     cfg = current['payload']
     from app.document_families import families
@@ -67,7 +73,7 @@ def test_comparison_uses_case_pin_after_new_family_policy_is_published(signed, m
     cfg.setdefault('document_families', {})['forex'] = {**family, 'comparison_policy': {'enabled': False}}
     response = signed.post('/api/config/publish', json={'expected_version': current['version'], 'payload': cfg})
     assert response.status_code == 200, response.text
-    after = upload(signed, names=('Synthetic After_ektp.pdf',), key='policy-after').json()['case_ids'][0]
+    after = upload_case('Synthetic After')
     assert signed.get(f'/api/cases/{before}/comparison').json() == {'enabled': True}
     assert signed.get(f'/api/cases/{after}/comparison').json() == {'enabled': False}
     assert signed.get('/api/config/catalog').json()['dataset_comparison_policy']['enabled'] is True

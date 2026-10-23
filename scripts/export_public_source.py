@@ -15,8 +15,9 @@ SYNTHETIC_TESTS = {
     'conftest.py', 'test_connector_contracts.py', 'test_field_checks.py', 'test_report_bindings.py',
     'test_account_policy_contracts.py', 'test_configuration_store.py',
     'test_spider_enum_revalidation.py', 'test_infrastructure_settings.py', 'test_dataset_registry.py',
+    'test_dataset_policy.py', 'test_extraction_service.py', 'test_configuration_contracts.py',
 }
-ROOT_FILES = {'.gitignore', '.dockerignore', 'compose.yaml', 'ARCHITECTURE.md', 'FOREX_SOP_RULES.md',
+ROOT_FILES = {'.gitignore', '.dockerignore', 'compose.yaml', 'compose.production.yaml', 'docs/refactor/ROLLOUT.md', 'ARCHITECTURE.md', 'FOREX_SOP_RULES.md',
               'ACCOUNT_OPENING_OFFICIAL_RULES.md', 'SOP_SCORING.md', 'SPATIAL_GROUNDING.md', 'DOCUMENT_FAMILIES.md'}
 
 
@@ -150,6 +151,7 @@ compatibility defaults; activate new storage modes only after rehearsal.
 Production deployment requires environment-specific secrets, TLS, PostgreSQL,
 object storage and Temporal. This source export is not evidence of a completed
 production cutover. Existing case configuration pins must be preserved.
+Use compose.production.yaml and docs/refactor/ROLLOUT.md for release preparation.
 '''
 
 

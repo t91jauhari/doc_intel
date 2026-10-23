@@ -1,21 +1,21 @@
 # Refactor plan and current position
 
-Current position: **M1 completed in isolation (Step 15); Step23 provider connectors verified; Step24 dataset registry verified; Step27 typed account conditions implemented; full suite and migration rehearsal running**.
+Current position: **Step35 configuration HTTP boundary and release preparation. Backend baseline507 covered,11 comparison checks and9 root checks added; affected regressions and frontend production build passed. Router checks in progress.**
 
 No live cutover. Status refers to isolated implementation, not activation.
 
 | Point | Status | Completed | Remaining |
 |---|---|---|---|
-| B0 Baseline and isolation | Partial | Git/database baseline and restore; verified 7655-object backup | Coordinated cutover backup under C1 |
+| B0 Baseline and isolation | Complete in isolation | Git/database baseline and restore; verified 7655-object backup | Coordinated cutover backup under C1 |
 | B1 Inventory and regression | Partial | Initial inventory, saved history, baseline failure recorded | Complete all business configuration locations |
 | D1 Configuration schema | Partial | Publications, entries, identity bindings, family-rule membership; 6 migrations; PostgreSQL immutability and context rows | Remaining entities |
 | D2 Typed contracts/compiler | Partial | Lossless history, identity/text comparison contracts | Full configuration typing and policy types |
 | M1 Import/publication | Complete in isolation | 40 imports; atomic writers; explicit initialization; verified/normalized reads; 67 pins checked | Activation tracked under C1 |
 | R1 Grouping and SOP | Partial | Identity, comparisons, applicability, context registry; custom profiles and editors | Complex/visual policies; reserved native compatibility catalog |
 | R2 Services/providers | Partial | Preview/publication; extraction service and adapters | Remaining API services and provider internals; final browser acceptance |
-| R3 Datasets/reports | Partial | Immutable dataset registry, explicit import, 67 saved-case parity checks | Comparison policy configuration and remaining report presentation defaults |
-| V1 Final verification | Partial | Unit/API/browser checks, 54 cases/7049 findings | Full suite, extraction/dataset acceptance, existing profile field-policy migration and native acceptance |
-| C1 Cutover/rollback | Pending | Original app unchanged | Backups, activation, monitoring and rollback |
+| R3 Datasets/reports | Complete in isolation | Dataset registry, family report mappings and comparison policies;67cases/3028fields parity | Browser acceptance/activation under V1/C1 |
+| V1 Final verification | Partial | Sharded backend coverage, PG/Temporal integration, frontend build;54cases/7049findings | Current UI browser acceptance, field-policy migration/native acceptance |
+| C1 Cutover/rollback | Prepared, not activated | Production compose and coordinated rollout/rollback runbook | Target-specific rehearsal, coordinated capture and activation |
 
 CHANGES.md records files and commits; VERIFICATION.md records checks;
 MIGRATIONS.md records isolated schema changes; CHECKPOINT.md records resume state.

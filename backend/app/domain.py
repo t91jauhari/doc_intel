@@ -287,6 +287,8 @@ def default_config():
 
 
 def validate_config(payload):
+    from .configuration.contracts import validate_envelope
+    validate_envelope(payload)
     from .configuration.dataset_policy import validate_comparison_policies
     validate_comparison_policies(payload)
     from .configuration.reporting import validate_report_definitions
