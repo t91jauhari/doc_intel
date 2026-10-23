@@ -361,3 +361,39 @@ phase44/corrected-crops.png. Unused intermediate images removed; backups retaine
      `9` config versions, `11` cases, `36` completed documents, `38` completed jobs,
      `12` error receipts, `0` active jobs, `31` completed SOP runs, `31` reports, and
      `10` dataset comparisons retained with `0` replayed model calls.
+
+## Step46 verification — live actual stack cutover (`127.0.0.1:3000` / `127.0.0.1:8000`)
+
+1. **Pre-cutover backup & rollback readiness**:
+   - Quiescent check: `0` active jobs, `0` active case runs; `40` configurations,
+     `67` cases, `291` documents, `449` reports matched baseline `sqe_refactor` digests.
+   - Rollback images tagged (`sqe-document-platform-{api,worker,web}:rollback-pre-step46`).
+   - Quiescent PostgreSQL dump `../private/phase46/live-pre-cutover.dump` verified
+     (SHA-256 `BE3BC0A53DE7E9B107A52C81E94A4F07A5991FCD43F2605AD4FD966D2A2182D6`).
+
+2. **Live database migration, history import & dataset registration (`sqe`)**:
+   - `verify_postgres --expected-database sqe`: `7` migrations applied, `0` on replay,
+     `40` revisions imported (`storage_version=2`) and round-trip verified twice,
+     `source_rows_unchanged: true`.
+   - `import_datasets --expected-database sqe`: `3` datasets verified (`forex-sample-v1`,
+     `account-opening-sample-v1`, `account-opening-20261023-1228379b`).
+   - `verify_publication --expected-database sqe`: `proposed_version: 41`,
+     `round_trip_equal: true`, `rolled_back: true`, `original_rows_unchanged: true`.
+
+3. **Live runtime activation & endpoint verification**:
+   - Built `sqe-document-platform-api:latest` / `worker:latest`
+     (`sha256:80902db5621d32ea9c0faa73500d911e02085b66c50c2b4829be6dee94e899b8`,
+     `247/247` tracked files match `PUBLIC_SOURCE_MANIFEST.json`) and
+     `sqe-document-platform-web:latest`
+     (`sha256:47cedcd5cd8721d189ba6bbded6599c7c6b295a8815e68f80ba6447eb18d012b`).
+   - Verified initial `legacy` mode read (`v40`, `67` cases), then activated
+     `CONFIGURATION_STORAGE_MODE=dual`, `CONFIGURATION_READ_MODE=normalized`,
+     `DATASET_READ_MODE=registry` on `sqe-document-platform-api-1`,
+     `sqe-document-platform-worker-1`, and `sqe-document-platform-web-1`.
+   - Published configuration `v41` (`exclude_final_page=True`, dataset
+     `account-opening-20261023-1228379b`), dual-written to `configurations` (`41`)
+     and `configuration_publications` (`41`).
+   - Verified `http://127.0.0.1:8000/api/health` (`200`),
+     `http://127.0.0.1:3000/api/health` (`200`), `http://127.0.0.1:3000/login` (`200`),
+     authenticated `/api/config` (`v41`), `/api/cases` (`67` cases), PDF (`66` pages),
+     XLSX (`9` sheets), JSON report exports, and `/api/comparisons/export` (`5` sheets).

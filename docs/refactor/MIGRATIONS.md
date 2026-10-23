@@ -30,3 +30,21 @@ use storage_version 2; old version 1 payloads remain unchanged and readable.
 Applied once on isolated sqe_refactor; replay applied zero migrations. All 40
 source revisions and legacy rows were unchanged. Fresh version 2 SQLite import
 round-tripped all 40 revisions. No live migration or publication occurred.
+
+
+## Step46 live PostgreSQL migration and activation (`sqe`) — 2026-10-23
+After capturing quiescent pre-cutover backup `../private/phase46/live-pre-cutover.dump`
+(SHA-256 `BE3BC0A53DE7E9B107A52C81E94A4F07A5991FCD43F2605AD4FD966D2A2182D6`), applied
+all seven migrations (`0001_publications` through `0007_configuration_entities`) to
+the live `sqe` database in `sqe-document-platform-postgres-1` using
+`app.configuration.verify_postgres --expected-database sqe`:
+- Migration replay applied `0` migrations (`replay_applied: []`).
+- Imported all `40` historical revisions (`storage_version=2`) twice with exact
+  lossless round-trip equality and `source_rows_unchanged: true`.
+- Registered `forex-sample-v1`, `account-opening-sample-v1`, and
+  `account-opening-20261023-1228379b` in `reference_datasets` via
+  `app.configuration.import_datasets --expected-database sqe`.
+- Rehearsed and rolled back dual publication via `app.configuration.verify_publication`,
+  then activated `CONFIGURATION_STORAGE_MODE=dual`, `CONFIGURATION_READ_MODE=normalized`,
+  `DATASET_READ_MODE=registry` on the live stack and published configuration `v41`
+  (dual-stored across `configurations` and `configuration_publications` v2 tables).

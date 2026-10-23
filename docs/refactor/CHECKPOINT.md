@@ -730,3 +730,56 @@ Verification:
   completed jobs, `12` preserved historical error receipts, `0` active jobs, `31`
   completed SOP runs, `31` reports, and `10` saved comparisons retained with `0`
   replayed model calls. Original app (`3000`/`8000`) remains untouched.
+
+## Step46 complete — live actual stack cutover (`3000`/`8000`) — 2026-10-23
+User requested continuing into the next phase until the refactored version is active
+on the live actual application (`sqe-document-platform` on `127.0.0.1:3000` and
+`127.0.0.1:8000`). Executed `docs/refactor/ROLLOUT.md`:
+
+1. **Pre-cutover quiescence & rollback capture**:
+   - Verified `0` active jobs and `0` active case runs on live `sqe` database
+     (`40` configurations, `67` cases, `291` documents, `449` reports; lightweight
+     table digests identical to baseline `sqe_refactor`).
+   - Tagged rollback images:
+     - `sqe-document-platform-api:rollback-pre-step46` (`sha256:a9f36a79847a7ecc40a2e0144de0657870b2224bb73ca06323b0da5627ca8714`)
+     - `sqe-document-platform-worker:rollback-pre-step46` (`sha256:29aad6ea822f34596f2e1c84d5cb49cb52f31a760d680a007b7a24a44241e4a2`)
+     - `sqe-document-platform-web:rollback-pre-step46` (`sha256:e696e5cd150028a23e695b155b8a8fb9b3025abe8d3ef11ac530226cd0930126`)
+   - Stopped old worker (`sqe-document-platform-worker-1`) and captured quiescent
+     live database archive `../private/phase46/live-pre-cutover.dump` (SHA-256
+     `BE3BC0A53DE7E9B107A52C81E94A4F07A5991FCD43F2605AD4FD966D2A2182D6`) and
+     environment backup `../private/phase46/live-pre-cutover.env`.
+
+2. **Explicit PostgreSQL migrations, history import & dataset registration on `sqe`**:
+   - `app.configuration.verify_postgres --expected-database sqe`: applied all `7`
+     migrations (`0001_publications` .. `0007_configuration_entities`), verified
+     `replay_applied: []`, imported all `40` revisions twice (`storage_version=2`),
+     and confirmed `source_rows_unchanged: true`.
+   - `app.configuration.import_datasets --expected-database sqe`: registered
+     `forex-sample-v1`, `account-opening-sample-v1`, and
+     `account-opening-20261023-1228379b` (`datasets_verified: 3` total).
+   - `app.configuration.verify_publication --expected-database sqe`: rehearsed dual
+     publication `v41` (`round_trip_equal: true`, `rolled_back: true`,
+     `original_rows_unchanged: true`).
+
+3. **Image build, phased activation & post-cutover verification**:
+   - Built `sqe-document-platform-api:latest` / `sqe-document-platform-worker:latest`
+     (`sha256:80902db5621d32ea9c0faa73500d911e02085b66c50c2b4829be6dee94e899b8`,
+     all `247` tracked `backend/app` and `engine` files verified equal to
+     `public-source-candidate-step45/PUBLIC_SOURCE_MANIFEST.json`) and
+     `sqe-document-platform-web:latest`
+     (`sha256:47cedcd5cd8721d189ba6bbded6599c7c6b295a8815e68f80ba6447eb18d012b`).
+   - Started `sqe-document-platform-api-1` in `legacy` mode first (`latest_version: 40`,
+     `cases: 67` verified), then activated `CONFIGURATION_STORAGE_MODE=dual`,
+     `CONFIGURATION_READ_MODE=normalized`, `DATASET_READ_MODE=registry` across
+     `sqe-document-platform-api-1` (`127.0.0.1:8000`),
+     `sqe-document-platform-worker-1`, and `sqe-document-platform-web-1`
+     (`127.0.0.1:3000`).
+   - Published configuration `v41` (`exclude_final_page=True` on RIPLAY profile,
+     comparison policy, and visual SOP rules; dataset
+     `account-opening-20261023-1228379b`), dual-written to `configurations` (`41`)
+     and `configuration_publications` (`41`), while preserving all `67` historical
+     case pins.
+   - Verified `http://127.0.0.1:8000/api/health` (`200`),
+     `http://127.0.0.1:3000/api/health` (`200`), `http://127.0.0.1:3000/login` (`200`),
+     authenticated `/api/config` (`v41`), `/api/cases` (`67` cases), PDF (`66` pages),
+     XLSX (`9` sheets), JSON report exports, and `/api/comparisons/export` (`5` sheets).

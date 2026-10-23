@@ -65,3 +65,25 @@ reference `account-opening-20261023-1228379b`), completed `v9` SOP reports, and
 verified PDF/XLSX/JSON exports, aggregate comparison workbook, branch Kertas Kerja,
 and container restart retention with zero replayed model calls. Remote production
 deployment remains deferred pending server details.
+
+## Step46 — live actual stack cutover (`127.0.0.1:3000` / `127.0.0.1:8000`)
+
+Step46 complete: live `sqe-document-platform` stack (`sqe-document-platform-api-1`
+on `127.0.0.1:8000`, `sqe-document-platform-worker-1`, `sqe-document-platform-web-1`
+on `127.0.0.1:3000`, backed by `sqe-document-platform-postgres-1` database `sqe`,
+`sqe-document-platform-minio-1` bucket `sqe-documents`, and
+`sqe-document-platform-temporal-1`) has been migrated and cut over to the verified
+refactored release (`sqe-document-platform-api:latest` / `worker:latest`
+`sha256:80902db5621d32ea9c0faa73500d911e02085b66c50c2b4829be6dee94e899b8` and
+`sqe-document-platform-web:latest`
+`sha256:47cedcd5cd8721d189ba6bbded6599c7c6b295a8815e68f80ba6447eb18d012b`).
+Pre-cutover rollback images (`:rollback-pre-step46`), `.env`
+(`private/phase46/live-pre-cutover.env`), and quiescent PostgreSQL archive
+(`private/phase46/live-pre-cutover.dump`, SHA-256
+`BE3BC0A53DE7E9B107A52C81E94A4F07A5991FCD43F2605AD4FD966D2A2182D6`) are retained.
+All 7 configuration migrations, 40 historical revisions (`storage_version=2`), and
+3 reference datasets were imported and verified; `CONFIGURATION_STORAGE_MODE=dual`,
+`CONFIGURATION_READ_MODE=normalized`, and `DATASET_READ_MODE=registry` are active;
+configuration `v41` (`exclude_final_page=True`, dataset
+`account-opening-20261023-1228379b`) is published while all 67 historical case pins
+remain preserved.
