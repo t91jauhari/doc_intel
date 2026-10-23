@@ -397,3 +397,21 @@ phase44/corrected-crops.png. Unused intermediate images removed; backups retaine
      `http://127.0.0.1:3000/api/health` (`200`), `http://127.0.0.1:3000/login` (`200`),
      authenticated `/api/config` (`v41`), `/api/cases` (`67` cases), PDF (`66` pages),
      XLSX (`9` sheets), JSON report exports, and `/api/comparisons/export` (`5` sheets).
+
+## Step47 verification — read-path query & projection optimization
+1. **Regression suite**:
+   - `pytest -q tests/test_application_architecture.py tests/test_configuration_repository.py tests/test_configuration_store.py tests/test_dataset_registry.py tests/test_case_configuration.py tests/test_latest_reports.py tests/test_kertas_kerja_layout.py tests/test_dataset_comparison.py`:
+     `59 passed` in `183.87s`, `0` failures.
+2. **Live HTTP endpoint latency benchmark (`http://127.0.0.1:8000` backed by live PostgreSQL `sqe`)**:
+   - `/api/dashboard`: `3966.2 ms` -> `38.4 ms`
+   - `/api/cases`: `29242.6 ms` -> `75.0 ms`
+   - `/api/cases/{id}`: `2621.1 ms` (`3912022` bytes) -> `90.1 ms` (`468771` bytes)
+   - `/api/cases/{id}/comparison`: `668.1 ms` -> `78.6 ms`
+   - `/api/reports`: `1624.8 ms` -> `47.0 ms`
+   - `/api/inbox`: `43.3 ms` -> `25.4 ms`
+   - `/api/config`: `652.8 ms` -> `69.6 ms`
+   - `/api/config/catalog`: `644.1 ms` -> `39.8 ms`
+   - `/api/auth/session`: `33.8 ms`
+   - `/api/reference-datasets`: `22.2 ms`
+   - `/api/branches`: `14.0 ms`
+   - `/api/users`: `14.9 ms`

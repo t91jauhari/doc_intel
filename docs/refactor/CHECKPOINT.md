@@ -783,3 +783,37 @@ on the live actual application (`sqe-document-platform` on `127.0.0.1:3000` and
      `http://127.0.0.1:3000/api/health` (`200`), `http://127.0.0.1:3000/login` (`200`),
      authenticated `/api/config` (`v41`), `/api/cases` (`67` cases), PDF (`66` pages),
      XLSX (`9` sheets), JSON report exports, and `/api/comparisons/export` (`5` sheets).
+
+## Step47 complete — read-path query & projection optimization — 2026-10-23
+Eliminated N+1 normalized configuration compilation, N+1 full-JSONB document loads, and
+redundant historical report/run TOAST deserialization across all read endpoints:
+
+1. **Immutable configuration revision caching (`backend/app/configuration/repository.py`, `revisions.py`, `main.py`)**:
+   - Cached verified compiled `ConfigurationSnapshot` entries on the SQLAlchemy `Engine`
+     (in PostgreSQL where `0004_revision_immutability` DB triggers enforce strict
+     immutability) and per-session `session.info` whenever the session has no uncommitted
+     mutations (`not (session.new or session.dirty or session.deleted)`).
+   - Preserved `copy_payload=True` default for external callers and tests while allowing
+     internal read-only projections (`case_view`, `case_views`, `dashboard`,
+     `comparison_view`, `case_detail`) to read `copy_payload=False` without repeated JSON
+     deep-copying.
+   - Added startup cache warm-up (`_warm_read_caches()`) in `main.py` lifespan.
+2. **Batch document status projection (`backend/app/projections.py`, `application/operations.py`, `application/cases.py`)**:
+   - Replaced per-case `select(Document.status)` + `select(Document)` in `case_view` with
+     `select(Document.doc_type, Document.status)` and batch helper `case_views(cases, db)`.
+3. **TOAST snapshot projection & caching (`backend/app/report_queries.py`, `application/cases.py`, `api/cases.py`, `configuration/api.py`)**:
+   - `ReportQueries.current()` now queries lightweight metadata columns first (`3.2 ms`)
+     and caches immutable `(report_id, fingerprint)` summary scalars.
+   - `case_detail` limits `Report` query to the latest report (`.limit(1)` matching UI
+     `data.reports.slice(0, 1)`), projects only lightweight `CaseRun` columns (avoiding
+     15 MB `CaseRun.snapshot` TOAST reads), and returns `JSONResponse` directly to bypass
+     redundant `jsonable_encoder` traversal.
+4. **Measured live latency (`sqe-document-platform-api-1` on `127.0.0.1:8000`)**:
+   - `/api/dashboard`: `3966.2 ms` -> `38.4 ms` (`103x` faster)
+   - `/api/cases`: `29242.6 ms` -> `75.0 ms` (`390x` faster)
+   - `/api/cases/{id}`: `2621.1 ms` (`3.91 MB`) -> `90.1 ms` (`468 KB`, `29x` faster)
+   - `/api/cases/{id}/comparison`: `668.1 ms` -> `78.6 ms` (`8.5x` faster)
+   - `/api/reports`: `1624.8 ms` -> `47.0 ms` (`34.5x` faster)
+   - `/api/config`: `652.8 ms` -> `69.6 ms` (`9.4x` faster)
+   - `/api/config/catalog`: `644.1 ms` -> `39.8 ms` (`16x` faster)
+   - `/api/inbox`: `43.3 ms` -> `25.4 ms`

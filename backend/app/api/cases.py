@@ -3,6 +3,7 @@
 from app.application import cases as use_cases
 from app.application import case_configuration as configuration_use_cases
 from fastapi import APIRouter
+from fastapi.responses import JSONResponse
 from fastapi import Depends
 from app.security import current_user
 from app.security import require_roles
@@ -45,7 +46,7 @@ def cases(
 
 @router.get("/api/cases/{case_id}")
 def case_detail(case_id: str, user=Depends(current_user)):
-    return use_cases.case_detail(case_id=case_id, user=user)
+    return JSONResponse(use_cases.case_detail(case_id=case_id, user=user))
 
 
 @router.put("/api/cases/{case_id}/context")

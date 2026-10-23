@@ -19,9 +19,14 @@ def __getattr__(name):
     raise AttributeError(name)
 
 
-def dataset_for_case(db, case):
+def dataset_for_case(db, case, *, payload=None):
     from .configuration.dataset_sources import resolve_dataset
-    flow = get_revision(db, case.config_id).payload["templates"][case.template]
+    cfg_payload = (
+        payload
+        if payload is not None
+        else get_revision(db, case.config_id, copy_payload=False).payload
+    )
+    flow = cfg_payload["templates"][case.template]
     return resolve_dataset(db, case.org, flow.get("dataset_id", "forex-sample-v1"))
 
 
