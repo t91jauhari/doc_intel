@@ -280,3 +280,33 @@ helper against the already migrated preview. API/worker containers intentionally
 run with restart policy; frontend standalone session17759 remains active.
 Closure files:docs/refactor/{PLAN,CHECKPOINT,CHANGES,VERIFICATION,
 OPERATIONAL_ACCEPTANCE}. No runtime algorithm changes in this closure.
+
+## Step44 verification — shared infrastructure
+
+Backend complete shards:144 passed/1PGskip,187passed,216passed/7PGskips.
+Separate PostgreSQL migration/provider-state run11passed covers all8skips;
+Temporal3passed. Unique backend coverage558 before the final extra wrapper-crop
+regression. Focused settings/evidence/namespace run12passed. Only upstream
+Starlette/httpx deprecation warnings. Engine199+81subtests,67saved-case replay and
+frontend production/typecheck evidence from Step42 remains applicable: those
+sources were unchanged in this phase.
+
+Shared migration:18objects,1765334bytes, every SHA verified after MinIO readback.
+Dedicated bucket/IAM user cannot read original bucket. Dedicated Temporal
+namespace/task queue: live DocumentWorkflow1 and CaseSOPWorkflow2 completed.
+Selected synthetic field rerun1 completed; other9fields retained. Historical
+Argon503 remains an error receipt, not silently replayed. Current model3.8flash.
+One additional paid selected-field call in Step44; total4 synthetic submissions
+across Step43/44 (1failedArgon,2successfulfullflow,1successfulselectedfield).
+
+Browser refresh confirmed metadata placeholders removed. Selected rerun revealed
+wrapper parent/.raw duplication; targeted fix and extra test added. Affected
+suite result and final exact-source restart are recorded below when complete.
+All65legacy HTTP operations retained;9added,3intentional schema differences.
+219legacy tests unchanged by AST,10adapted,7removedLlama-specific tests covered by
+supported Spider counterparts where applicable. See LEGACY_CAPABILITY_PARITY.md.
+
+Step44 runtime evidence: authenticated HTTP handlers returned200 for stored source
+PDF/page PNG and PDF/XLSX/JSON reports backed by shared MinIO. Exports parsed;
+XLSX9sheets and filenames include synthetic customer label. No model call made
+for export/crop refresh checks. Six public-export safety guards passed again.

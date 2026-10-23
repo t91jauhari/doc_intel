@@ -712,3 +712,26 @@ helper against the already migrated preview. API/worker containers intentionally
 run with restart policy; frontend standalone session17759 remains active.
 Closure files:docs/refactor/{PLAN,CHECKPOINT,CHANGES,VERIFICATION,
 OPERATIONAL_ACCEPTANCE}. No runtime algorithm changes in this closure.
+
+## Step44 — shared infrastructure and parity closure
+
+Changed runtime files:
+- backend/app/settings.py — configurable validated Temporal namespace.
+- backend/app/worker.py — connect/poll selected namespace.
+- backend/app/field_evidence.py — exclude completeness metadata; resolve wrapper
+  spatial locations once as actual values after selected-field reruns.
+
+Changed tests:
+- backend/tests/test_infrastructure_settings.py — selected/empty namespace.
+- backend/tests/test_temporal.py — worker registration passes namespace.
+- backend/tests/test_field_evidence.py — metadata exclusion, wrapper source crop.
+
+Changed operational configuration:
+- compose.preview.yaml — reuse shared MinIO/Temporal with isolated scope.
+- compose.production.yaml — expose namespace setting.
+- docs/refactor/OPERATIONAL_PREVIEW.md — provisioning/migration/rollback instructions.
+
+Created docs/refactor/LEGACY_CAPABILITY_PARITY.md. Updated PLAN.md, CHECKPOINT.md,
+VERIFICATION.md and this change log with acceptance evidence. Private one-time
+migration, test receipts and backups remain outside Git. No new business table
+or extraction flow changes were needed. No original application source changed.

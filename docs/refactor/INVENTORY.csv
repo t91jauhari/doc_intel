@@ -31,3 +31,5 @@ C29,production rollout,compose.production.yaml,local_rehearsal_complete,local im
 C30,complex SOP policies,backend/app/configuration/sop_policies.py,implemented_tested,typed visual date and money policies with review safeguards
 C31,entity persistence,backend/app/configuration/store.py,implemented_tested,seven immutable entity tables and lossless v1-v2 compiler
 C32,seed constants,backend/app/configuration/seed_catalog.py,implemented_tested,captured bootstrap and compatibility catalogs; active business configuration remains in DB
+C33,Temporal namespace,backend/app/settings.py,implemented_tested,shared service with dedicated namespace and queue; selected namespace passed to client
+C34,wrapped field crop metadata,backend/app/field_evidence.py,implemented_tested,completeness excluded and wrapper spatial crop emitted once

@@ -5,6 +5,14 @@ import pytest
 from app.field_evidence import build_field_evidence, populated_fields
 
 
+def test_wrapped_value_completeness_does_not_become_an_evidence_field():
+    assert list(populated_fields({
+        'name': {'raw': 'QA Sample', 'complete': True},
+        'complete': False, 'nested': {'complete': True},
+    })) == [('name.raw', 'QA Sample'), ('complete', False), ('nested.complete', True)]
+    assert list(populated_fields({'name': {'raw': None, 'complete': False}}, include_empty=True)) == [('name.raw', None)]
+
+
 def setup_doc(monkeypatch):
     objects = {}
     pdf = fitz.open(); page = pdf.new_page(width=600, height=800)
@@ -108,3 +116,21 @@ def test_existing_document_refresh_and_manual_region_use_saved_results(signed, m
         assert doc.raw==before
         assert db.scalar(select(func.count()).select_from(Job))==jobs
         assert next(e for e in doc.validation['field_evidence'] if e['field']=='nik')['review_status']=='REVIEWED'
+
+
+def test_wrapper_spatial_location_yields_one_value_crop(monkeypatch):
+    doc, objects = setup_doc(monkeypatch)
+    response = {'extract_result': {
+        'place': {'raw': 'Jakarta', 'complete': True},
+        'empty': {'raw': None, 'complete': False},
+        '_field_locations': [
+            {'field': name, 'page_number': 1, 'box_2d': [100, 100, 200, 400]}
+            for name in ['place', 'empty']
+        ],
+    }}
+    evidence = build_field_evidence(doc, response)
+    assert len(evidence) == 1
+    assert evidence[0]['field'] == 'place'
+    assert evidence[0]['value'] == 'Jakarta'
+    assert evidence[0]['available']
+    assert len(evidence[0]['crops']) == 1

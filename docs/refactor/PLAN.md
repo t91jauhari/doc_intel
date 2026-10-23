@@ -34,3 +34,13 @@ CHANGES.md and STEP42_FILES.md record changed/created files. VERIFICATION.md
 records evidence; MIGRATIONS.md records schema changes; CHECKPOINT.md records the
 latest resumable state. Existing configuration storage defaults remain legacy;
 changing read/write modes or business versions is an explicit release action.
+
+## Step44 — extended local acceptance
+
+Current position: shared infrastructure migration and complete backend parity
+verification. Reuse existing service instances with isolated database/bucket,
+scoped credentials, Temporal namespace and queue. No original app cutover.
+Full regression passed; final discovered wrapper-crop fix is under targeted
+verification, followed by accepted-source image and sanitized publication.
+Remote production deployment remains deferred pending server details. Full real
+customer/model accuracy evaluation remains distinct from backend capability parity.

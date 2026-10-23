@@ -1,6 +1,9 @@
 """Actual Temporal test-service integration; runs a real workflow and threaded activity."""
 
 import asyncio
+from types import SimpleNamespace
+from unittest.mock import AsyncMock
+import pytest
 from concurrent.futures import ThreadPoolExecutor
 
 from app.db import CaseRun, Job, SessionLocal
@@ -17,6 +20,21 @@ from temporalio.exceptions import ApplicationError
 from temporalio.testing import WorkflowEnvironment
 from temporalio.worker import Worker
 from test_platform import publish_fixture, upload
+
+
+def test_worker_connects_to_selected_namespace(monkeypatch):
+    from app import worker
+    connect = AsyncMock(return_value=object())
+    monkeypatch.setattr(worker.Client, 'connect', connect)
+    monkeypatch.setattr(worker, 'settings', SimpleNamespace(
+        temporal='temporal:7233', temporal_namespace='isolated-test',
+        concurrency=1, task_queue='isolated-queue'))
+    monkeypatch.setattr(worker, 'Worker', lambda *a, **k: SimpleNamespace(
+        run=AsyncMock(side_effect=RuntimeError('registration verified'))))
+    monkeypatch.setattr(worker, 'dispatch', AsyncMock(return_value=None))
+    with pytest.raises(RuntimeError, match='registration verified'):
+        asyncio.run(worker.temporal_main())
+    connect.assert_awaited_once_with('temporal:7233', namespace='isolated-test')
 
 
 def test_temporal_document_workflow(signed):

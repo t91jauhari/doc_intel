@@ -556,3 +556,41 @@ helper against the already migrated preview. API/worker containers intentionally
 run with restart policy; frontend standalone session17759 remains active.
 Closure files:docs/refactor/{PLAN,CHECKPOINT,CHANGES,VERIFICATION,
 OPERATIONAL_ACCEPTANCE}. No runtime algorithm changes in this closure.
+
+## Step44 in progress — shared infrastructure and legacy parity
+User authorized reusing existing Temporal/MinIO while finishing backend parity.
+Original API/web/worker/database were not changed or restarted. Preview now uses
+shared service instances with dedicated namespace sqe-refactor-preview, queue
+sqe-refactor-preview-documents, scoped IAM user and separate bucket. SQLite preview
+state remains isolated on its persistent volume; production requires PostgreSQL.
+18 objects / 1765334 bytes copied and SHA verified; original bucket access denied
+for preview credential. Private pre-migration database/environment backups and
+receipt retained in ../private/phase44. Never rerun migration helper blindly.
+
+Runtime changes: settings.py namespace setting/validation; worker.py passes selected
+namespace; field_evidence.py excludes raw/complete wrapper metadata from crops.
+Four focused regression additions. Compose preview uses shared external services;
+production compose exposes namespace. Image sqe-refactor-api:step44 running healthy.
+Focused12 tests passed; Temporal3 passed; PostgreSQL11 passed. Full backend shards
+running sessions3404/57415/18802, JUnit ../private/phase44/backend-{0,1,2}.xml.
+No runtime edits while these tests run. Legacy API65 operations all retained;
+9 added; three schema differences under review. Legacy tests219 unchanged,
+10 adapted,7 provider-specific test names removed: verify replacement coverage.
+Browser crop refresh submitted for synthetic case628f0b46-b29c-441a-afd4-c7b83bbb66dd.
+Next: verify crops5 (not8), actual Temporal workflow completion and retained exports;
+finish contract/capability matrix, full tests, checkpoint/file inventory, commit,
+sanitary export/build/publication with expected public headc1e41c4. Real full-customer
+UAT remains distinct from backend parity; remote deployment deferred by user.
+
+## Step44 live shared-service results
+Original source PDF and five actual crop objects were read from shared MinIO and
+SHA verified. Browser crop refresh removed three .complete metadata placeholders.
+One authorized selected-field provider rerun completed for document_place; existing
+other fields retained. Shared namespace reports one COMPLETED DocumentWorkflow
+and two COMPLETED CaseSOPWorkflow executions, all on isolated task queue. Current
+synthetic reportv4; incomplete package failures remain unchanged. That rerun exposed
+parent-wrapper vs .raw duplicate evidence rows. Added bounded fix and regression;
+affected evidence/spatial/field-rerun/prompt suite session95896 currently running.
+Full backend initial pass:144+187+216=547 passed,8 PostgreSQL skips; separate PG11
+covers those8; Temporal3. Unique coverage558 before final new crop test,559 after
+its affected suite passes. No engine/frontend changes; previous evidence retained.
