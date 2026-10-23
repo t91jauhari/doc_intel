@@ -1,6 +1,6 @@
 # Refactor plan and current position
 
-Current position: **Step35 configuration HTTP boundary and release preparation. Backend baseline507 covered,11 comparison checks and9 root checks added; affected regressions and frontend production build passed. Router checks in progress.**
+Current position: **Step40 explicit family catalog verified, including custom-only end-to-end processing. Backend regression, engine199+81subtests and clean-export126 passed. GitHub authentication and preview web launch await user action.**
 
 No live cutover. Status refers to isolated implementation, not activation.
 
@@ -11,8 +11,8 @@ No live cutover. Status refers to isolated implementation, not activation.
 | D1 Configuration schema | Partial | Publications, entries, identity bindings, family-rule membership; 6 migrations; PostgreSQL immutability and context rows | Remaining entities |
 | D2 Typed contracts/compiler | Partial | Lossless history, identity/text comparison contracts | Full configuration typing and policy types |
 | M1 Import/publication | Complete in isolation | 40 imports; atomic writers; explicit initialization; verified/normalized reads; 67 pins checked | Activation tracked under C1 |
-| R1 Grouping and SOP | Partial | Identity, comparisons, applicability, context registry; custom profiles and editors | Complex/visual policies; reserved native compatibility catalog |
-| R2 Services/providers | Partial | Preview/publication; extraction service and adapters | Remaining API services and provider internals; final browser acceptance |
+| R1 Grouping and SOP | Partial | Identity, comparisons, applicability, context registry; custom profiles and editors | Complex/visual policy contracts; explicit catalog browser acceptance |
+| R2 Services/providers | Partial | Configuration/provider routers and services; extraction adapters; report read models | Remaining API services and provider internals; final browser acceptance |
 | R3 Datasets/reports | Complete in isolation | Dataset registry, family report mappings and comparison policies;67cases/3028fields parity | Browser acceptance/activation under V1/C1 |
 | V1 Final verification | Partial | Sharded backend coverage, PG/Temporal integration, frontend build;54cases/7049findings | Current UI browser acceptance, field-policy migration/native acceptance |
 | C1 Cutover/rollback | Prepared, not activated | Production compose and coordinated rollout/rollback runbook | Target-specific rehearsal, coordinated capture and activation |

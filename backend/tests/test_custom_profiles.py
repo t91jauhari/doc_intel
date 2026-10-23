@@ -75,9 +75,32 @@ def test_schema_projection_checks_types_missing_values_and_unexpected_keys():
             schema_report(doc, cfg, {"extract_result": value})
 
 
-def test_custom_profile_runs_upload_extraction_sop_and_report(signed, monkeypatch):
+@pytest.mark.parametrize("explicit_catalog", [False, True])
+def test_custom_profile_runs_upload_extraction_sop_and_report(signed, monkeypatch, explicit_catalog):
     current = signed.get("/api/config").json()
     cfg = configured(current["payload"])
+    if explicit_catalog:
+        cfg['family_catalog_mode'] = 'explicit'
+        cfg['profiles'] = {'custom_note': cfg['profiles']['custom_note']}
+        cfg['document_families'] = {'custom': cfg['document_families']['custom']}
+        cfg['templates'] = {'custom': cfg['templates']['custom']}
+        cfg['sop_rules'] = []
+        cfg['rules'] = []
+        cfg['context_definitions'] = {}
+        cfg['profile_variants'] = {}
+        cfg['generic_sop_rules'] = [r for r in cfg['generic_sop_rules'] if r['id'] == 'custom_names_match']
+        cfg.pop('identity_policy', None)
+        cfg.pop('rule_scope', None)
+        cfg.pop('report_definitions', None)
+        if 'rule_order' in cfg: cfg['rule_order'] = ['custom_names_match']
+    from app.config_workbook import export_config, import_config
+    from app.extraction_prompts import system_instruction
+    imported, errors = import_config(export_config(cfg), cfg)
+    assert not errors, errors
+    assert system_instruction(imported['profiles']['custom_note']) == system_instruction(cfg['profiles']['custom_note'])
+    if explicit_catalog:
+        assert imported['family_catalog_mode'] == 'explicit'
+        assert set(imported['profiles']) == {'custom_note'}
     saved = signed.post("/api/config/publish", json={"expected_version": current["version"], "payload": cfg})
     assert saved.status_code == 200, saved.text
     assert signed.get("/api/config").json()["payload"]["profiles"]["custom_note"]["schema"] == cfg["profiles"]["custom_note"]["schema"]
