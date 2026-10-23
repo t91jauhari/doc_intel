@@ -22,3 +22,11 @@ Step16:0004_revision_immutability applied only to sqe_refactor. Replay applied n
 Step18:0005_context_definitions applied to isolated sqe_refactor only. Dedicated ordered context rows share publication transaction and immutability guards.40 histories without explicit definitions retain absent-key semantics and exact digest. Historical context defaults remain captured compatibility input, not automatic writes. Final source rows unchanged; publication rehearsal exact/rolled back.
 
 0006_reference_datasets: immutable organization+dataset_id references with canonical digest and private JSON payload. Explicit migration/import only; no startup creation. DATASET_READ_MODE=bundled is default; verify compares imported content, registry reads DB only. Run app.configuration.import_datasets with REFACTOR_DATABASE_URL and --expected-database after migration. Existing IDs cannot be replaced; use new ID and publish configuration. PostgreSQL guards reject UPDATE/DELETE/TRUNCATE. Applied/replayed on isolated sqe_refactor;2 imports/67 comparison parity checks, no live activation.
+
+
+0007_configuration_entities: seven publication-owned entity tables with ordered
+keys, foreign keys and immutable publication triggers. New imports/publications
+use storage_version 2; old version 1 payloads remain unchanged and readable.
+Applied once on isolated sqe_refactor; replay applied zero migrations. All 40
+source revisions and legacy rows were unchanged. Fresh version 2 SQLite import
+round-tripped all 40 revisions. No live migration or publication occurred.

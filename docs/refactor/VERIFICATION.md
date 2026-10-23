@@ -155,3 +155,33 @@ Accepted private implementation commit:a469dd8. Fresh sanitized candidate:work/r
 All test containers removed themselves. Original API8000 and isolated API8100 healthy. Web3100 remains running (exec89237) with active development cache; browser tab10 shows configuration. Published synthetic state7/0 preserved. Only generated frontend/next-env.d.ts remains outside commits while preview is active.
 Cleanup attempt for obsolete public-source-candidate, public-source-candidate-step37 and public-source-candidate-step38 was rejected by automatic approval review: blocked by policy. Those small copies remain; no alternate deletion or bypass attempted. Backups and the previously blocked preview cache remain retained. Do not retry rejected cleanup without new authorization.
 Remaining refactor work: command-service separation beyond feature routers; complex/visual SOP contract generalization; remaining configuration entity/field-policy acceptance; final target-specific coordinated cutover and rollback. Current unit is complete, whole refactor is not declared complete. Resume from PLAN.md with the current source/publication facts rather than earlier authentication or manual-preview blockers.
+
+
+## Step42 accepted locally — 2026-10-23
+554 unique backend tests covered: shard0 143passed/1PGskip; shard2
+216passed/7PGskips; shard1 102passed before runner correction plus83passed
+in corrected tail. The8 PostgreSQL-dependent skips passed in PG integration
+(11passed including3 overlap checks); Temporal2passed. Unique coverage:
+544 non-Temporal/non-PG +8PG +2Temporal =554. Historical review-policy text
+compatibility is fixed and its regression passes. One remaining warning is the
+upstream Starlette/httpx test-client deprecation, not a runtime failure.
+
+Engine199tests+81subtests passed. API parity65paths; source-verified saved-case
+replay67cases/7608findings/0differences/0blocked; defaults equal; source rows
+unchanged;0paid calls. Seven migrations applied/replayed only in isolated PG;
+40source histories unchanged;40freshv2 imports exact. TypeScript/family assertions,
+production webpack build,13static assets and authenticated production browser
+configuration passed. Browser console has no error/warn entries. Synthetic
+publishedv7/0documents preserved. Production web3100 session17759 and API8100
+remain available; original3000/8000 stay on original code.
+
+Local copied-database rollback to Step41 and restoration of current API passed.
+New policy types require compatible workers; remote deployment/coordinated live
+cutover remains outside the user-selected local-first target. No startup business
+publication, case repinning, provider submission or original schema change.
+All final test containers auto-removed. Retained136124-byte generated tracing
+folder is locally excluded after automatic approval rejected cleanup; do not
+retry deletion. Necessary backups retained. Full file list:STEP42_FILES.md.
+
+Next publication gate: commit this accepted source; clean allowlisted export;
+verify hashes/guards and included tests; expected-head public update from11520ed.

@@ -1,4 +1,5 @@
 """PostgreSQL migration failure cases; enabled only with an isolated test URL."""
+
 import os
 
 import pytest
@@ -45,16 +46,27 @@ def test_reference_dataset_immutability_in_postgres(isolated_engine):
     from sqlalchemy.exc import DBAPIError
     from sqlalchemy.orm import Session
     from app.configuration.datasets import register_dataset, read_dataset
-    migrate.apply_migrations(isolated_engine, expected_database='sqe_refactor')
-    payload = {'id': 'synthetic-v1', 'source_name': 'Synthetic', 'sha256': '0' * 64, 'samples': [], 'rows': []}
+
+    migrate.apply_migrations(isolated_engine, expected_database="sqe_refactor")
+    payload = {
+        "id": "synthetic-v1",
+        "source_name": "Synthetic",
+        "sha256": "0" * 64,
+        "samples": [],
+        "rows": [],
+    }
     with Session(isolated_engine) as session, session.begin():
-        register_dataset(session, 'synthetic', payload)
-    for sql in ['UPDATE reference_datasets SET digest=digest', 'DELETE FROM reference_datasets', 'TRUNCATE reference_datasets']:
-        with pytest.raises(DBAPIError, match='immutable'):
+        register_dataset(session, "synthetic", payload)
+    for sql in [
+        "UPDATE reference_datasets SET digest=digest",
+        "DELETE FROM reference_datasets",
+        "TRUNCATE reference_datasets",
+    ]:
+        with pytest.raises(DBAPIError, match="immutable"):
             with isolated_engine.begin() as connection:
                 connection.execute(text(sql))
     with Session(isolated_engine) as session:
-        assert read_dataset(session, 'synthetic', 'synthetic-v1') == payload
+        assert read_dataset(session, "synthetic", "synthetic-v1") == payload
 
 
 def test_failed_ddl_rolls_back_entire_migration(isolated_engine, tmp_path, monkeypatch):
@@ -66,15 +78,25 @@ def test_failed_ddl_rolls_back_entire_migration(isolated_engine, tmp_path, monke
         migrate.apply_migrations(isolated_engine, expected_database="sqe_refactor")
     with isolated_engine.connect() as connection:
         assert connection.scalar(text("SELECT to_regclass('partial_table')")) is None
-        assert connection.scalar(text("SELECT to_regclass('configuration_schema_migrations')")) is None
+        assert (
+            connection.scalar(
+                text("SELECT to_regclass('configuration_schema_migrations')")
+            )
+            is None
+        )
 
 
 def test_replay_and_checksum_protection(isolated_engine, tmp_path, monkeypatch):
     path = tmp_path / "0001_test.sql"
     path.write_text("CREATE TABLE sample(id INTEGER);", encoding="utf-8")
     monkeypatch.setattr(migrate, "MIGRATIONS", tmp_path)
-    assert migrate.apply_migrations(isolated_engine, expected_database="sqe_refactor") == ["0001_test"]
-    assert migrate.apply_migrations(isolated_engine, expected_database="sqe_refactor") == []
+    assert migrate.apply_migrations(
+        isolated_engine, expected_database="sqe_refactor"
+    ) == ["0001_test"]
+    assert (
+        migrate.apply_migrations(isolated_engine, expected_database="sqe_refactor")
+        == []
+    )
     path.write_text("CREATE TABLE changed(id INTEGER);", encoding="utf-8")
     with pytest.raises(ValueError, match="checksum"):
         migrate.apply_migrations(isolated_engine, expected_database="sqe_refactor")
@@ -84,35 +106,82 @@ def test_identity_bindings_round_trip_in_postgres(isolated_engine):
     from sqlalchemy.orm import Session
     from app.configuration.store import compile_publication, import_publication
 
-    assert migrate.apply_migrations(isolated_engine, expected_database="sqe_refactor") == [
-        "0001_publications", "0002_identity_bindings", "0003_family_rule_membership", "0004_revision_immutability", "0005_context_definitions", "0006_reference_datasets",
+    assert migrate.apply_migrations(
+        isolated_engine, expected_database="sqe_refactor"
+    ) == [
+        "0001_publications",
+        "0002_identity_bindings",
+        "0003_family_rule_membership",
+        "0004_revision_immutability",
+        "0005_context_definitions",
+        "0006_reference_datasets",
+        "0007_configuration_entities",
     ]
     payload = {
-        "profiles": {"custom": {"schema": {"type": "object", "properties": {
-            "name": {"type": "string"},
-        }}}},
+        "profiles": {
+            "custom": {
+                "schema": {
+                    "type": "object",
+                    "properties": {
+                        "name": {"type": "string"},
+                    },
+                }
+            }
+        },
         "identity_policy": {"bindings": [{"profile": "custom", "field_path": "name"}]},
-        "context_definitions": {"review_choice": {"label": "Review choice", "kind": "enum", "options": ["YES", "NO"]}},
+        "context_definitions": {
+            "review_choice": {
+                "label": "Review choice",
+                "kind": "enum",
+                "options": ["YES", "NO"],
+            }
+        },
         "sop_rules": [{"id": "sample_rule"}],
-        "rule_scope": {"family_rule_ids": {"forex": ["sample_rule"], "account_opening": []}},
+        "rule_scope": {
+            "family_rule_ids": {"forex": ["sample_rule"], "account_opening": []}
+        },
     }
     with Session(isolated_engine) as session, session.begin():
-        publication = import_publication(session, organization="test", revision=1,
-                                         source_config_id="synthetic", payload=payload)
+        publication = import_publication(
+            session,
+            organization="test",
+            revision=1,
+            source_config_id="synthetic",
+            payload=payload,
+        )
         assert compile_publication(session, publication) == payload
-        assert session.scalar(text("SELECT count(*) FROM configuration_identity_bindings")) == 1
-        assert session.scalar(text("SELECT count(*) FROM configuration_family_rule_members")) == 1
-        assert session.scalar(text("SELECT count(*) FROM configuration_context_definitions")) == 1
+        assert (
+            session.scalar(text("SELECT count(*) FROM configuration_identity_bindings"))
+            == 1
+        )
+        assert (
+            session.scalar(
+                text("SELECT count(*) FROM configuration_family_rule_members")
+            )
+            == 1
+        )
+        assert (
+            session.scalar(
+                text("SELECT count(*) FROM configuration_context_definitions")
+            )
+            == 1
+        )
 
 
 def test_publication_requires_intact_migration_history(isolated_engine):
     from sqlalchemy.orm import Session
-    from app.configuration.publication import require_storage_schema, ConfigurationStorageNotReady
+    from app.configuration.publication import (
+        require_storage_schema,
+        ConfigurationStorageNotReady,
+    )
 
     migrate.apply_migrations(isolated_engine, expected_database="sqe_refactor")
     with Session(isolated_engine) as session:
         require_storage_schema(session)
-        session.execute(text("UPDATE configuration_schema_migrations SET checksum=:checksum"), {"checksum": "0" * 64})
+        session.execute(
+            text("UPDATE configuration_schema_migrations SET checksum=:checksum"),
+            {"checksum": "0" * 64},
+        )
         with pytest.raises(ConfigurationStorageNotReady, match="migration history"):
             require_storage_schema(session)
         session.rollback()
@@ -121,26 +190,49 @@ def test_publication_requires_intact_migration_history(isolated_engine):
 def test_committed_revision_tables_reject_rewrites_and_late_entries(isolated_engine):
     from sqlalchemy.exc import DBAPIError
     from sqlalchemy.orm import Session
-    from app.configuration.store import ConfigurationBase, import_publication, compile_publication
+    from app.configuration.store import (
+        ConfigurationBase,
+        import_publication,
+        compile_publication,
+    )
 
     with isolated_engine.begin() as connection:
         connection.execute(text("CREATE TABLE configurations(id TEXT PRIMARY KEY)"))
         connection.execute(text("INSERT INTO configurations VALUES ('historical')"))
     migrate.apply_migrations(isolated_engine, expected_database="sqe_refactor")
-    payload = {"profiles": {"custom": {"schema": {"type": "object", "properties": {"name": {"type": "string"}}}}},
-               "identity_policy": {"bindings": [{"profile": "custom", "field_path": "name"}]},
-               "sop_rules": [{"id": "synthetic"}],
-               "rule_scope": {"family_rule_ids": {"forex": ["synthetic"], "account_opening": []}}}
+    payload = {
+        "profiles": {
+            "custom": {
+                "schema": {"type": "object", "properties": {"name": {"type": "string"}}}
+            }
+        },
+        "identity_policy": {"bindings": [{"profile": "custom", "field_path": "name"}]},
+        "sop_rules": [{"id": "synthetic"}],
+        "rule_scope": {
+            "family_rule_ids": {"forex": ["synthetic"], "account_opening": []}
+        },
+    }
     with Session(isolated_engine) as session, session.begin():
-        publication = import_publication(session, organization="synthetic", revision=1,
-                                         source_config_id="historical", payload=payload)
+        publication = import_publication(
+            session,
+            organization="synthetic",
+            revision=1,
+            source_config_id="historical",
+            payload=payload,
+        )
         publication_id = publication.id
         assert compile_publication(session, publication) == payload
-    tables = {name: next(iter(table.primary_key.columns)).name
-              for name, table in ConfigurationBase.metadata.tables.items()}
+    tables = {
+        name: next(iter(table.primary_key.columns)).name
+        for name, table in ConfigurationBase.metadata.tables.items()
+    }
     tables["configurations"] = "id"
     for table, column in tables.items():
-        for statement in (f'DELETE FROM {table}', f'UPDATE {table} SET {column}={column}', f'TRUNCATE {table} CASCADE'):
+        for statement in (
+            f"DELETE FROM {table}",
+            f"UPDATE {table} SET {column}={column}",
+            f"TRUNCATE {table} CASCADE",
+        ):
             with pytest.raises(DBAPIError, match="immutable"):
                 with isolated_engine.begin() as connection:
                     connection.execute(text(statement))
@@ -158,9 +250,19 @@ def test_committed_revision_tables_reject_rewrites_and_late_entries(isolated_eng
                 connection.execute(text(statement), {"publication": publication_id})
     # New revisions and idempotent imports remain valid after immutability.
     with Session(isolated_engine) as session, session.begin():
-        existing = import_publication(session, organization="synthetic", revision=1,
-                                      source_config_id="historical", payload=payload)
+        existing = import_publication(
+            session,
+            organization="synthetic",
+            revision=1,
+            source_config_id="historical",
+            payload=payload,
+        )
         assert existing.id == publication_id
-        new = import_publication(session, organization="synthetic", revision=2,
-                                 source_config_id="new-revision", payload=payload)
+        new = import_publication(
+            session,
+            organization="synthetic",
+            revision=2,
+            source_config_id="new-revision",
+            payload=payload,
+        )
         assert compile_publication(session, new) == payload

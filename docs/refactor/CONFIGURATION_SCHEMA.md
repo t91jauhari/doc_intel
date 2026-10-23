@@ -1,6 +1,27 @@
 # Configuration persistence design and implementation status
 
-Current implementation (isolated and tested; not activated in the live app):
+Step42 implementation: new publications use storage_version 2 and dedicated
+configuration_families, configuration_profiles, configuration_profile_variants,
+configuration_flows, configuration_report_definitions, configuration_sop_rules
+and configuration_generic_sop_rules tables. Each row belongs to an immutable
+publication and retains ordered, validated JSON definitions. Seven PostgreSQL
+migrations are implemented. Older storage_version 1 publications continue
+compiling from configuration_entries without rewriting history.
+
+Nested schemas, prompts and policies remain typed JSON inside their owning
+entity; a table for each nested field is unnecessary. Actual SQL names are above
+and in store.py; the original conceptual design below uses different names.
+Dedicated identity, context, scope and dataset tables remain in use. All 40
+historical revisions round-trip exactly through fresh version 2 imports.
+
+Visual/date/money policies, report score groups and signature evidence bindings
+are implemented. Evaluator algorithms, authentication and workflow state
+transitions remain code-owned capabilities. New business definitions are data;
+new algorithms require tested code, never database-supplied executable code.
+
+Earlier implementation record (superseded by these additions):
+
+Current implementation before Step42:
 `configuration_publications` and ordered `configuration_entries` preserve family,
 profile, flow, rule and report definitions without losing historical extensions.
 Dedicated tables store identity policies/bindings, family rule scopes/members and
@@ -44,6 +65,5 @@ Import pinned payload -> normalized draft -> validated immutable publication -> 
 ## Remaining decisions
 The explicit migration runner is implemented. Typed contracts cover the root
 envelope, identity, text comparisons, account conditions, field checks, reference
-comparison settings, contexts and report projections. Broader complex/visual SOP
-contracts and dedicated entity tables remain tracked work. Table normalization
+comparison settings, contexts and report projections. Step42 adds visual/date/money contracts and dedicated entity tables. Table normalization
 does not eliminate the need for reusable Python evaluators.

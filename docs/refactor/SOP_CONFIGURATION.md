@@ -1,6 +1,38 @@
 # Explicit SOP rule scope and comparison contracts
 
-Status: isolated implementation, not published or activated.
+Status: implemented in isolation; production activation is separate.
+
+## Step42 policy extension
+
+The generic policy union now supports text, visual, date and money checks for
+any configured document family. Policies bind validated schema paths, category,
+family and registered context applicability. Unknown context values fail rather
+than silently excluding the rule. Existing rules and pins are not auto-converted.
+
+Visual checks support presence/completeness, signer-region placement, all-page
+marks and two-region consistency. Missing evidence fails; uncertain evidence
+requires visual review. Presence alone never proves signature consistency.
+A consistency PASS requires recorded observations of both source regions,
+including two distinct regions when they are on the same document.
+
+Date checks use explicit equality or on-or-after semantics. Money checks require
+amount and currency on both sides, positive finite amounts, ISO currency codes
+and explicit decimal/thousands separators. Nonvisual uncertainty fails and cannot
+be approved through visual review. Numeric values are never locale-reformatted.
+
+Family score groups configure Total A/B membership. Account Opening retains all
+six categories and Forex its four. Every applicable PASS earns one point; FAIL
+zero; pending visual reviews remain in possible points. Native report summary
+flags retain their existing meaning. Optional supporting_paths configure the two
+signature evidence fields used by account identity conditions.
+
+Settings offers draft editors for these policies and score groups. Validation
+runs before publication; old publications remain immutable. Native checks keep
+the captured compatibility catalog, and configured field checks do not invent a
+PASS for fields without an approved check. These boundaries supersede the
+historical pending-work statements below.
+
+
 
 Optional published configuration:
 

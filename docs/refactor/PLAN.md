@@ -1,31 +1,35 @@
 # Refactor plan and current position
 
-Current position: **Step41 API feature boundaries accepted and published as11520ed. All528 backend tests covered;126 clean-export tests passed; configuration browser acceptance passed. API8100/web3100 running; live app unchanged.**
+Current position: Step42 accepted locally. All554 backend tests are covered;
+engine199+81subtests, API65paths,67case/7608finding parity, PostgreSQL/Temporal,
+production build and browser configuration checks passed. Sanitized publication
+is the final remaining delivery gate.
 
-No live cutover. Status refers to isolated implementation, not activation.
+The selected delivery target is complete and verify locally first. Original
+ports3000/8000 remain on their existing code; isolated API8100/web3100 use the
+refactored source. Remote production activation is outside this delivery target.
 
-| Point | Status | Completed | Remaining |
-|---|---|---|---|
-| B0 Baseline and isolation | Complete in isolation | Git/database baseline and restore; verified 7655-object backup | Coordinated cutover backup under C1 |
-| B1 Inventory and regression | Partial | Initial inventory, saved history, baseline failure recorded | Complete all business configuration locations |
-| D1 Configuration schema | Partial | Publications, entries, identity bindings, family-rule membership; 6 migrations; PostgreSQL immutability and context rows | Remaining entities |
-| D2 Typed contracts/compiler | Partial | Lossless history; root envelope; identity/text comparison, account condition, field-check, dataset and report contracts | Complex/visual SOP contracts |
-| M1 Import/publication | Complete in isolation | 40 imports; atomic writers; explicit initialization; verified/normalized reads; 67 pins checked | Activation tracked under C1 |
-| R1 Grouping and SOP | Partial | Identity, comparisons, applicability, context registry; custom-only profiles; catalog/condition editors accepted in browser | Complex/visual policy contracts |
-| R2 Services/providers | Partial | Configuration/provider routers and services; extraction adapters; report read models; remaining HTTP handlers extracted into feature routers | Remaining command services and provider internals; full acceptance |
-| R3 Datasets/reports | Complete in isolation | Dataset registry, family report mappings and comparison policies;67cases/3028fields parity | Browser acceptance/activation under V1/C1 |
-| V1 Final verification | Partial | Backend coverage; PG/Temporal integration; frontend build/typecheck; configuration browser acceptance;54cases/7049findings | Field-policy migration/native acceptance |
-| C1 Cutover/rollback | Prepared, not activated | Production compose and coordinated rollout/rollback runbook | Target-specific rehearsal, coordinated capture and activation |
+| Point | Status | Evidence / acceptance boundary |
+|---|---|---|
+| B0 Baseline and isolation | Complete locally | Git/database baseline and restore;7655-object backup verification; separate databases/ports/storage |
+| B1 Inventory and regression | Complete locally | INVENTORY.csv; versioned business configuration; captured bootstrap/legacy catalogs; registered algorithms remain code capabilities |
+| D1 Configuration schema | Complete locally | Seven migrations; v2 entity tables; immutable v1 compatibility;40 fresh v2 round trips |
+| D2 Typed contracts/compiler | Complete locally | Identity/text/conditions/field checks/context/report/data policies plus visual/date/money; validated schemas and score groups |
+| M1 Import/publication | Complete locally |40 history imports; atomic writers; explicit initialization; verified reads; immutable pins |
+| R1 Grouping and SOP | Complete locally | Configured families, scope, conditions, visual review safeguards;67 cases/7608 findings replay with zero differences |
+| R2 Services/providers | Complete locally |43 application operations; DTO/access/error/upload ports; crypto/domain ownership; provider receipts and adapter boundaries preserved |
+| R3 Datasets/reports | Complete locally | Dataset registry; typed report bindings; configurable scoring groups; historical report parity |
+| V1 Final verification | Complete locally | Engine199+81subtests; Temporal2; PG11; API65paths; production build/typecheck/assets; browser configuration; 554 backend tests covered with no outstanding failures |
+| C1 Local rollout/rollback | Complete locally | Production standalone preview; synthetic copied-database rollback to Step41; new API restored; no paid calls |
+| P1 Sanitized publication | Pending final acceptance | Refresh sanitized source from accepted commit; guards/hash verification/included tests; expected-head GitHub update |
 
-CHANGES.md records files and commits; VERIFICATION.md records checks;
-MIGRATIONS.md records isolated schema changes; CHECKPOINT.md records resume state.
-Do not equate implemented, tested, migrated and activated.
+The local rollback rehearsal validates existing publications; old workers cannot
+interpret new configured policy types. Preserve compatible workers for such case
+pins. Remote deployment requires server settings, coordinated database/object
+capture and receipt-aware cutover using ROLLOUT.md. It is not represented as a
+completed production activation.
 
-## Step 12 rollout boundary
-
-CONFIGURATION_STORAGE_MODE defaults to legacy. Explicit dual mode requires all
-configuration tables and matching PostgreSQL migration checksums; no startup
-schema creation. Interactive publishing writes legacy Config, normalized rows
-and audit in one caller-owned transaction. Case pins/extraction stay unchanged.
-All writers use the persistence boundary. Verified/normalized reads are implemented
-and tested; activation requires dual mode and full historical imports.
+CHANGES.md and STEP42_FILES.md record changed/created files. VERIFICATION.md
+records evidence; MIGRATIONS.md records schema changes; CHECKPOINT.md records the
+latest resumable state. Existing configuration storage defaults remain legacy;
+changing read/write modes or business versions is an explicit release action.

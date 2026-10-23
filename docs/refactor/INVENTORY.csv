@@ -2,15 +2,15 @@ id,area,source,status,target
 C01,family catalog,backend/app/document_families.py,implemented_tested,explicit catalogs support custom-only families; legacy mode preserves pinned compatibility
 C02,identity mapping,backend/app/grouping.py,implemented_tested,typed profile identity bindings with explicit compatibility
 C03,rule scope prefixes,backend/app/transaction_flows.py,implemented_tested,explicit rule scope; historical prefix fallback retained
-C04,scorer layout coupling,backend/app/transaction_flows.py,identified,scoring policy
+C04,scorer layout coupling,backend/app/transaction_flows.py,implemented_tested,family score groups with six-category Account Opening compatibility
 C05,conditional SOP,backend/app/account_opening_sop.py,implemented_tested,typed condition policies; compatibility shadow parity
-C06,signature paths,backend/app/account_opening_sop.py,identified,evidence bindings
+C06,signature paths,backend/app/account_opening_sop.py,implemented_tested,validated supporting_paths plus captured historical defaults
 C07,startup business updates,backend/app/main.py,implemented_tested,explicit upgrade publication
 C08,bundled datasets,backend/app/dataset_comparison.py,implemented_tested,immutable dataset registry and bounded private import
 C09,comparison thresholds,backend/app/dataset_comparison.py,implemented_tested,typed family comparison tolerances with case-pinned reads and draft editor
 C10,report bindings,backend/app/account_opening_report.py,implemented_tested,versioned family report bindings
 C11,legacy refresh defect,backend/app/domain.py,fixed_tested,compatibility regression fix
-C12,validation status propagation,backend/app/sop.py,partial,configured data checks; untouched fields retain uncertainty
+C12,validation status propagation,backend/app/sop.py,implemented_tested,configured data checks; unconfigured fields intentionally retain uncertainty rather than invented PASS
 C13,pinned configuration reads,backend/app/configuration/repository.py,implemented_tested,40 history and 67 pinned-case read parity
 C14,case context registry,backend/app/configuration/contexts.py,implemented_tested,versioned typed definitions and shared UI API validation
 C15,dynamic profile registration,backend/app/configuration/profiles.py,implemented_tested,explicit schema adapter with saved profile definitions
@@ -24,7 +24,10 @@ C22,Excel settings truncation,backend/app/config_workbook.py,fixed_tested,reject
 C23,account SOP policy contracts,backend/app/configuration/account_policies.py,implemented_tested,typed grammar and explicit applicability with legacy compatibility
 C24,reserved native profile catalog,backend/app/domain.py,implemented_tested,explicit mode removes mandatory native profile guard; custom-only pipeline verified
 C25,historical rule overlays,backend/app/forex_sop.py,implemented_tested,captured declarative compatibility manifest preserves historical rule projections
-C26,API orchestration,backend/app/main.py,verification_in_progress,feature routers extracted; configuration and provider services; remaining command services tracked
+C26,API orchestration,backend/app/main.py,implemented_tested,43 application operations and transport-independent contracts ports errors access; compatibility domain facade
 C27,private source history,scripts/export_public_source.py,published_verified,sanitized Step38 snapshot d22e168; later accepted changes require fresh export
 C28,removed provider interface labels,frontend/app,fixed_typechecked,Spider labels and historical Llama handling
 C29,production rollout,compose.production.yaml,prepared_not_activated,coordinated backup and target-specific release rehearsal
+C30,complex SOP policies,backend/app/configuration/sop_policies.py,implemented_tested,typed visual date and money policies with review safeguards
+C31,entity persistence,backend/app/configuration/store.py,implemented_tested,seven immutable entity tables and lossless v1-v2 compiler
+C32,seed constants,backend/app/configuration/seed_catalog.py,implemented_tested,captured bootstrap and compatibility catalogs; active business configuration remains in DB
