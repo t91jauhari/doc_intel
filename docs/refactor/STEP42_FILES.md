@@ -132,3 +132,9 @@ part of this inventory.
 - `frontend/components/document-families.tsx`
 - `frontend/lib/types.ts`
 - `scripts/export_public_source.py`
+
+## Acceptance documentation closure
+
+Created: `docs/refactor/FINAL_ACCEPTANCE.md`.
+Updated: `docs/refactor/PLAN.md`, `INVENTORY.csv`, `CHECKPOINT.md`, `CHANGES.md`,
+`VERIFICATION.md` and this file. Runtime implementation remains b311635.

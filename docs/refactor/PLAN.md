@@ -1,9 +1,9 @@
 # Refactor plan and current position
 
-Current position: Step42 accepted locally. All554 backend tests are covered;
-engine199+81subtests, API65paths,67case/7608finding parity, PostgreSQL/Temporal,
-production build and browser configuration checks passed. Sanitized publication
-is the final remaining delivery gate.
+Current position: **All local delivery items complete.** Accepted source b311635;
+sanitized public main9cdc21c. Backend554tests; engine199+81subtests; API65paths;
+67case/7608finding parity; PostgreSQL/Temporal; production build/browser;
+clean image smoke;127clean-export tests and publication verification passed.
 
 The selected delivery target is complete and verify locally first. Original
 ports3000/8000 remain on their existing code; isolated API8100/web3100 use the
@@ -21,7 +21,7 @@ refactored source. Remote production activation is outside this delivery target.
 | R3 Datasets/reports | Complete locally | Dataset registry; typed report bindings; configurable scoring groups; historical report parity |
 | V1 Final verification | Complete locally | Engine199+81subtests; Temporal2; PG11; API65paths; production build/typecheck/assets; browser configuration; 554 backend tests covered with no outstanding failures |
 | C1 Local rollout/rollback | Complete locally | Production standalone preview; synthetic copied-database rollback to Step41; new API restored; no paid calls |
-| P1 Sanitized publication | Pending final acceptance | Refresh sanitized source from accepted commit; guards/hash verification/included tests; expected-head GitHub update |
+| P1 Sanitized publication | Complete locally |354source files;0scanner blockers; hashes verified;127included tests; public main9cdc21c verified |
 
 The local rollback rehearsal validates existing publications; old workers cannot
 interpret new configured policy types. Preserve compatible workers for such case
