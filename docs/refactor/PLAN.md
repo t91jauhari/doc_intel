@@ -1,6 +1,6 @@
 # Refactor plan and current position
 
-Current position: **Step40 explicit family catalog verified, including custom-only end-to-end processing. Backend regression, engine199+81subtests and clean-export126 passed. Sanitized Step38 snapshot published as d22e168; preview3100 running; Step41 API split accepted with528 backend tests covered; fresh public export pending.**
+Current position: **Step41 API feature boundaries accepted and published as11520ed. All528 backend tests covered;126 clean-export tests passed; configuration browser acceptance passed. API8100/web3100 running; live app unchanged.**
 
 No live cutover. Status refers to isolated implementation, not activation.
 
