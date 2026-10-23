@@ -1,9 +1,9 @@
 # Refactor plan and current position
 
-Current position: Step42 refactor and Step43 operational local preview accepted.
-Persistent API/worker, authorized model connection, references, live synthetic
-extraction, crops, SOP/report/export and restart retention passed. Step43 sanitized
-publication is the remaining delivery action; production server rollout is separate.
+Current position: **Step42 refactor and Step43 operational local preview complete.**
+Live synthetic extraction,5crops,SOP/report,3export formats and persistent restart
+passed with user-selected3.8-flash-high. Public mainc1e41c4 verified. Real complete
+customer UAT and server-specific production deployment are separate next scopes.
 
 The selected delivery target is complete and verify locally first. Original
 ports3000/8000 remain on their existing code; isolated API8100/web3100 use the
@@ -22,7 +22,7 @@ refactored source. Remote production activation is outside this delivery target.
 | V1 Final verification | Complete locally | Engine199+81subtests; Temporal2; PG11; API65paths; production build/typecheck/assets; browser configuration; 554 backend tests covered with no outstanding failures |
 | C1 Local rollout/rollback | Complete locally | Production standalone preview; synthetic copied-database rollback to Step41; new API restored; no paid calls |
 | O1 Operational preview | Complete locally | Persistent API/worker;3.8-flash-high live synthetic extraction;5crops;SOP/report/3exports;restart retention verified |
-| P1 Sanitized publication | Complete locally |354source files;0scanner blockers; hashes verified;127included tests; public main9cdc21c verified |
+| P1 Sanitized publication | Complete locally |354source files;0scanner blockers; hashes verified;127included tests; public Step42 main9cdc21c and Step43 mainc1e41c4 verified |
 
 The local rollback rehearsal validates existing publications; old workers cannot
 interpret new configured policy types. Preserve compatible workers for such case

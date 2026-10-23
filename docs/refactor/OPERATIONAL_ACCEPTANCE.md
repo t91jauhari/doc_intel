@@ -38,3 +38,7 @@ frontend source changed, so prior full code acceptance remains applicable.
 Follow-up observation:crop list also shows three internal.complete metadata rows
 without images. The five actual text crops exist. Full real-customer package UAT
 and server-specific deployment are separate from this synthetic acceptance.
+
+Publication verified:public mainc1e41c465ecc7d5a6582cb5102021e15a3bea79e.
+Sourcee4a83e4;356export files;0scanner blockers;hashes and6guards passed.
+Runtime source hashes match accepted Step42. Screenshot retained privately.

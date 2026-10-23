@@ -686,3 +686,29 @@ model extraction is correct. Source changes are operational compose, runbook,
 export allowlist and these records only; no backend/frontend algorithm change.
 Next: commit source, refresh sanitized export, verify hashes/guards and publish
 small delta to existing public main9cdc21c. Never publish private operational files.
+
+
+## Step43 delivery complete — 2026-10-23
+Accepted operational source:e4a83e469511023a193980f4ab52fc69cd442258.
+Public main:c1e41c465ecc7d5a6582cb5102021e15a3bea79e, independently verified;
+parent9cdc21c, expected-head/non-force update. Fresh export356files/2365030bytes
+plus manifest;0scanner blockers; all hashes verified;6guards passed. Public delta
+onlycompose.preview.yaml,OPERATIONAL_PREVIEW.md,exporter and manifest. Backend,
+frontend,engine hashes unchanged from fully verified Step42, so no redundant full
+suite run. No private operational data or Git history published.
+
+Preview3100/API8100/worker operational with persistent independent state;
+modelpct-prod-spider/pecut/gemini-3.8-flash-high. Synthetic live acceptance and
+restart persistence passed; no model requests remain running. OriginalAPI8000
+healthy, original app unchanged. Browser tab11 left at synthetic case, screenshot
+private/phase43/completed-preview.png. All incomplete-package failures remain
+correctlyFAIL; no fabricated visual approvals. Full evidence:OPERATIONAL_ACCEPTANCE.md.
+
+All current local/operational phases accepted. Subsequent scope is full real
+customer UAT or server-specific production deployment; neither is claimed done.
+Obsolete isolated preview container removed; recovery backup/private env/reference
+files and current persistent volume retained. Do not rerun one-time activation
+helper against the already migrated preview. API/worker containers intentionally
+run with restart policy; frontend standalone session17759 remains active.
+Closure files:docs/refactor/{PLAN,CHECKPOINT,CHANGES,VERIFICATION,
+OPERATIONAL_ACCEPTANCE}. No runtime algorithm changes in this closure.
