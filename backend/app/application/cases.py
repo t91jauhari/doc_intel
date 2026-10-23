@@ -142,6 +142,7 @@ def case_detail(*, case_id: str, user):
             ],
             "can_write": user.role not in {"auditor"},
             "can_review": user.role in {"bank_admin", "branch_admin", "reviewer"},
+            "can_adopt_configuration": user.role in {"bank_admin", "branch_admin"},
             "maker_checker": get_revision(db, c.config_id).payload["maker_checker"],
         }
 

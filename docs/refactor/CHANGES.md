@@ -741,3 +741,42 @@ suite36passed;559unique backend cases covered. Exact exported image activated
 locally, browser crop fix verified; checkpoint includes private evidence locations.
 Two unused intermediate images removed. Closure changes only PLAN/CHECKPOINT/
 VERIFICATION/CHANGES; no additional runtime modification.
+
+## Step45 — customer UAT, RIPLAY final-page exemption and case rule adoption
+
+Changed runtime files:
+- `engine/page_policy.py` (new) — shared physical page selection and coverage
+  validation with configurable `exclude_final_page`.
+- `engine/riplay/validation.py` — use actual `page_count` and exempt final page when
+  `exclude_final_page` is enabled.
+- `backend/Dockerfile` — persist `PYTHONPATH=/app/backend:/app/engine` and verify
+  date canonicalization at image build time.
+- `backend/app/configuration/dataset_policy.py`, `backend/app/dataset_comparison.py` —
+  configurable `exclude_final_page` comparison policy, blank presence/initials
+  canonicalization (`False`), month-only date precision preservation, and raw/normalized
+  `issuance` component projection.
+- `backend/app/configuration/sop_policies.py`, `backend/app/configuration/validation.py`,
+  `backend/app/sop.py`, `backend/app/account_opening_sop.py` — typed `VisualPolicy`
+  and SOP evaluation support for `exclude_final_page` (`NOT_APPLICABLE` on single-page
+  documents; actual page mark inspection on Account Opening field rules).
+- `backend/app/contracts.py`, `backend/app/api/cases.py`,
+  `backend/app/application/cases.py`, `backend/app/application/case_configuration.py` (new) —
+  explicit schema-compatible case configuration adoption (`POST /api/cases/{case_id}/configuration`)
+  with version, active-job, contract, and role guards, preserving extraction and
+  historical reports.
+- `frontend/lib/types.ts`, `frontend/components/case-configuration.tsx` (new),
+  `frontend/app/cases/[id]/page.tsx`, `frontend/app/upload/page.tsx`,
+  `frontend/components/dataset-policy.tsx`, `frontend/components/policy-rules.tsx`,
+  `frontend/components/profile-extraction-controls.tsx` — UI controls for final-page
+  exemption policies, explicit case rule adoption panel, and upload grouping confirmation fix.
+- `scripts/export_public_source.py` — allowlist `test_page_policy.py`.
+
+Changed/added tests:
+- `engine/tests/test_riplay.py` — final-page exemption regression.
+- `backend/tests/test_page_policy.py` (new) — 17 unit/policy tests for dynamic final-page
+  exemption and coverage guards.
+- `backend/tests/test_case_configuration.py` (new) — 4 integration tests for explicit
+  rule adoption, busy-case rejection, schema incompatibility rejection, and missing
+  version rejection.
+- `backend/tests/test_dataset_policy.py` — blank presence/initials, issuance projection,
+  and month-only date precision tests.

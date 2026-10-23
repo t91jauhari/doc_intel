@@ -50,3 +50,18 @@ shared Temporal/MinIO live acceptance, restart, export and exact-source checks
 passed. Source3a90a46; publicc1f4235 verified. Backend/local capability phase complete.
 Complete live customer dataset accuracy evaluation remains a separate acceptance
 scope; remote deployment is pending the user's server details.
+
+## Step45 — full customer UAT, RIPLAY final-page exemption and explicit rule adoption
+
+Step45 complete: all 10 Account Opening customer packages (35 documents: 34 PDFs +
+Artha eKTP PNG) processed end-to-end on the isolated preview stack (`3.8-flash-high`)
+with `COMPLETED` status and verified MinIO SHA256 hashes. Configurable
+`exclude_final_page` RIPLAY paraf exemption and explicit schema-compatible case
+configuration adoption (`POST /api/cases/{case_id}/configuration`) implemented and
+verified across engine (`179` unittest cases / `200` total with subtests), backend
+(`580` unique shard tests passed, `0` failures), and standalone frontend (`3100`).
+All 10 customer cases adopted configuration `v9` (`exclude_final_page=True`,
+reference `account-opening-20261023-1228379b`), completed `v9` SOP reports, and
+verified PDF/XLSX/JSON exports, aggregate comparison workbook, branch Kertas Kerja,
+and container restart retention with zero replayed model calls. Remote production
+deployment remains deferred pending server details.

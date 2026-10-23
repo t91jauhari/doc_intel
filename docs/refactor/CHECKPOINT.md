@@ -624,3 +624,109 @@ customer dataset accuracy evaluation is separate and not claimed completed;
 remote production deployment awaits user server details. Never rerun one-time
 migration helper blindly. Recovery evidence and file list in STEP44_FILES.md,
 LEGACY_CAPABILITY_PARITY.md,VERIFICATION.md. No background tests/model jobs remain.
+
+## Step45 started — full customer acceptance
+User authorized remaining end-to-end/customer/recovery verification. Model remains
+approved3.8flash using existing Spider connection. Artha five-document package
+submitted through browser; casea5aab79f-9db7-4d1e-8c45-588b027ef68d. Grouping5files1customer
+correct, including eKTP PNG (34PDF-only inventory omitted this source image).
+EDD completed, remaining jobs processing. Preserve receipt IDs; no blind retry.
+Current workbook SHA1228379bf7944500801b43132b9e07ef3dbb44918b9b8c1d7ee481b35bdeacb4
+differs from registered older reference. Private importer/crosswalk in phase45
+build210rows/10customers from current7sheets. Supporting letter/signature second
+sample belongs toSri, while same position other sheets belongs toArtha. Do not
+compare wrong customer by global column index. No extraction values overwritten.
+Next: latest-reference comparisons, remaining one-customer browser packages,
+visual reviews, report workbook, operational resilience and final acceptance.
+Remote deployment remains deferred without server details. Original app untouched.
+
+Step45 progress: all10customers35documents (34PDF+Artha eKTPPNG) submitted via
+separate browser batches, grouping1customer each correct. Cases captured in
+private phase45 receipt files and snapshot; all pinnedv7. Latest workbook imported
+as immutable account-opening-20261023-1228379b for independent comparisons; existing
+extraction/SOP pins not changed. Snapshot/recovery helpers use app services and
+read saved gateway receipts; safe preconnection failures only, capped2retries/doc.
+Original503receipt preserved, cached successful pages reused; uncertain outcomes
+must not be replayed. Artha/Bayu browser Resume actions verified; later safe
+retries processed through same application use case with audit.
+
+Found/fixed: Docker runtime PYTHONPATH absent (clean process date comparison failed;
+test env masked it); persistent image path and build smoke added. Comparison blank
+presence nowequalsAbsent; raw issuance components projected correctly. Two new
+policy tests; affected comparison/policy20passed. Clean step45image date/presence
+smoke passed without injected environment. API nowstep45; worker stillstep44-final
+while real jobs run, to avoid interrupting paid requests. Upgrade worker after drain.
+Upload grouping confirmation reopening chosen flow fixed one frontend condition;
+frontend source not built/activated yet. New backend source changes not committed.
+
+Visual source review proves reference defects: Bayu Join Visit handwritten11Sep2025
+and no Keterangan notes, but reference09Nov2025/ok; opening form09Sep2025, reference
+09Nov2025. Artha join checks handwrittenok match extractedSesuai ok semantically;
+reference adds label/encodingartifact. Artha main signature onlastRIPLAYpage but
+nofooterinitial; async clarification pending whether signature counts for this field.
+Do not force source to match erroneous references or fabricate signature presence.
+Source render PNGs private phase45/source-review. Use bundled Poppler; bundled
+Python lacksfitz. Partial comparisons saved, not final acceptance. More jobs pending.
+
+New user clarification: for BOTH Forex and Account Opening RIPLAY, exclude the
+actual final physical page entirely from paraf requirements, regardless of main
+signature. Implemented configurable exclude_final_page flags in native profile,
+family comparison policy and typed visual SOP policies; pure engine/page_policy.py
+shares selection/coverage checks. Missing earlier pages and duplicate page records
+remain unresolved/failed; final page observations may be omitted. Single-page
+visual SOP is NOT_APPLICABLE. Account field SOP now inspects actual page marks
+instead of trusting a parent PASS status. UI checkboxes added for these policies.
+All199engine+81subtests passed before the extra native regression; affected backend
+79passed. New explicit case configuration adoption API/application/UI added with
+stale-version, active-job, schema compatibility and role guards; original reports
+and extraction stay unchanged. Six adoption/architecture tests passed. More tests
+and public snapshot/build needed after final edits. Do not auto-repin cases.
+
+Latest model run: >30documents completed; three confirmed preconnection failures
+Artha opening/Bayu eKTP/Langit RIPLAY requeued for second and final bounded safe
+retry. Other six initial retries recovered. Bayu targeted risk/approval reread
+completed and guidance publishedv8; raw fields now riskcategory matches source and
+unchecked approval remainsnull. No reviewer override used. All cases have latest
+reference comparisons in private JSON but pending/error/review rows are not final.
+Private web-build compiles separately so active3100 assets are untouched; session23397.
+Need refresh copied latest frontend role/capability edits before final web build.
+
+## Step45 complete — 2026-10-23
+All 3 remaining safe preconnection retries (Artha opening form, Bayu eKTP, Langit
+RIPLAY) completed without error: all 10 Account Opening customers / 35 documents
+(34 PDFs + Artha eKTP PNG) are `COMPLETED` with verified MinIO SHA256 hashes.
+API and worker containers (`sqe-refactor-operational-api-1`,
+`sqe-refactor-operational-worker-1`) run `sqe-refactor-api:step45-acceptance`;
+standalone frontend server runs on port `3100` from refreshed `private/phase45/web-build`.
+Published configuration `v9` (`publish_page_scope.py`) enabling `exclude_final_page=True`
+for RIPLAY profile, comparison policy, and visual SOP rules, and binding dataset
+`account-opening-20261023-1228379b`.
+
+All 10 Account Opening cases explicitly adopted configuration `v9` via
+`adopt_configuration` (`POST /api/cases/{case_id}/configuration`), preserving
+historical `v7` reports and reusing saved extractions (`0` new model calls). All 10
+`v9` `CaseSOPWorkflow` runs completed (`NEEDS_REVIEW` on 9 full packages;
+`WAITING_DOCUMENTS` on Sri Pujianty's 2-letter package). Artha, Dirman, Indah, and
+Langit RIPLAY paraf checks (`pages 1..2` present, final page 3 blank) now evaluate
+as `PASS` / `MATCH` under `v9`. Bound all 10 cases to their verified sample IDs in
+`account-opening-20261023-1228379b` and refreshed `private/phase45/account-uat-snapshot.json`.
+
+Verification:
+- Backend full shards (`private/phase45/backend-{0,1,2}.xml`): `268 + 168 + 144 = 580`
+  unique tests passed, `0` failures, `0` errors (`8` PG skips covered by isolated PG
+  suite), including `test_case_configuration.py` (`4` tests), `test_page_policy.py`
+  (`17` tests), and `test_dataset_policy.py` (`3` new tests).
+- Engine suite: `179` unittest cases (`200` total with subtests) passed; exporter
+  unit tests (`6` tests) passed.
+- Live exports verified HTTP 200 across all 10 customer `v9` reports (`PDF`, `9`-sheet
+  `XLSX`, `JSON`), aggregate comparison workbook (`/api/comparisons/export`, `228182`
+  bytes, `5` sheets), and branch Kertas Kerja (`/api/reports/kertas-kerja`, `3084516`
+  bytes, `9` sheets).
+- Shared Temporal namespace `sqe-refactor-preview`: `48` `DocumentWorkflow` and `32`
+  `CaseSOPWorkflow` executions `COMPLETED`, `0` running/failed.
+- Restart persistence verified on `sqe-refactor-operational-api-1` and
+  `sqe-refactor-operational-worker-1`: `9` config versions, `11` cases (`10` Account
+  Opening on `v9` + `1` synthetic Forex on `v7`), `36` completed documents, `38`
+  completed jobs, `12` preserved historical error receipts, `0` active jobs, `31`
+  completed SOP runs, `31` reports, and `10` saved comparisons retained with `0`
+  replayed model calls. Original app (`3000`/`8000`) remains untouched.

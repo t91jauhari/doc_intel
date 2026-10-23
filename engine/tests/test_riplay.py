@@ -117,6 +117,15 @@ class RiplayTests(unittest.TestCase):
     def codes(self, field):
         return [i["code"] for i in self.report()["fields"][field]["issues"]]
 
+    def test_final_page_exemption_uses_actual_page_count(self):
+        self.policy['exclude_final_page'] = True
+        self.raw['page_initials']['page_count'] = 3
+        self.raw['page_initials']['pages'] = self.raw['page_initials']['pages'][:2]
+        self.assertNotIn('EXPECTED_PAGE_COUNT_MISMATCH', self.codes('page_initials'))
+        self.assertNotIn('MISSING_DUPLICATE_OR_INVALID_PAGE_RECORDS', self.codes('page_initials'))
+        self.raw['page_initials']['pages'][0]['footer_present'] = False
+        self.assertIn('PAGE_1_BOTTOM_RIGHT_INITIAL_REQUIRED', self.codes('page_initials'))
+
     def test_ten_columns_and_normalization(self):
         self.assertEqual(len(COLUMNS), 10)
         self.assertEqual(len(SCHEMA["properties"]), 10)

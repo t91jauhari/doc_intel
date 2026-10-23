@@ -318,3 +318,46 @@ export. Source3a90a46; publicc1f4235 verified. Final image9aa5bcc; APIhealthy an
 worker running. Shared namespace1Document+3SOP workflowsCOMPLETED. Restart retained
 state,original/crop SHA checks and parsed PDF/XLSX/JSON200exports. Screenshotprivate
 phase44/corrected-crops.png. Unused intermediate images removed; backups retained.
+
+## Step45 verification — full customer UAT and final-page policy acceptance
+
+1. **Automated test suites**:
+   - Backend full shards (`../private/phase45/backend-{0,1,2}.xml`): `268` passed (`7` PG
+     skips), `168` passed (`0` skips), `144` passed (`1` PG skip) = `580` unique passed
+     test cases, `0` failures, `0` errors. Includes `test_case_configuration` (`4` passed),
+     `test_page_policy` (`17` passed), and `test_dataset_policy` (`3` new passed).
+   - Engine unit suite (`docker run --rm ... sqe-refactor-api:step45-acceptance python -m unittest discover -s engine/tests -p "test_*.py"`):
+     `179` unittest cases (`200` total with subtests) passed in `6.899s`, `0` failures.
+   - Public source exporter unit suite (`python -m unittest scripts.test_export_public_source`):
+     `6` passed in `0.007s`.
+
+2. **Live 10-customer Account Opening UAT (`35` documents)**:
+   - All `10` customer packages (`34` PDFs + Artha eKTP PNG) grouped `1` customer per
+     batch and completed extraction with `pct-prod-spider/pecut/gemini-3.8-flash-high`
+     (`35/35` `COMPLETED`, `0` errors). Three transient preconnection failures recovered
+     within the `2`-retry safe cap; `12` historical error receipts preserved without
+     silent overwrite.
+   - Published configuration `v9` (`exclude_final_page=True` on RIPLAY profile,
+     comparison policy, and visual SOP rules; dataset `account-opening-20261023-1228379b`).
+   - All `10` Account Opening cases explicitly adopted `v9` via `adopt_configuration`
+     (`POST /api/cases/{case_id}/configuration`), reusing saved extractions (`0` paid
+     calls) and preserving `v7` reports in audit history.
+   - All `10` `v9` SOP reports completed (`Artha` v4, `Bayu` v3, `Dirman` v2, `Indah` v3,
+     `Langit` v4, `Paulus` v2, `Poko` v2, `Sri` v2, `Steve` v2, `Stuart` v2). Artha,
+     Dirman, Indah, and Langit RIPLAY paraf checks (`pages 1..2` present, final page 3
+     exempt) evaluated as `PASS` / `MATCH`.
+   - Snapshot saved to `../private/phase45/account-uat-snapshot.json`.
+
+3. **Exports, storage integrity, Temporal workflows, and restart persistence**:
+   - Verified SHA256 hashes of all `35` stored customer source binaries in shared MinIO.
+   - Verified HTTP `200` and content parsing for `PDF`, `XLSX` (`9` sheets), and `JSON`
+     report downloads across all `10` customer `v9` reports (`30` exports total).
+   - Verified aggregate comparison workbook `GET /api/comparisons/export` (`200`,
+     `228182` bytes, `5` sheets) and branch Kertas Kerja
+     `GET /api/reports/kertas-kerja` (`200`, `3084516` bytes, `9` sheets).
+   - Shared Temporal namespace `sqe-refactor-preview`: `48` `DocumentWorkflow` and
+     `32` `CaseSOPWorkflow` executions `COMPLETED`, `0` active/failed.
+   - Restarted `sqe-refactor-operational-api-1` and `sqe-refactor-operational-worker-1`:
+     `9` config versions, `11` cases, `36` completed documents, `38` completed jobs,
+     `12` error receipts, `0` active jobs, `31` completed SOP runs, `31` reports, and
+     `10` dataset comparisons retained with `0` replayed model calls.
