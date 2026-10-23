@@ -2,10 +2,9 @@
 import copy
 import re
 
-DEFAULTS = {
-    'forex': {'label':'Forex','profiles':['application','lld','invoice','valas_declaration_1','valas_declaration_2','ektp','riplay']},
-    'account_opening': {'label':'Account Opening','profiles':['account_opening_form','join_visit','edd','signature_difference','company_reference','ektp','riplay']},
-}
+from .configuration.native_catalog import native_catalog
+
+DEFAULTS = native_catalog()['families']
 
 def families(cfg):
     return {**copy.deepcopy(DEFAULTS), **cfg.get('document_families', {})}

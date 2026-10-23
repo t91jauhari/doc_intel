@@ -6,23 +6,10 @@ from datetime import datetime
 from decimal import Decimal, InvalidOperation
 
 VERSION = 2
-DEFAULT_POLICY = {
-    "version": VERSION,
-    "purpose_codes": {},
-    "purpose_equivalences": {
-        "goods_import": ["import goods", "import of goods", "goods import", "transaksi barang impor", "pembayaran impor barang", "pembelian barang impor"],
-    },
-    "address_aliases": {"jl":"jalan", "jln":"jalan", "no":"nomor", "kel":"kelurahan", "kec":"kecamatan", "kab":"kabupaten", "prov":"provinsi"},
-}
-CHECKPOINT_LABELS = [
-    "eKTP / application sender name", "eKTP / Valas identity and address",
-    "eKTP / RIPLAY customer name", "RIPLAY / application date",
-    "RIPLAY / application signature consistency", "Application / Valas sender name",
-    "Application / LLD beneficiary identity and address", "Application / LLD principal amount",
-    "Valas / application purpose", "Valas / LLD amount", "LLD / invoice payment basis",
-    "LLD / Valas purpose", "LLD / application date", "Invoice identity and transaction linkage",
-    "eKTP / LLD payer name",
-]
+from .configuration.native_catalog import native_catalog, legacy_forex_rule
+
+DEFAULT_POLICY = native_catalog()['forex_policy']
+CHECKPOINT_LABELS = native_catalog()['forex_checkpoint_labels']
 CONTEXT_FIELDS = ("application_document_id", "declaration_document_id", "invoice_document_id", "underlying_document_id", "partial_payment_amount", "partial_payment_currency")
 
 
@@ -183,12 +170,7 @@ def select_document(documents, kind, context):
 
 
 def effective_rule(rule):
-    rule = copy.deepcopy(rule)
-    if rule["id"] == "SYS_06_PARTY_POLICY" and rule["operator"] == "policy_review":
-        rule.update(operator="match_exact", comparison_policy="corresponding_party_roles", severity="FAIL", notes="Compare corresponding party roles. Valas customer is the sender; beneficiary is independently checked by checkpoints 7 and 14.", label="Application sender must match the customer on the applicable Valas declaration; beneficiary consistency is checked separately.")
-    if rule["id"] == "SYS_14_LINK_POLICY" and rule["operator"] == "policy_review":
-        rule.update(operator="invoice_linkage", other_path="lld.details", right_document="lld", right_field="details", comparison_policy="invoice_identity_and_party_linkage", severity="FAIL", notes="Require invoice number, matching buyer/sender and payee/beneficiary. An explicitly selected supporting invoice must match number, currency and total. The selected invoice payment amount and currency must also match LLD, consistently with checkpoint 11. Invoice numbers are never compared with money.", label="Invoice identity and corresponding buyer/beneficiary roles must link to the transaction.")
-    return rule
+    return legacy_forex_rule(rule)
 
 
 def evaluate_rule(rule, documents, cfg, context):
