@@ -4,7 +4,7 @@ from dataclasses import replace
 import pytest
 from sqlalchemy import func, select
 
-from app import main
+from app.configuration import api as configuration_api
 from app.configuration import publication
 from app.configuration.store import ConfigurationBase, Publication, compile_publication, fingerprint
 from app.db import Audit, Case, Config, SessionLocal, engine
@@ -14,7 +14,7 @@ from app.db import Audit, Case, Config, SessionLocal, engine
 def dual(signed, monkeypatch):
     ConfigurationBase.metadata.drop_all(engine)
     ConfigurationBase.metadata.create_all(engine)
-    monkeypatch.setattr(main, "settings", replace(main.settings, configuration_storage_mode="dual"))
+    monkeypatch.setattr(configuration_api, "settings", replace(configuration_api.settings, configuration_storage_mode="dual"))
     try:
         yield signed
     finally:

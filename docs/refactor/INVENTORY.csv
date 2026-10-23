@@ -1,5 +1,5 @@
 id,area,source,status,target
-C01,family catalog,backend/app/document_families.py,partial_legacy_catalog,versioned family entries; reserved native catalog remains
+C01,family catalog,backend/app/document_families.py,implemented_tested,explicit catalogs support custom-only families; legacy mode preserves pinned compatibility
 C02,identity mapping,backend/app/grouping.py,implemented_tested,typed profile identity bindings with explicit compatibility
 C03,rule scope prefixes,backend/app/transaction_flows.py,implemented_tested,explicit rule scope; historical prefix fallback retained
 C04,scorer layout coupling,backend/app/transaction_flows.py,identified,scoring policy
@@ -7,7 +7,7 @@ C05,conditional SOP,backend/app/account_opening_sop.py,implemented_tested,typed 
 C06,signature paths,backend/app/account_opening_sop.py,identified,evidence bindings
 C07,startup business updates,backend/app/main.py,implemented_tested,explicit upgrade publication
 C08,bundled datasets,backend/app/dataset_comparison.py,implemented_tested,immutable dataset registry and bounded private import
-C09,comparison thresholds,backend/app/dataset_comparison.py,implementation_in_progress,typed family comparison tolerances
+C09,comparison thresholds,backend/app/dataset_comparison.py,implemented_tested,typed family comparison tolerances with case-pinned reads and draft editor
 C10,report bindings,backend/app/account_opening_report.py,implemented_tested,versioned family report bindings
 C11,legacy refresh defect,backend/app/domain.py,fixed_tested,compatibility regression fix
 C12,validation status propagation,backend/app/sop.py,partial,configured data checks; untouched fields retain uncertainty
@@ -22,9 +22,9 @@ C20,report source bindings,backend/app/configuration/reporting.py,implemented_te
 C21,configured field validation,backend/app/configuration/field_checks.py,implemented_tested,explicit data outcomes across providers without weakening native results
 C22,Excel settings truncation,backend/app/config_workbook.py,fixed_tested,reject oversized cell settings with JSON export guidance
 C23,account SOP policy contracts,backend/app/configuration/account_policies.py,implemented_tested,typed grammar and explicit applicability with legacy compatibility
-C24,reserved native profile catalog,backend/app/domain.py,remaining,remove required catalog after native strategy contracts cover custom-only configurations
-C25,historical rule overlays,backend/app/forex_sop.py,remaining,explicit immutable compatibility manifest and migration; preserve old pins
-C26,API orchestration,backend/app/main.py,partial,application services and report query repository
-C27,private source history,scripts/export_public_source.py,guard_implemented_tested,publish a clean source history only after acceptance
+C24,reserved native profile catalog,backend/app/domain.py,implemented_tested,explicit mode removes mandatory native profile guard; custom-only pipeline verified
+C25,historical rule overlays,backend/app/forex_sop.py,implemented_tested,captured declarative compatibility manifest preserves historical rule projections
+C26,API orchestration,backend/app/main.py,verification_in_progress,feature routers extracted; configuration and provider services; remaining command services tracked
+C27,private source history,scripts/export_public_source.py,published_verified,sanitized Step38 snapshot d22e168; later accepted changes require fresh export
 C28,removed provider interface labels,frontend/app,fixed_typechecked,Spider labels and historical Llama handling
 C29,production rollout,compose.production.yaml,prepared_not_activated,coordinated backup and target-specific release rehearsal

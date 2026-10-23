@@ -1,4 +1,18 @@
-# Configuration persistence design — proposed, not migrated
+# Configuration persistence design and implementation status
+
+Current implementation (isolated and tested; not activated in the live app):
+`configuration_publications` and ordered `configuration_entries` preserve family,
+profile, flow, rule and report definitions without losing historical extensions.
+Dedicated tables store identity policies/bindings, family rule scopes/members and
+context definitions. `reference_datasets` stores immutable organization-scoped
+reference data. Six explicit PostgreSQL migrations implement these tables and
+revision immutability; see MIGRATIONS.md for rehearsals and exact boundaries.
+
+The entity-per-table list below is the original target design. It must not be
+read as a list of tables that already exist. Remaining entity normalization and
+complex policy contracts are tracked in PLAN.md. The compatibility compiler,
+transactional publication, pinned reads and custom-only family catalogs are
+implemented. Activation remains a separate release gate.
 
 Use immutable publication revisions, not mutable live rows. Existing Config payloads and case pins remain the compatibility contract during transition.
 
@@ -27,5 +41,9 @@ Import pinned payload -> normalized draft -> validated immutable publication -> 
 5. Expose configuration service through existing API contract.
 6. Activate only after reviewed regression and rollback verification.
 
-## Deferred decisions
-SQL migration tool and exact JSON policy schemas require dependency inspection. Do not treat this design as implemented. Table normalization does not eliminate the need for reusable Python evaluators.
+## Remaining decisions
+The explicit migration runner is implemented. Typed contracts cover the root
+envelope, identity, text comparisons, account conditions, field checks, reference
+comparison settings, contexts and report projections. Broader complex/visual SOP
+contracts and dedicated entity tables remain tracked work. Table normalization
+does not eliminate the need for reusable Python evaluators.

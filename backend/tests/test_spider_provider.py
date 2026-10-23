@@ -594,6 +594,7 @@ def test_system_instruction_workbook_roundtrip_and_old_template():
     import io
     from openpyxl import load_workbook
     from app.config_workbook import export_config, import_config
+    from app.extraction_prompts import system_instruction
 
     cfg = default_config()
     cfg["provider"] = "spider-ai"
@@ -604,9 +605,15 @@ def test_system_instruction_workbook_roundtrip_and_old_template():
     draft, errors = import_config(data, cfg)
     assert (
         not errors
-        and draft["profiles"]["application"]["system_instruction"]
-        == cfg["profiles"]["application"]["system_instruction"]
+        and system_instruction(draft["profiles"]["application"])
+        == system_instruction(cfg["profiles"]["application"])
     )
+    assert draft["profiles"]["application"]["system_instruction"].startswith(
+        cfg["profiles"]["application"]["system_instruction"]
+    )
+    assert draft["profiles"]["application"]["system_instruction"].count(
+        "6. SPATIAL GROUNDING & BOUNDING BOXES:"
+    ) == 1
     workbook = load_workbook(io.BytesIO(data))
     workbook["Document Profiles"].delete_cols(7)
     out = io.BytesIO()
