@@ -218,3 +218,39 @@ backups and accepted image/source artifacts retained; small cleanup-blocked
 folders remain excluded. Never retry rejected deletion without renewed approval.
 Documentation closure changes:docs/refactor/{PLAN,INVENTORY,CHECKPOINT,CHANGES,
 VERIFICATION,STEP42_FILES,FINAL_ACCEPTANCE}. No runtime change after acceptance.
+
+
+## Step43 operational acceptance — 2026-10-23
+User-selected3.8-flash-high succeeded: classify ada675cc-f253-4e55-8fa5-9c2a2a38ec0d
+and extract b34e43f5-d8e3-4c06-939b-6f83bea5079c both HTTP200. One original Argon
+classify attempt failed503. Three model submissions total; no automatic duplicate
+replay. Synthetic documentCOMPLETED,10normalized fields; five expected text values
+match exactly; absent customer signature observed correctly. Five localized PNG
+crops decoded successfully. Browser field-crop display and dedicated review page
+opened;0pending visual decisions,0human overrides. Crop UI also displays3internal
+.complete metadata placeholders without images; polish follow-up, not3missing
+source values. Keep that observation distinct from the5actual localized crops.
+
+SOP workflow/report completed: latest reportv2
+146ed0f6-c3c2-4361-91bb-01d85955410c.43eligible checks,4PASS/39FAIL,0pending.
+Expected caseWAITING_DOCUMENTS/FAIL because onlyRIPLAY was uploaded and mandatory
+application/LLD/invoice/signatures are deliberately missing. No failed rule was
+approved merely to make test green. PDF/XLSX/JSON exports return200 and parse;
+XLSX9sheets; every filename includes QA customer label. Older failure reportv1
+remains historical, UI exposes latestv2. Source hash matches uploaded binary.
+
+Second API/worker restart preservedCOMPLETED/10fields/2reports and jobstates
+1COMPLETED+1historicalERROR, without another model submission. APIhealthy and
+worker running on independent persistent volume. Original app remains running
+unchanged. Stopped old preview container removed after verifying pre-cutover
+backupSHA D2917B2065D4537189186318B5FE871EF5BD4818E607F0E670AEC3F3A8267DE5;
+backup/private reference/env files and current volume retained. No volume or
+original container removed. Rollback now requires recreation from retained backup,
+not docker start of the removed old preview container.
+
+Phase43 runtime enablement accepted. Real complete-customer UAT and remote server
+rollout remain separate scopes; this synthetic test is not proof every future
+model extraction is correct. Source changes are operational compose, runbook,
+export allowlist and these records only; no backend/frontend algorithm change.
+Next: commit source, refresh sanitized export, verify hashes/guards and publish
+small delta to existing public main9cdc21c. Never publish private operational files.

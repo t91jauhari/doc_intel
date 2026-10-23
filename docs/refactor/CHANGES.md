@@ -594,3 +594,95 @@ for a worker. Existing Step42 local code acceptance remains complete; Step43 is
 an operational enablement phase, not retroactive completion of paid extraction.
 Files this step:compose.preview.yaml;docs/refactor/{OPERATIONAL_PREVIEW,
 CHECKPOINT,CHANGES}. No runtime source changes.
+
+
+## Step43 operational cutover — 2026-10-23
+User explicitly approved reusing the original Spider-AI connection. Read the
+source connector locally and re-encrypted its key for the preview inside the
+source process; no plaintext credential printed or committed. Preserved the
+preview APP_SECRET in private/phase43/preview.env (outside source Git).
+
+Stopped and retained sqe-refactor-preview-api. Copied its SQLite database and
+files to private/phase43 and persistent volume
+sqe-refactor-operational_preview-state; database copy SHA verified;v7/0documents
+preserved. Created sqe-refactor-operational-api-1 and worker-1 from the accepted
+step42 image. APIhealthy on8100; worker uses local development queue/concurrency2
+and independent state. Original app/worker/database/storage untouched.
+
+Important preservation: packaged public datasets are empty examples. Exported
+both actual preview references privately, explicitly registered them in the
+isolated DB, and enabled registry reads. Saved Spider connection now uses
+pct-prod-spider/pecut/gemini-4-argon. Configuration publication remainsv7.
+
+Browser uploaded one synthetic PDF, QA_Preview_Riplay.pdf, through the real upload
+form and confirmed Forex flow/grouping. Documentfc5ac23f-f7f3-4d39-ba41-5ea09c8af77f,
+case628f0b46-b29c-441a-afd4-c7b83bbb66dd. Worker accepted the job; one classify
+request c69ffa69-28e2-4686-9b38-ede6c13be841 is pending. Do not resubmit blindly.
+No customer document sent. Do not claim end-to-end success before provider return,
+extraction/SOP/report acceptance. Old preview retained for rollback; never run both
+APIs on8100 or workers on the sameDB.
+
+Created private operation helper:work/refactor/private/phase43/activate_preview.py;
+backups pre-cutover.db/files/references.json and private env are not source files.
+Changed source:compose.preview.yaml(DATASET_READ_MODE registry),
+docs/refactor/OPERATIONAL_PREVIEW.md(preservation/operation instructions),
+scripts/export_public_source.py(allow operational compose/runbook).
+Six export guards and compose schema validation passed. No backend/frontend
+runtime source changed; accepted image/backend tests remain applicable.
+Next: await existing model request; inspect extracted values/crops/SOP/report;
+verify persistent restart; record acceptance and publish only sanitized source.
+
+
+## Step43 resumed with user-selected model — 2026-10-23
+Argon classify request returned503 with structured model_temporarily_unavailable:
+model busy, reset after30s. App correctly retained uncertain checkpoint and
+recovery guard; no automatic paid replay. User replied to the retry question by
+instructing use of pct-prod-spider/pecut/gemini-3.8-flash-high, then asked resume.
+Updated only isolated connector through its application administration service;
+credential retained/encrypted; original connector/model unchanged. Browser
+recovery form recorded reason, explicit new-request authorization and resubmitted
+one synthetic document. New classify requestada675cc-f253-4e55-8fa5-9c2a2a38ec0d
+is running; current model confirmed3.8-flash-high. Do not blindly resubmit again.
+
+Persistent restart acceptance passed: operational API/worker restarted;v7,
+1synthetic document,2reference datasets retained; original uploaded source SHA
+matches stored binary. Failed job remainedERROR and was not automatically
+replayed after restart. All source files/HTTP evidence remain in private volume.
+No backend runtime code change; no full regression repeat required for connector
+configuration and operational compose/runbook/export allowlist changes.
+
+
+## Step43 operational acceptance — 2026-10-23
+User-selected3.8-flash-high succeeded: classify ada675cc-f253-4e55-8fa5-9c2a2a38ec0d
+and extract b34e43f5-d8e3-4c06-939b-6f83bea5079c both HTTP200. One original Argon
+classify attempt failed503. Three model submissions total; no automatic duplicate
+replay. Synthetic documentCOMPLETED,10normalized fields; five expected text values
+match exactly; absent customer signature observed correctly. Five localized PNG
+crops decoded successfully. Browser field-crop display and dedicated review page
+opened;0pending visual decisions,0human overrides. Crop UI also displays3internal
+.complete metadata placeholders without images; polish follow-up, not3missing
+source values. Keep that observation distinct from the5actual localized crops.
+
+SOP workflow/report completed: latest reportv2
+146ed0f6-c3c2-4361-91bb-01d85955410c.43eligible checks,4PASS/39FAIL,0pending.
+Expected caseWAITING_DOCUMENTS/FAIL because onlyRIPLAY was uploaded and mandatory
+application/LLD/invoice/signatures are deliberately missing. No failed rule was
+approved merely to make test green. PDF/XLSX/JSON exports return200 and parse;
+XLSX9sheets; every filename includes QA customer label. Older failure reportv1
+remains historical, UI exposes latestv2. Source hash matches uploaded binary.
+
+Second API/worker restart preservedCOMPLETED/10fields/2reports and jobstates
+1COMPLETED+1historicalERROR, without another model submission. APIhealthy and
+worker running on independent persistent volume. Original app remains running
+unchanged. Stopped old preview container removed after verifying pre-cutover
+backupSHA D2917B2065D4537189186318B5FE871EF5BD4818E607F0E670AEC3F3A8267DE5;
+backup/private reference/env files and current volume retained. No volume or
+original container removed. Rollback now requires recreation from retained backup,
+not docker start of the removed old preview container.
+
+Phase43 runtime enablement accepted. Real complete-customer UAT and remote server
+rollout remain separate scopes; this synthetic test is not proof every future
+model extraction is correct. Source changes are operational compose, runbook,
+export allowlist and these records only; no backend/frontend algorithm change.
+Next: commit source, refresh sanitized export, verify hashes/guards and publish
+small delta to existing public main9cdc21c. Never publish private operational files.

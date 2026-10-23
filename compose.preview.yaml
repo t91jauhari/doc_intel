@@ -9,6 +9,7 @@ x-runtime: &runtime
     STORAGE_DRIVER: local
     STORAGE_PATH: /data/files
     WORKFLOW_DRIVER: local
+    DATASET_READ_MODE: registry
     WORKER_CONCURRENCY: "2"
     ALLOWED_ORIGINS: http://localhost:3100,http://127.0.0.1:3100
   volumes:

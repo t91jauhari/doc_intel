@@ -11,12 +11,24 @@ UID10001. Preserve APP_SECRET so connector encryption and sessions remain valid.
 Verify configuration version, document count and source hashes after copying.
 Startup does not initialize, migrate or publish business configuration.
 
+The packaged image intentionally contains empty public dataset examples. Preserve
+authorized private reference data by explicitly registering the existing bundled
+datasets in the isolated database before enabling DATASET_READ_MODE=registry.
+Never replace private references with those empty examples during cutover.
+Private environment/backup/reference files stay outside the source checkout.
+
 Supply PREVIEW_APP_SECRET outside Git and run:
 
 ```text
 docker compose -f compose.preview.yaml up -d api
 docker compose -f compose.preview.yaml --profile processing up -d
 ```
+
+Use `--env-file /private/preview.env` before `-f` when reading the secret from a
+private environment file. Keep the pre-cutover container stopped until acceptance; do not restart it while
+the new API owns port8100. After acceptance it may be removed if verified database
+and file backups are retained. The initial obsolete preview container was removed
+after acceptance; rollback requires recreating an API from its retained backup.
 
 Enable processing only after configuring the authorized provider connection and
 checking its saved model ID. An upload otherwise creates a queued job without a

@@ -1,9 +1,9 @@
 # Refactor plan and current position
 
-Current position: **All local delivery items complete.** Accepted source b311635;
-sanitized public main9cdc21c. Backend554tests; engine199+81subtests; API65paths;
-67case/7608finding parity; PostgreSQL/Temporal; production build/browser;
-clean image smoke;127clean-export tests and publication verification passed.
+Current position: Step42 refactor and Step43 operational local preview accepted.
+Persistent API/worker, authorized model connection, references, live synthetic
+extraction, crops, SOP/report/export and restart retention passed. Step43 sanitized
+publication is the remaining delivery action; production server rollout is separate.
 
 The selected delivery target is complete and verify locally first. Original
 ports3000/8000 remain on their existing code; isolated API8100/web3100 use the
@@ -21,6 +21,7 @@ refactored source. Remote production activation is outside this delivery target.
 | R3 Datasets/reports | Complete locally | Dataset registry; typed report bindings; configurable scoring groups; historical report parity |
 | V1 Final verification | Complete locally | Engine199+81subtests; Temporal2; PG11; API65paths; production build/typecheck/assets; browser configuration; 554 backend tests covered with no outstanding failures |
 | C1 Local rollout/rollback | Complete locally | Production standalone preview; synthetic copied-database rollback to Step41; new API restored; no paid calls |
+| O1 Operational preview | Complete locally | Persistent API/worker;3.8-flash-high live synthetic extraction;5crops;SOP/report/3exports;restart retention verified |
 | P1 Sanitized publication | Complete locally |354source files;0scanner blockers; hashes verified;127included tests; public main9cdc21c verified |
 
 The local rollback rehearsal validates existing publications; old workers cannot
