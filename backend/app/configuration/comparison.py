@@ -35,8 +35,17 @@ class ComparisonResult(BaseModel):
 
 
 def _read(documents, path):
+    from app.valas_resolution import is_valas_prefix, get_case_valas_document, resolve_valas_path
+
     profile, *parts = path.split(".")
     matches = [doc for doc in documents if doc.get("doc_type") == profile and doc.get("status") == "COMPLETED"]
+    if len(matches) != 1 and is_valas_prefix(profile):
+        valas_doc, valas_type = get_case_valas_document(documents)
+        if valas_doc:
+            remapped_path, applicable, _ = resolve_valas_path(path, valas_type)
+            if applicable:
+                matches = [valas_doc]
+                profile, *parts = remapped_path.split(".")
     if len(matches) != 1:
         return None, "ambiguous" if len(matches) > 1 else "missing"
     value = matches[0].get("normalized", {})

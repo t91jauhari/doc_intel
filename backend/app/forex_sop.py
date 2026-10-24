@@ -89,13 +89,12 @@ def purpose(value, policy, cfg):
 
 
 def date_value(value, cfg, kind):
-    value = str(scalar(value)).strip()
     day_first = cfg.get("profiles",{}).get(kind,{}).get("policy",{}).get("day_first",True)
-    formats = ["%Y-%m-%d", "%d-%m-%Y" if day_first else "%m-%d-%Y", "%d/%m/%Y" if day_first else "%m/%d/%Y"]
-    for fmt in formats:
-        try: return datetime.strptime(re.sub(r"\s*([- /])\s*",r"\1",value),fmt).date()
-        except ValueError: pass
-    raise CheckError("INVALID_DATE", "Date is missing, ambiguous or unsupported by the document date policy.")
+    from .date_utils import parse_flexible_date
+    try:
+        return parse_flexible_date(scalar(value), day_first=day_first)
+    except Exception:
+        raise CheckError("INVALID_DATE", "Date is missing, ambiguous or unsupported by the document date policy.")
 
 
 def currency_value(value):
@@ -160,10 +159,15 @@ def select_document(documents, kind, context):
     matches = [d for d in documents if d["doc_type"] == kind and d["status"] == "COMPLETED"]
     key = {"application":"application_document_id", "invoice":"invoice_document_id"}.get(kind)
     chosen = context.get(key) if key else None
-    if kind.startswith("valas_declaration"):
+    if kind.startswith("valas_declaration") or kind == "valas":
         chosen = context.get("declaration_document_id")
     if chosen:
         matches = [d for d in matches if d["id"] == chosen]
+    if len(matches) != 1 and (kind.startswith("valas_declaration") or kind == "valas"):
+        from .valas_resolution import get_case_valas_document
+        valas_doc, valas_type = get_case_valas_document(documents, context)
+        if valas_doc:
+            matches = [valas_doc]
     if len(matches)!=1:
         raise CheckError("AMBIGUOUS_DOCUMENT" if len(matches)>1 else "MISSING_REQUIRED_DOCUMENT", f"Select one completed {kind} document; found {len(matches)}.")
     return matches[0]
