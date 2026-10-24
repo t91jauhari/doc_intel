@@ -31,6 +31,9 @@ def inputs(db, case):
         select(Document).where(Document.case_id == case.id).order_by(Document.id)
     ).all()
     context = db.scalar(select(CaseContext).where(CaseContext.case_id == case.id))
+    if not context or not context.payload or not any(k in context.payload for k in ("threshold_state", "customer_type", "payment_basis")):
+        from app.case_context import ensure_case_context
+        context = ensure_case_context(db, case.id)
     branch = db.get(Branch, case.branch_id)
     return {
         "sop_contract_version": 2,

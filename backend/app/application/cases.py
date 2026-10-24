@@ -137,6 +137,10 @@ def case_detail(*, case_id: str, user):
         ctx_payload = db.scalar(
             select(CaseContext.payload).where(CaseContext.case_id == c.id)
         )
+        if not ctx_payload or not any(k in ctx_payload for k in ("threshold_state", "customer_type", "payment_basis")):
+            from app.case_context import ensure_case_context
+            ctx_item = ensure_case_context(db, c.id)
+            ctx_payload = ctx_item.payload if ctx_item else {}
         run_rows = db.execute(
             select(
                 CaseRun.id,
