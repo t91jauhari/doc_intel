@@ -64,6 +64,8 @@ export default function CasePage({
   const { data: cfg } = useData<ConfigResponse>("/config", 0);
   const [selected, setSelected] = useState(""),
     [tab, setTab] = useState<"fields" | "findings" | "timeline">("fields"),
+    [findingFilter, setFindingFilter] = useState<"all" | "attention" | "visual" | "pass">("all"),
+    [sidebarCollapsed, setSidebarCollapsed] = useState(false),
     [action, setAction] = useState<Action | null>(null),
     [pending, setPending] = useState(false),
     [exporting, setExporting] = useState(false);
@@ -182,6 +184,9 @@ export default function CasePage({
       action={
         data && (
           <div className="button-row">
+            <Link className="secondary" href={`/cases/${id}/comparison`}>
+              Dataset comparison
+            </Link>
             <Link className="secondary" href={`/cases/${id}/review`}>
               <ShieldCheck size={17} />
               Visual review
@@ -327,21 +332,57 @@ export default function CasePage({
               ))}
             </nav>
             <div id="case-overview">
-              <CaseTask caseId={data.id} />
+              <details className="case-utilities" style={{ marginBottom: 14 }}>
+                <summary>
+                  <Clock3 size={16} aria-hidden />
+                  SLA & case assignment<span>Set reviewer owner and due date</span>
+                </summary>
+                <CaseTask caseId={data.id} />
+              </details>
               <CaseSOP data={data} refresh={refresh} />
-              {/*--<Link
-                className="secondary"
-                href={`/cases/${id}/comparison`}
-                title="Compare the case's effective values against the reference dataset sample"
-              >
-                Compare effective values with dataset sample
-              </Link>--*/}
             </div>
-            <div className="case-workspace" id="case-documents">
+            {sidebarCollapsed && (
+              <div className="collapsed-doc-strip panel">
+                <div className="collapsed-doc-pills">
+                  <span className="small-label">DOCUMENTS ({data.documents.length})</span>
+                  {data.documents.map((d) => (
+                    <button
+                      key={d.id}
+                      type="button"
+                      className={"doc-pill-btn " + (doc?.id === d.id ? "active" : "")}
+                      onClick={() => setSelected(d.id)}
+                    >
+                      <FileText size={14} />
+                      <span>{d.filename}</span>
+                      <Badge value={d.status} />
+                    </button>
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  className="secondary compact-btn"
+                  onClick={() => setSidebarCollapsed(false)}
+                >
+                  Show document sidebar
+                </button>
+              </div>
+            )}
+            <div
+              className={"case-workspace " + (sidebarCollapsed ? "sidebar-collapsed" : "")}
+              id="case-documents"
+            >
               <aside className="document-list panel">
                 <div className="section-head">
                   <h2>Documents</h2>
                   <span className="count-pill">{data.documents.length}</span>
+                  <button
+                    type="button"
+                    className="text-link"
+                    onClick={() => setSidebarCollapsed(true)}
+                    title="Collapse document sidebar for full-width field & crop inspection"
+                  >
+                    Full width
+                  </button>
                   {exportableDocs.length > 0 && (
                     <button
                       className="secondary"
@@ -738,40 +779,125 @@ export default function CasePage({
                     {tab === "findings" && (
                       <div className="findings-list">
                         {report?.snapshot.findings.length ? (
-                          report.snapshot.findings.map((f, index) => (
-                            <div className="finding-card" key={index}>
-                              <div>
-                                <Badge value={f.result} />
-                                <strong>{f.field}</strong>
-                                <span className="rule-id">{f.rule_id}</span>
-                              </div>
-                              <p>{f.message}</p>
-                              <div className="finding-values">
-                                <span>Actual: {display(f.actual)}</span>
-                                <span>Expected: {display(f.expected)}</span>
-                              </div>
-                              <details>
-                                <summary>Source evidence</summary>
-                                <pre>{JSON.stringify(f.evidence, null, 2)}</pre>
-                                {typeof f.evidence?.document_id ===
-                                  "string" && (
-                                  <a
-                                    className="text-link"
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    href={
-                                      "/api/documents/" +
-                                      f.evidence.document_id +
-                                      "/file"
+                          <>
+                            <div className="field-evidence-toolbar" style={{ margin: "-20px -24px 16px", padding: "12px 24px" }}>
+                              <div className="field-filter-pills">
+                                {[
+                                  ["all", "All findings", report.snapshot.findings.length],
+                                  [
+                                    "attention",
+                                    "Needs attention",
+                                    report.snapshot.findings.filter((f) =>
+                                      ["FAIL", "REVIEW", "ERROR"].includes(f.result),
+                                    ).length,
+                                  ],
+                                  [
+                                    "visual",
+                                    "Visual checks",
+                                    report.snapshot.findings.filter(
+                                      (f) => f.evaluation_type === "VISUAL",
+                                    ).length,
+                                  ],
+                                  [
+                                    "pass",
+                                    "Passed",
+                                    report.snapshot.findings.filter(
+                                      (f) => f.result === "PASS",
+                                    ).length,
+                                  ],
+                                ].map(([key, label, count]) => (
+                                  <button
+                                    key={String(key)}
+                                    type="button"
+                                    className={findingFilter === key ? "active" : ""}
+                                    onClick={() =>
+                                      setFindingFilter(
+                                        key as "all" | "attention" | "visual" | "pass",
+                                      )
                                     }
                                   >
-                                    Open source document
-                                    <ArrowUpRight size={14} />
-                                  </a>
-                                )}
-                              </details>
+                                    {label} <span>{count}</span>
+                                  </button>
+                                ))}
+                              </div>
+                              <Link className="secondary compact-btn" href={`/cases/${id}/review`}>
+                                <ShieldCheck size={14} />
+                                Open visual review
+                              </Link>
                             </div>
-                          ))
+                            {report.snapshot.findings
+                              .filter((f) => {
+                                if (findingFilter === "attention")
+                                  return ["FAIL", "REVIEW", "ERROR"].includes(f.result);
+                                if (findingFilter === "visual")
+                                  return f.evaluation_type === "VISUAL";
+                                if (findingFilter === "pass")
+                                  return f.result === "PASS";
+                                return true;
+                              })
+                              .map((f, index) => {
+                                const docIds = Array.isArray(f.evidence?.document_ids)
+                                  ? (f.evidence.document_ids as string[])
+                                  : typeof f.evidence?.document_id === "string"
+                                    ? [f.evidence.document_id]
+                                    : [];
+                                const linkedDoc = data.documents.find((d) =>
+                                  docIds.includes(d.id),
+                                );
+                                return (
+                                  <div className="finding-card" key={`${f.rule_id}-${index}`}>
+                                    <div>
+                                      <Badge value={f.result} />
+                                      {f.evaluation_type && (
+                                        <span className="mini-tag visual">
+                                          {f.evaluation_type}
+                                        </span>
+                                      )}
+                                      <strong>{f.field}</strong>
+                                      <span className="rule-id">{f.rule_id}</span>
+                                    </div>
+                                    <p>{f.message}</p>
+                                    <div className="finding-side-by-side">
+                                      <div>
+                                        <span className="small-label">ACTUAL OBSERVATION</span>
+                                        <div>{display(f.actual)}</div>
+                                      </div>
+                                      <div>
+                                        <span className="small-label">EXPECTED / REFERENCE</span>
+                                        <div>{display(f.expected)}</div>
+                                      </div>
+                                    </div>
+                                    <div className="finding-actions-row">
+                                      {f.evaluation_type === "VISUAL" && (
+                                        <Link
+                                          className="text-link"
+                                          href={`/cases/${id}/review`}
+                                        >
+                                          Resolve in visual review
+                                          <ArrowUpRight size={13} />
+                                        </Link>
+                                      )}
+                                      {linkedDoc && (
+                                        <button
+                                          type="button"
+                                          className="text-link"
+                                          onClick={() => {
+                                            setSelected(linkedDoc.id);
+                                            setTab("fields");
+                                          }}
+                                        >
+                                          Inspect {linkedDoc.filename} fields
+                                        </button>
+                                      )}
+                                      <details>
+                                        <summary>Source evidence</summary>
+                                        <pre>{JSON.stringify(f.evidence, null, 2)}</pre>
+                                      </details>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                          </>
                         ) : (
                           <Empty
                             title={

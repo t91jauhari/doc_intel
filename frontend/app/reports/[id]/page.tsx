@@ -265,36 +265,64 @@ export default function ReportPage({
                   <thead>
                     <tr>
                       <th>Rule / field</th>
-                      <th>Result</th>
-                      <th>Finding & evidence</th>
+                      <th>Finding message</th>
+                      <th>Observed vs expected</th>
+                      <th>Result & audit</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {findings.map((f, i) => (
-                      <tr key={`${f.rule_id}-${i}`}>
-                        <td>
-                          <strong>{f.rule_id}</strong>
-                          <div className="subtext">{f.field}</div>
-                        </td>
-                        <td>
-                          <Badge value={f.result} />
-                        </td>
-                        <td>
-                          {f.message}
-                          <details>
-                            <summary>Values & evidence</summary>
-                            <dl>
-                              <dt>Actual</dt>
-                              <dd>{display(f.actual)}</dd>
-                              <dt>Expected</dt>
-                              <dd>{display(f.expected)}</dd>
-                              <dt>Evidence</dt>
+                    {findings.map((f, i) => {
+                      const rev = (
+                        f.evidence as
+                          | {
+                              review?: {
+                                actor?: string;
+                                reason?: string;
+                                result?: string;
+                              };
+                            }
+                          | undefined
+                      )?.review;
+                      return (
+                        <tr key={`${f.rule_id}-${i}`}>
+                          <td>
+                            <strong>{f.rule_id}</strong>
+                            <div className="subtext">{f.field}</div>
+                            {f.evaluation_type && (
+                              <span className="mini-tag visual">
+                                {f.evaluation_type}
+                              </span>
+                            )}
+                          </td>
+                          <td>{f.message}</td>
+                          <td>
+                            <div className="finding-side-by-side compact">
+                              <div>
+                                <span className="small-label">OBSERVED</span>
+                                <div>{display(f.actual)}</div>
+                              </div>
+                              <div>
+                                <span className="small-label">EXPECTED</span>
+                                <div>{display(f.expected)}</div>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <Badge value={f.result} />
+                            {rev && (
+                              <div className="subtext" style={{ marginTop: 6 }}>
+                                <strong>Reviewed ({rev.actor}):</strong>{" "}
+                                {rev.reason}
+                              </div>
+                            )}
+                            <details>
+                              <summary>Evidence details</summary>
                               <dd>{display(f.evidence)}</dd>
-                            </dl>
-                          </details>
-                        </td>
-                      </tr>
-                    ))}
+                            </details>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>

@@ -315,7 +315,7 @@ export default function Settings() {
         draft && (
           <>
             <fieldset className="configuration-content" disabled={pending}>
-              <div className="config-status">
+              <div className="config-status config-governance-sticky">
                 <ShieldCheck size={17} />
                 <span>
                   Published configuration <strong>v{version}</strong>
@@ -326,6 +326,33 @@ export default function Settings() {
                     ? "Changes apply to new cases; historical runs stay pinned."
                     : "You have read-only access to configuration."}
                 </span>
+                {canEdit && dirty && (
+                  <div className="button-row" style={{ marginLeft: "auto" }}>
+                    <button
+                      type="button"
+                      className="secondary compact-btn"
+                      disabled={pending}
+                      onClick={() => setDiscardOpen(true)}
+                    >
+                      Discard draft
+                    </button>
+                    <button
+                      type="button"
+                      className="primary compact-btn"
+                      disabled={
+                        !dirty ||
+                        pending ||
+                        !!policyError ||
+                        !online ||
+                        data?.version !== version
+                      }
+                      onClick={() => void save()}
+                    >
+                      <Save size={14} />
+                      {pending ? "Working..." : "Publish v" + (version + 1)}
+                    </button>
+                  </div>
+                )}
               </div>
               {dirty && data?.version !== version && (
                 <ErrorNotice message="A newer configuration was published while you were editing. Your draft is preserved. Discard it to load the latest version before editing again." />
