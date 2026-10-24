@@ -116,3 +116,126 @@ def test_prior_page_context_excludes_coordinates():
     text = reference_text([{"page_number":1,"result":{"name":"Visible name","_field_locations":[{"field":"name","page_number":1,"box_2d":[10,20,30,40]}]}}])
     assert "Visible name" in text
     assert "box_2d" not in text and "_field_locations" not in text
+
+
+
+def test_visual_field_dotted_subpaths_resolve_to_canonical_visual_crop(monkeypatch):
+    pdf = fitz.open()
+    page = pdf.new_page(width=600, height=800)
+    page.draw_rect(fitz.Rect(60, 720, 240, 780), color=(0, 0.5, 0), fill=(0, 0.5, 0))
+    objects = {"source.pdf": pdf.tobytes()}
+    pdf.close()
+
+    class Storage:
+        def read(self, key):
+            return objects[key]
+
+        def put(self, key, data, mime):
+            objects[key] = data
+
+    for module in ["app.field_evidence", "app.evidence"]:
+        monkeypatch.setattr(module + ".store", lambda: Storage())
+        monkeypatch.setattr(module + ".original_key", lambda doc: "source.pdf")
+
+    doc = SimpleNamespace(
+        org="sqe", branch_id="branch", id="lld-doc", sha256="source", provider_state={}
+    )
+    response = {
+        "id": "lld-extract",
+        "extract_result": {
+            "customer_signature": {"present": True, "handwritten": True},
+            "bank_officer_signature": {"present": True, "handwritten": True},
+            "bank_stamp": {"present": True, "text": "KC BSD", "complete": True},
+            "_field_locations": [
+                {
+                    "field": "customer_signature.present",
+                    "page_number": 1,
+                    "box_2d": [900, 100, 975, 400],
+                },
+                {
+                    "field": "bank_officer_signature.present",
+                    "page_number": 1,
+                    "box_2d": [900, 500, 975, 700],
+                },
+                {
+                    "field": "bank_stamp.present",
+                    "page_number": 1,
+                    "box_2d": [900, 710, 980, 900],
+                },
+            ],
+        },
+    }
+    normalized = normalize_response(response)
+    assert normalize_response(normalized) == normalized
+    for key in ("customer_signature", "bank_officer_signature", "bank_stamp"):
+        assert normalized["extract_metadata"]["spatial_evidence"][key][0]["page_number"] == 1
+    visual = build_evidence(doc, response)
+    assert len(visual) == 3
+    assert all(item["available"] and item["page_number"] == 1 for item in visual)
+    assert all(objects[item["storage_key"]].startswith(b"\x89PNG") for item in visual)
+
+
+def test_sequential_page_initials_deduplication_and_non_visual_clauses_excluded():
+    from app.evidence import visual_fields
+
+    pages = [
+        {
+            "page_number": 1,
+            "result": {
+                "page_initials": {
+                    "page_count": 1,
+                    "pages": [{"page_number": 1, "footer_present": True}],
+                },
+                "_field_locations": [
+                    {
+                        "field": "page_initials.pages.0.footer_present",
+                        "page_number": 1,
+                        "box_2d": [920, 900, 960, 980],
+                    }
+                ],
+            },
+        },
+        {
+            "page_number": 2,
+            "result": {
+                "page_initials": {
+                    "page_count": 2,
+                    "pages": [
+                        {"page_number": 1, "footer_present": True},
+                        {"page_number": 2, "footer_present": False},
+                    ],
+                },
+                "_field_locations": [],
+            },
+        },
+    ]
+    merged, conflicts = combine_pages(pages)
+    assert not conflicts
+    assert len(merged["page_initials"]["pages"]) == 2
+    normalized = normalize_response({"extract_result": merged})
+    assert len(normalized["extract_result"]["page_initials"]["pages"]) == 2
+    assert (
+        normalized["extract_metadata"]["spatial_evidence"]["page_initials.pages.0"][0][
+            "page_number"
+        ]
+        == 1
+    )
+
+    sample_raw = {
+        "claim_note": {
+            "present": False,
+            "note_raw": None,
+            "claim_number_raw": None,
+            "percentage_raw": None,
+            "amount_raw": None,
+            "currency_raw": None,
+            "base_kind": None,
+            "base_amount_raw": None,
+            "base_currency_raw": None,
+            "basis_evidence": None,
+        },
+        "ktp_photo_check": "Sesuai",
+        "supervisor_approval": None,
+        "customer_signature": {"present": True, "handwritten": True},
+    }
+    assert [k for k, _ in visual_fields(sample_raw)] == ["customer_signature"]
