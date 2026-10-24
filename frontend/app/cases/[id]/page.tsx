@@ -1,5 +1,6 @@
 "use client";
 import {CaseConfiguration} from "@/components/case-configuration";
+import { FieldEvidenceWorkspace } from "@/components/field-evidence-workspace";
 import { FieldReprocess } from "@/components/field-reprocess";
 import { FieldRequestRecovery } from "@/components/field-request-recovery";
 import { BatchGroupingRepair } from "@/components/batch-grouping-repair";
@@ -656,69 +657,21 @@ export default function CasePage({
                             were skipped; case SOP results are shown separately.
                           </p>
                         )}
-                        {doc.validation.visual_evidence?.length ? (
-                          <div className="evidence-gallery">
-                            <h3>Visual field evidence</h3>
-                            {doc.validation.visual_evidence.map((e, i) => (
-                              <div
-                                key={i}
-                                style={{
-                                  padding: 12,
-                                  borderBottom: "1px solid #ddd",
-                                }}
-                              >
-                                {data.can_review && (
-                                  <VisualRegionEditor
-                                    documentId={doc.id}
-                                    field={e.field}
-                                    onSaved={() => void refresh()}
-                                  />
-                                )}
-                                <strong>{e.field}</strong> · Image{" "}
-                                {e.available ? "available" : "unavailable"} ·
-                                Observed{" "}
-                                {e.observed_present === null
-                                  ? "uncertain"
-                                  : String(e.observed_present)}{" "}
-                                ·{" "}
-                                {e.review_status === "REVIEW"
-                                  ? ""
-                                  : e.review_status}
-                                {e.available && e.storage_key ? (
-                                  <a
-                                    href={`/api/documents/${doc.id}/file`}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                  >
-                                    <img
-                                      alt={`${e.field}, page ${e.page_number}`}
-                                      style={{
-                                        display: "block",
-                                        maxWidth: "100%",
-                                        maxHeight: 360,
-                                      }}
-                                      src={`/api/documents/${doc.id}/evidence/${e.revision}/${e.storage_key
-                                        .split("/")
-                                        .pop()
-                                        ?.slice(e.revision.length + 1, -4)}`}
-                                    />
-                                    Open original page {e.page_number}
-                                  </a>
-                                ) : (
-                                  <p>
-                                    {e.error ||
-                                      "Bounding box evidence requires review."}
-                                  </p>
-                                )}
-                              </div>
-                            ))}
-                          </div>
-                        ) : null}
-                        {data.can_write && doc.status === "COMPLETED" && (
-                          <button
-                            className="secondary"
-                            disabled={pending}
-                            onClick={() =>
+                        {Object.keys(doc.normalized).length ||
+                        doc.validation.visual_evidence?.length ||
+                        doc.validation.field_evidence?.length ? (
+                          <FieldEvidenceWorkspace
+                            doc={doc}
+                            columns={
+                              cfg?.payload.profiles[
+                                doc.doc_type as keyof typeof cfg.payload.profiles
+                              ]?.columns
+                            }
+                            provider={cfg?.payload.provider}
+                            canWrite={data.can_write}
+                            canReview={data.can_review}
+                            pending={pending}
+                            onRefreshCrops={() =>
                               void run(
                                 () =>
                                   api(`/documents/${doc.id}/field-evidence`, {
@@ -727,206 +680,15 @@ export default function CasePage({
                                 "Field evidence refreshed from saved results.",
                               )
                             }
-                          >
-                            Generate / refresh field crops
-                          </button>
-                        )}
-                        {!!doc.validation.field_evidence?.length && (
-                          <details className="evidence-gallery">
-                            <summary>
-                              Extracted field crops (
-                              {doc.validation.field_evidence.length})
-                            </summary>
-                            {doc.validation.field_evidence.map((e) => (
-                              <div
-                                key={e.field}
-                                style={{
-                                  padding: 12,
-                                  borderBottom: "1px solid #ddd",
-                                }}
-                              >
-                                <strong>{e.field}</strong> · Image{" "}
-                                {e.image_available
-                                  ? "available"
-                                  : "unavailable"}{" "}
-                                ·{" "}
-                                {e.review_status === "REVIEW"
-                                  ? ""
-                                  : e.review_status}
-                                <p>{display(e.value)}</p>
-                                {data.can_review && (
-                                  <VisualRegionEditor
-                                    documentId={doc.id}
-                                    field={e.field}
-                                    onSaved={() => void refresh()}
-                                  />
-                                )}
-                                {e.crops.map((c) => (
-                                  <a
-                                    key={c.storage_key}
-                                    href={`/api/documents/${doc.id}/file`}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                  >
-                                    <img
-                                      loading="lazy"
-                                      alt={`${e.field}, source page ${c.page_number}`}
-                                      style={{
-                                        display: "block",
-                                        maxWidth: "100%",
-                                        maxHeight: 360,
-                                      }}
-                                      src={`/api/documents/${doc.id}/evidence/${c.revision}/${c.storage_key
-                                        .split("/")
-                                        .pop()
-                                        ?.slice(c.revision.length + 1, -4)}`}
-                                    />
-                                    Source page {c.page_number}
-                                  </a>
-                                ))}
-                                {e.error && <p>{e.error}</p>}
-                              </div>
-                            ))}
-                          </details>
-                        )}
-                        {Object.keys(doc.normalized).length ? (
-                          <div className="table-scroll fields-table">
-                            <table>
-                              <thead>
-                                <tr>
-                                  <th>Field / evidence</th>
-                                  <th>Effective value</th>
-                                  <th>Check</th>
-                                  <th />
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {Object.entries(doc.normalized)
-                                  .filter(([field]) => field !== "page_results")
-                                  .map(([field, value]) => {
-                                    const result =
-                                        doc.validation.fields?.[field],
-                                      label =
-                                        cfg?.payload.profiles[
-                                          doc.doc_type as keyof typeof cfg.payload.profiles
-                                        ]?.columns.find(
-                                          (c) => c[0] === field,
-                                        )?.[1] || field;
-                                    return (
-                                      <tr key={field}>
-                                        <td>
-                                          <strong>{label}</strong>
-                                          {data.can_review &&
-                                            (doc.raw[field] === null ||
-                                              doc.raw[field] === "") && (
-                                              <VisualRegionEditor
-                                                documentId={doc.id}
-                                                field={field}
-                                                onSaved={() => void refresh()}
-                                              />
-                                            )}
-                                          <details>
-                                            <summary>Raw & evidence</summary>
-                                            <pre>
-                                              {JSON.stringify(
-                                                {
-                                                  raw: doc.raw[field],
-                                                  override:
-                                                    doc.overrides[field],
-                                                  evidence: result?.metadata,
-                                                },
-                                                null,
-                                                2,
-                                              )}
-                                            </pre>
-                                          </details>
-                                        </td>
-                                        <td className="field-value">
-                                          {value == null &&
-                                          result?.issues.some((i) =>
-                                            [
-                                              "UNRECOGNIZED_ENUM",
-                                              "INVALID_OR_MISSING_ENUM",
-                                            ].includes(i.code),
-                                          )
-                                            ? "Unrecognized value · needs review"
-                                            : display(value)}
-                                        </td>
-                                        <td>
-                                          {extractionCheck(
-                                            doc,
-                                            field,
-                                            cfg?.payload.provider,
-                                          ) === "OK" ? (
-                                            <span
-                                              className="badge good"
-                                              title="Spider-AI extraction result. Native document validation was skipped."
-                                            >
-                                              OK
-                                            </span>
-                                          ) : (
-                                            <Badge
-                                              value={
-                                                result?.status || "PENDING"
-                                              }
-                                            />
-                                          )}
-                                          {doc.validation.corrections?.some(
-                                            (c) =>
-                                              typeof c === "object" &&
-                                              c !== null &&
-                                              (
-                                                c as {
-                                                  field?: string;
-                                                  method?: string;
-                                                }
-                                              ).field === field &&
-                                              (c as { method?: string })
-                                                .method ===
-                                                "approved_enum_alias",
-                                          ) && (
-                                            <div className="field-issue">
-                                              Normalized using approved alias
-                                            </div>
-                                          )}
-                                          {result?.issues
-                                            .slice(0, 2)
-                                            .map((i) => (
-                                              <div
-                                                key={i.code}
-                                                className="field-issue"
-                                              >
-                                                {i.code
-                                                  .replaceAll("_", " ")
-                                                  .toLowerCase()}
-                                              </div>
-                                            ))}
-                                        </td>
-                                        <td>
-                                          {data.can_review &&
-                                            doc.status === "COMPLETED" && (
-                                              <button
-                                                className="icon-button"
-                                                aria-label={"Correct " + label}
-                                                onClick={() =>
-                                                  setAction({
-                                                    kind: "correction",
-                                                    doc,
-                                                    field,
-                                                  })
-                                                }
-                                              >
-                                                <Pencil size={15} />
-                                              </button>
-                                            )}
-                                        </td>
-                                      </tr>
-                                    );
-                                  })}
-                              </tbody>
-                            </table>
-                          </div>
-                        ) : (
+                            onCorrectField={(field) =>
+                              setAction({
+                                kind: "correction",
+                                doc,
+                                field,
+                              })
+                            }
+                            onRegionSaved={() => void refresh()}
+                          />                        ) : (
                           <Empty
                             title={
                               ["ERROR", "NEEDS_CLASSIFICATION"].includes(
