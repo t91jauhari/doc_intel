@@ -7,7 +7,28 @@ export type User = {
   branches: string[];
   active: boolean;
 };
-export type Branch = { id: string; code: string; name: string };
+export type Branch = { id: string; code: string; name: string; tier?: string; menus?: string[] };
+
+export type RolePermissionConfig = {
+  label: string;
+  menus: string[];
+  can_edit_settings: boolean;
+  can_override_cases: boolean;
+  can_manage_users: boolean;
+};
+export type RolePermissionsMap = Record<string, RolePermissionConfig>;
+
+export type ConnectorItem = {
+  id: string;
+  name: string;
+  provider_type: "gemini" | "spider-ai" | "fixture" | string;
+  model_id: string;
+  is_active: boolean;
+  configured: boolean;
+  base_url?: string;
+  options: Record<string, any>;
+  created_at: number;
+};
 export type ProfileName = string;
 export type SchemaNode = {
   description?: string;
@@ -102,7 +123,7 @@ export type Configuration = {
   sop_rules?: SOPRule[];
   report_context?: Record<string, string>;
   report_mapping?: Record<string, string>;
-  provider: "llama" | "spider-ai" | "fixture";
+  provider: "llama" | "spider-ai" | "gemini" | "fixture";
   parse_tier: string;
   extract_tier: string;
   parse_version: string;

@@ -11,7 +11,8 @@ import { ContextEditor } from "@/components/context-editor";
 import { ComparisonUpgrade } from "@/components/comparison-upgrade";
 import { ProfileVersionComparison } from "@/components/profile-version-comparison";
 
-import { SpiderConnectorForm } from "@/components/spider-connector";
+import { ConnectorHub } from "@/components/connector-hub";
+import { AccessManager } from "@/components/access-manager";
 import { TransactionFlows } from "@/components/transaction-flows";
 import { DocumentFamilies } from "@/components/document-families";
 import { useState, useEffect, useCallback, useRef } from "react";
@@ -546,6 +547,9 @@ export default function Settings() {
                           <option value="spider-ai">
                             Spider-AI (recommended) · image-based extraction
                           </option>
+                          <option value="gemini">
+                            Google Gemini (Native Multimodal) · Pro / Flash 3.8
+                          </option>
                           {draft.provider === "llama" && <option value="llama" disabled>Llama removed - select Spider-AI</option>}
                           <option value="fixture">
                             Synthetic fixtures · development only
@@ -557,6 +561,16 @@ export default function Settings() {
                           Spider-AI renders every PDF page to an image and uses
                           the profile’s system, parser and extraction
                           instructions, including saved field descriptions.
+                        </p>
+                      )}
+                      {draft.provider === "gemini" && (
+                        <p>
+                          Google Gemini uses native multimodal reasoning (Gemini 2.5 Pro or Flash 3.8) to extract structured fields, detect visual document structures, and perform validation checks. Active model and API keys can be managed in the Connector tab.
+                        </p>
+                      )}
+                      {draft.provider === "gemini" && (
+                        <p className="info-note">
+                          Gemini extraction results are automatically normalized to SQE enterprise schemas, ensuring full compatibility with bounding box crops, SOP audits, and work paper generation.
                         </p>
                       )}
                       {draft.provider === "fixture" && (
@@ -1110,7 +1124,7 @@ export default function Settings() {
               )}
               {tab === "connector" && canEdit && (
                 <>
-                  <SpiderConnectorForm />
+                  <ConnectorHub />
                 </>
               )}
               {tab === "access" && <AccessManager />}
@@ -1198,183 +1212,5 @@ export default function Settings() {
         )
       )}
     </Shell>
-  );
-}
-function AccessManager() {
-  const { user, notify } = usePlatform(),
-    { data: branches, refresh: refreshBranches } = useData<Branch[]>(
-      "/branches",
-      0,
-    ),
-    { data: users, refresh: refreshUsers } = useData<User[]>("/users", 0);
-  const [dialog, setDialog] = useState<"branch" | "user" | null>(null),
-    [pending, setPending] = useState(false),
-    [error, setError] = useState("");
-  const close = useCallback(() => setDialog(null), []);
-  return (
-    <>
-      <div className="settings-grid">
-        <section className="panel settings-card">
-          <div className="section-head">
-            <h2>Branches</h2>
-            {user?.role === "bank_admin" && (
-              <button className="secondary" onClick={() => setDialog("branch")}>
-                <Plus size={15} />
-                Add branch
-              </button>
-            )}
-          </div>
-          {branches?.map((b) => (
-            <div className="access-row" key={b.id}>
-              <span className="branch-avatar">{b.code.slice(0, 2)}</span>
-              <div>
-                <strong>{b.name}</strong>
-                <span>{b.code}</span>
-              </div>
-            </div>
-          ))}
-        </section>
-        <section className="panel settings-card">
-          <div className="section-head">
-            <h2>Users & permissions</h2>
-            <button className="secondary" onClick={() => setDialog("user")}>
-              <Plus size={15} />
-              Add user
-            </button>
-          </div>
-          {users?.map((u) => (
-            <div className="access-row" key={u.id}>
-              <span className="avatar">{u.name[0]}</span>
-              <div>
-                <strong>{u.name}</strong>
-                <span>{u.email}</span>
-                <span>
-                  {u.branches
-                    .map(
-                      (id) =>
-                        branches?.find((b) => b.id === id)?.code ||
-                        id.slice(0, 8),
-                    )
-                    .join(", ")}
-                </span>
-              </div>
-              <span className="role-tag">{u.role.replaceAll("_", " ")}</span>
-            </div>
-          ))}
-        </section>
-      </div>
-      {dialog && (
-        <Modal
-          title={dialog === "branch" ? "Add branch" : "Add user"}
-          onClose={close}
-        >
-          <form
-            onSubmit={async (e) => {
-              e.preventDefault();
-              setPending(true);
-              setError("");
-              const form = new FormData(e.currentTarget);
-              try {
-                if (dialog === "branch") {
-                  await api("/branches", {
-                    method: "POST",
-                    body: JSON.stringify({
-                      code: form.get("code"),
-                      name: form.get("name"),
-                    }),
-                  });
-                  await refreshBranches();
-                } else {
-                  await api("/users", {
-                    method: "POST",
-                    body: JSON.stringify({
-                      email: form.get("email"),
-                      name: form.get("name"),
-                      password: form.get("password"),
-                      role: form.get("role"),
-                      branches: form.getAll("branches"),
-                    }),
-                  });
-                  await refreshUsers();
-                }
-                notify(
-                  dialog === "branch" ? "Branch created." : "User created.",
-                );
-                setDialog(null);
-              } catch (err) {
-                setError(
-                  err instanceof Error ? err.message : "Unable to save.",
-                );
-              } finally {
-                setPending(false);
-              }
-            }}
-          >
-            {error && <ErrorNotice message={error} />}
-            <label>
-              {dialog === "branch" ? "Branch name" : "Full name"}
-              <input name="name" required />
-            </label>
-            {dialog === "branch" ? (
-              <label>
-                Branch code
-                <input name="code" required />
-              </label>
-            ) : (
-              <>
-                <label>
-                  Email
-                  <input name="email" type="email" required />
-                </label>
-                <label>
-                  Initial password
-                  <input
-                    name="password"
-                    type="password"
-                    autoComplete="new-password"
-                    minLength={12}
-                    required
-                  />
-                </label>
-                <label>
-                  Role
-                  <select name="role" defaultValue="officer">
-                    {(user?.role === "bank_admin"
-                      ? [
-                          "officer",
-                          "reviewer",
-                          "auditor",
-                          "branch_admin",
-                          "bank_admin",
-                        ]
-                      : ["officer", "reviewer", "auditor"]
-                    ).map((x) => (
-                      <option key={x} value={x}>
-                        {x.replaceAll("_", " ")}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label>Branch memberships</label>
-                {branches?.map((b) => (
-                  <label className="checkbox-label compact" key={b.id}>
-                    <input type="checkbox" name="branches" value={b.id} />
-                    {b.name}
-                  </label>
-                ))}
-              </>
-            )}
-            <div className="modal-actions">
-              <button type="button" className="secondary" onClick={close}>
-                Cancel
-              </button>
-              <button className="primary" disabled={pending}>
-                {pending ? "Saving…" : "Create"}
-              </button>
-            </div>
-          </form>
-        </Modal>
-      )}
-    </>
   );
 }
