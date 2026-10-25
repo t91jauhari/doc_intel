@@ -67,7 +67,11 @@ def approve_report(*, report_id: str, user):
             or r.snapshot.get("missing")
             or any(
                 (
-                    not e.get("available") or e.get("link_review_required")
+                    (
+                        e.get("observed_present") is not False
+                        and not e.get("available")
+                    )
+                    or e.get("link_review_required")
                     for d in r.snapshot.get("documents", [])
                     for e in d.get("validation", {}).get("visual_evidence", [])
                 )

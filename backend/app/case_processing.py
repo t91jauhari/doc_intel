@@ -324,7 +324,13 @@ def process_case_run(run_id):
                 else (
                     "NEEDS_REVIEW"
                     if any(
-                        (not e.get("available") or e.get("link_review_required"))
+                        (
+                            (
+                                e.get("observed_present") is not False
+                                and not e.get("available")
+                            )
+                            or e.get("link_review_required")
+                        )
                         for d in docs
                         for e in d.get("validation", {}).get("visual_evidence", [])
                     )
