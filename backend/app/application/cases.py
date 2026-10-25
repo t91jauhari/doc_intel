@@ -17,6 +17,7 @@ from app.db import (
     CaseRun,
     Document,
     Job,
+    Config,
     Report,
     SessionLocal,
     User,
@@ -444,6 +445,12 @@ def review_sop(*, case_id: str, data: FindingReview, user):
 def retry_case_documents(*, case_id: str, user):
     with SessionLocal.begin() as db:
         case = authorized(db, Case, case_id, user)
+        # If case is bound to an obsolete configuration (e.g. removed 'llama' provider), upgrade to latest published config
+        latest = latest_config(db, case.org)
+        if latest and case.config_id != latest.id:
+            curr_cfg = db.scalar(select(Config).where(Config.id == case.config_id))
+            if not curr_cfg or (curr_cfg.payload and curr_cfg.payload.get('provider') == 'llama'):
+                case.config_id = latest.id
         queued = []
         skipped = []
         for d in db.scalars(select(Document).where(Document.case_id == case.id)):
