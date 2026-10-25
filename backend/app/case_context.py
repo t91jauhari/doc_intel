@@ -332,11 +332,12 @@ def resolve_case_context(documents, case=None, config=None):
             values[field] = "UNKNOWN"
 
     evidence_str = "; ".join(evidence_parts[:4]) if evidence_parts else "Auto-resolved from verified case documents"
+    created_at = getattr(case, "created_at", 0.0) or 0.0
     annotation = {
         "actor": "system.auto_inference",
         "reason": "Automated context resolution from completed case documents",
         "evidence": evidence_str,
-        "at": time.time(),
+        "at": float(created_at),
     }
 
     return {
@@ -362,12 +363,9 @@ def ensure_case_context(db, case_id, force=False):
         select(CaseContext).where(CaseContext.case_id == case_id).with_for_update()
     )
 
-    # If already manually annotated by a human user, do not overwrite unless forced
-    if ctx and ctx.payload:
-        annotation = ctx.payload.get("annotation", {})
-        actor = annotation.get("actor", "")
-        if actor and actor != "system.auto_inference" and not force:
-            return ctx
+    # If already annotated, do not overwrite unless forced
+    if ctx and ctx.payload and not force:
+        return ctx
 
     inferred = resolve_case_context(docs, case=case)
     if not ctx:

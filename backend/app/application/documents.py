@@ -138,7 +138,14 @@ def retry_document(*, doc_id: str, user):
             d.provider_state = {**d.provider_state, "pending_create": None}
         if d.status == "NEEDS_CLASSIFICATION":
             raise ApplicationError("conflict", "Confirm document type before retrying.")
-        job = enqueue(db, d)
+        d.raw = None
+        d.metadata_json = {}
+        d.normalized = {}
+        d.validation = {}
+        d.error = ""
+        d.provider_state = {}
+        d.status = "QUEUED"
+        job = enqueue(db, d, action="reextract")
         audit(
             db,
             user.org,

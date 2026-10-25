@@ -398,7 +398,7 @@ export default function CasePage({
                     <button
                       className="secondary"
                       disabled={pending}
-                      title="Re-queue every document in this case for extraction (skips only documents with an uncertain provider submission)"
+                      title="Re-trigger extraction with a fresh provider request for every document in this case"
                       onClick={async () => {
                         setPending(true);
                         try {

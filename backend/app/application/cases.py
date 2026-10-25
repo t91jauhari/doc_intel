@@ -456,8 +456,22 @@ def retry_case_documents(*, case_id: str, user):
                     }
                 )
                 continue
-            job = enqueue(db, d)
+            # Reset extraction state so processor triggers a fresh real extraction request
+            d.raw = None
+            d.metadata_json = {}
+            d.normalized = {}
+            d.validation = {}
+            d.error = ""
+            d.provider_state = {}
+            d.status = "QUEUED"
+            job = enqueue(db, d, action="reextract")
             queued.append({"id": d.id, "filename": d.filename, "job_id": job.id})
+        for run in db.scalars(select(CaseRun).where(CaseRun.case_id == case.id)):
+            run.status = "SUPERSEDED"
+        if queued:
+            case.status = "PROCESSING"
+            case.validation_status = "PENDING"
+            case.updated_at = time.time()
         audit(
             db,
             case.org,
@@ -465,6 +479,8 @@ def retry_case_documents(*, case_id: str, user):
             "case.documents_retry_requested",
             case.branch_id,
             case.id,
+            queued_count=len(queued),
+            skipped_count=len(skipped),
         )
         db.flush()
         return {"queued": queued, "skipped": skipped}
