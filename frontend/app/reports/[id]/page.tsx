@@ -513,10 +513,10 @@ export default function ReportPage({
                             }}
                           >
                             {value === 1
-                              ? "[1] SESUAI / PASS"
+                              ? "SESUAI"
                               : value === 0
-                                ? `[0] TEMUAN (${failedCount} temuan)`
-                                : `[?] REVIEW (${reviewCount} pending)`}
+                                ? `TEMUAN (${failedCount} temuan)`
+                                : `PERLU REVIEW (${reviewCount} pending)`}
                           </span>
                           {pct !== null && (
                             <span
@@ -563,7 +563,7 @@ export default function ReportPage({
                   border: "1px solid rgba(0,0,0,0.05)",
                 }}
               >
-                <strong>Pedoman Skoring Audit KKP:</strong> Sesuai format standar Kertas Kerja Pemeriksaan Bank Indonesia & SKAI, indikator <strong>[1] SESUAI</strong> diberikan jika seluruh kriteria pengujian dalam kategori terpenuhi (100% compliant). Nilai <strong>[0] TEMUAN</strong> mengindikasikan terdapat kriteria yang belum terpenuhi dan memerlukan pembetulan dokumen atau disposisi pejabat terkait.
+                <strong>Pedoman Skoring Audit KKP:</strong> Sesuai format standar Kertas Kerja Pemeriksaan Bank Indonesia & SKAI, indikator <strong>SESUAI</strong> diberikan jika seluruh kriteria pengujian dalam kategori terpenuhi (100% compliant). Status <strong>TEMUAN</strong> mengindikasikan terdapat kriteria yang belum terpenuhi dan memerlukan pembetulan dokumen atau disposisi pejabat terkait.
               </div>
             </section>
           )}
