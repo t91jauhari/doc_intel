@@ -459,11 +459,12 @@ def evaluate(documents, cfg, context):
                     kind = next(
                         (f["type"] for f in fields() if f["path"] == r["path"]), None
                     )
-                    same = (
-                        (str(actual).strip() == str(expected).strip())
-                        if kind == "identifier"
-                        else normalize(actual) == normalize(expected)
-                    )
+                    if kind == "identifier":
+                        same = (str(actual).strip() == str(expected).strip())
+                    else:
+                        from .canonical_normalization import canonical_compare
+                        matched, _, _ = canonical_compare(actual, expected)
+                        same = matched
                     valid = same
                 elif op in {"date_equal", "date_on_or_after"} and actual and expected:
                     from .date_utils import compare_dates

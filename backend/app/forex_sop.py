@@ -194,8 +194,36 @@ def evaluate_rule(rule, documents, cfg, context):
         for part in parts: value = value.get(part) if isinstance(value,dict) else None
         return value,doc
     def compare(a,b,method):
-        evidence["comparisons"].append({"method":method,"actual":str(a),"expected":str(b),"match":a==b})
-        if a != b: raise CheckError("VALUE_MISMATCH", f"The {method} comparison differs.")
+        if a == b:
+            evidence["comparisons"].append({"method":method,"actual":str(a),"expected":str(b),"match":True})
+            return
+        from .canonical_normalization import canonical_compare
+        is_canonical_eligible = (
+            not isinstance(a, (int, float, Decimal))
+            and not isinstance(b, (int, float, Decimal))
+            and method not in {"exact monetary amount", "currency", "calendar date"}
+        )
+        if is_canonical_eligible:
+            matched, canon_method, ratio = canonical_compare(a, b)
+            if matched:
+                evidence["comparisons"].append({
+                    "method": method,
+                    "actual": str(a),
+                    "expected": str(b),
+                    "match": True,
+                    "canonical_resolution": canon_method,
+                })
+                return
+            evidence["comparisons"].append({
+                "method": method,
+                "actual": str(a),
+                "expected": str(b),
+                "match": False,
+                "similarity": round(ratio, 3),
+            })
+            raise CheckError("VALUE_MISMATCH", f"The {method} comparison differs.")
+        evidence["comparisons"].append({"method":method,"actual":str(a),"expected":str(b),"match":False})
+        raise CheckError("VALUE_MISMATCH", f"The {method} comparison differs.")
     def amount(path, currency_path, side):
         value,doc = get(path,side)
         currency,_ = get(currency_path,side)
