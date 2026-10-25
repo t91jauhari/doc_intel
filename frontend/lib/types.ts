@@ -247,6 +247,7 @@ export type Document = {
   case_id: string;
 };
 export type Finding = {
+  category?: string;
   evaluation_type?: "VISUAL" | "DATA";
   reason_code?: string;
   automated_result?: string;

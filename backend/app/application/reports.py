@@ -44,6 +44,8 @@ def report_detail(*, report_id: str, user):
             "provider": report.snapshot["provider"],
             "reference": report.snapshot.get("reference", case.reference),
             "snapshot": report.snapshot,
+            "case_status": case.status,
+            "approved_by": report.approved_by,
         }
 
 
