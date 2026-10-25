@@ -267,7 +267,7 @@ def rerun_sop(*, case_id: str, user):
             run.status = "QUEUED"
             run.error = ""
             run.lease_until = 0
-        queue_case(db, case.id)
+        queue_case(db, case.id, force=True)
         audit(db, case.org, user.id, "sop.rerun_requested", case.branch_id, case.id)
         return {
             "queued": True,

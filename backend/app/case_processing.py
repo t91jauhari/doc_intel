@@ -78,7 +78,7 @@ def fingerprint(snapshot):
     ).hexdigest()
 
 
-def queue_case(db, case_id):
+def queue_case(db, case_id, force=False):
     from app.auditing import audit
 
     case = db.scalar(select(Case).where(Case.id == case_id).with_for_update())
@@ -92,7 +92,7 @@ def queue_case(db, case_id):
     prior = db.scalar(
         select(CaseRun).where(CaseRun.case_id == case.id, CaseRun.fingerprint == key)
     )
-    if prior:
+    if prior and not force:
         # The inputs match a prior run. A retry that reproduces identical
         # extraction (process_job reuses stored raw) yields the same
         # fingerprint, so no new SOP run is queued. Restore the case status
@@ -119,6 +119,9 @@ def queue_case(db, case_id):
             case.validation_status = "ERROR"
             case.updated_at = time.time()
         return frozen
+    if prior and force:
+        db.delete(prior)
+        db.flush()
     run = CaseRun(
         org=case.org,
         branch_id=case.branch_id,
@@ -376,6 +379,11 @@ def process_case_run(run_id):
                     snapshot=snapshot,
                 )
                 db.add(report)
+                db.flush()
+                if not errors:
+                    persist_report(report)
+            else:
+                report.snapshot = snapshot
                 db.flush()
                 if not errors:
                     persist_report(report)
