@@ -593,7 +593,7 @@ def evaluate(documents, cfg, context):
                         .get(field_key, {})
                         .get("issues", [])
                     )
-                    if field_key not in d.get("overrides", {}) and any(
+                    if visual_review_enabled and field_key not in d.get("overrides", {}) and any(
                         i.get("code")
                         in {
                             "LOW_EXTRACTION_CONFIDENCE",
@@ -637,7 +637,7 @@ def evaluate(documents, cfg, context):
         )
     from .sop_scoring import normalize_findings
 
-    return normalize_findings(findings, cfg.get("sop_rules", []))
+    return normalize_findings(findings, cfg.get("sop_rules", []), cfg=cfg)
 
 
 def score(findings):

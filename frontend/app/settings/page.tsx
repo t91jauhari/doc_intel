@@ -620,6 +620,24 @@ export default function Settings() {
                           </small>
                         </span>
                       </label>
+                      <label className="checkbox-label">
+                        <input
+                          type="checkbox"
+                          checked={draft.visual_evidence_review ?? true}
+                          onChange={(e) =>
+                            update({
+                              ...draft,
+                              visual_evidence_review: e.target.checked,
+                            })
+                          }
+                        />
+                        <span>
+                          <strong>Visual evidence review (Mandatory human sign-off)</strong>
+                          <small>
+                            When enabled, visual evidence checks (signatures, stamps, meterai, photo regions) force human visual review regardless of automated detection. When disabled, valid detections evaluate directly to PASS without triggering visual review.
+                          </small>
+                        </span>
+                      </label>
                       <p className="subtext">
                         SOP scoring applies to every document family: PASS earns
                         1 point; FAIL earns 0. Only visual checks can await
@@ -1104,6 +1122,39 @@ export default function Settings() {
               )}
               {tab === "rules" && (
                 <>
+                  <section className="panel settings-card" style={{ marginBottom: 16 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.5rem" }}>
+                      <div>
+                        <h2 style={{ margin: 0 }}>Visual Evidence Review Policy</h2>
+                        <p style={{ margin: "4px 0 0", color: "var(--text-muted)", fontSize: "0.875rem" }}>
+                          Configure whether SOP visual checks require mandatory human verification or evaluate automatically.
+                        </p>
+                      </div>
+                      <span className="count-pill">
+                        {draft.visual_evidence_review ?? true ? "Enforced" : "Automatic / Bypassed"}
+                      </span>
+                    </div>
+                    <div style={{ marginTop: 12 }}>
+                      <label className="checkbox-label">
+                        <input
+                          type="checkbox"
+                          checked={draft.visual_evidence_review ?? true}
+                          onChange={(e) =>
+                            update({
+                              ...draft,
+                              visual_evidence_review: e.target.checked,
+                            })
+                          }
+                        />
+                        <span>
+                          <strong>Enable Visual Evidence Review (Mandatory Human Sign-off)</strong>
+                          <small>
+                            When <strong>enabled</strong>, visual checks (signatures, stamps, meterai, photo regions) force human review in the Visual Review Workspace regardless of automated detection. When <strong>disabled</strong>, visual checks pass directly if present and valid without blocking the case.
+                          </small>
+                        </span>
+                      </label>
+                    </div>
+                  </section>
                   <ContextEditor configuration={draft} family={family} editable={canEdit} onChange={update} />
                   <ComparisonUpgrade configuration={draft} version={version} editable={canEdit} onApply={update} family={family} />
                   {family === "forex" && (

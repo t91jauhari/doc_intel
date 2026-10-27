@@ -152,9 +152,10 @@ export type Configuration = {
   grouping_prefixes?: string[];
   suffix_aliases?: Record<string, string>;
   sop_message_templates?: Record<string, string>;
-  // Phase 2 — Configurable SOP Review Bypass (§3.2)
+  // Phase 2 — Configurable SOP Review Bypass & Visual Review (§3.2)
   sop_review_bypass?: boolean;
   sop_review_bypass_result?: "PASS" | "REVIEW" | "NOT_APPLICABLE";
+  visual_evidence_review?: boolean;
   // Phase 3 — Multi-Page Sequential Extraction (§3.5)
   sequential_page_extraction?: boolean;
   cross_page_reference?: boolean;
@@ -248,6 +249,8 @@ export type Document = {
 };
 export type Finding = {
   category?: string;
+  source_ref?: string;
+  scope_basis?: string;
   evaluation_type?: "VISUAL" | "DATA";
   reason_code?: string;
   automated_result?: string;

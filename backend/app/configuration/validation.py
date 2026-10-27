@@ -83,6 +83,8 @@ def validate_config(payload):
         raise ValueError("Fixture mode is development-only.")
     if type(payload.get("sop_review_bypass")) is not bool:
         raise ValueError("sop_review_bypass must be true or false.")
+    if "visual_evidence_review" in payload and type(payload.get("visual_evidence_review")) is not bool:
+        raise ValueError("visual_evidence_review must be true or false.")
     if payload.get("sop_review_bypass_result") not in {
         "PASS",
         "REVIEW",

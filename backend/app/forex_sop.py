@@ -300,10 +300,16 @@ def evaluate_rule(rule, documents, cfg, context):
         actual,left = get(r["path"])
         expected,right = get(r.get("other_path") or r["path"],"right")
         finding.update(actual=actual,expected=expected)
+        visual_review_enabled = cfg.get("visual_evidence_review", True) and not cfg.get("sop_review_bypass", False)
         op = r["operator"]
         if op == "signature_visual_consistency":
-            finding.update(result="REVIEW",reason_code="VISUAL_REVIEW_REQUIRED")
-            return finding
+            if visual_review_enabled:
+                finding.update(result="REVIEW", reason_code="VISUAL_REVIEW_REQUIRED")
+                return finding
+            else:
+                bypass_result = cfg.get("sop_review_bypass_result", "PASS")
+                finding.update(result=bypass_result, reason_code="CHECK_PASSED" if bypass_result == "PASS" else "BYPASS_REVIEW")
+                return finding
         if op == "invoice_linkage":
             invoice_parties(left)
             lld_amount,lld_currency,_ = amount("lld.transaction_value.amount","lld.transaction_value.currency","right")

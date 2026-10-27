@@ -836,14 +836,47 @@ export default function CasePage({
                                 return true;
                               })
                               .map((f, index) => {
-                                const docIds = Array.isArray(f.evidence?.document_ids)
+                                const leftPath = String(f.evidence?.path || f.field || "");
+                                const rightPath = String(f.evidence?.other_path || "");
+
+                                const leftDocIds = Array.isArray(f.evidence?.document_ids)
                                   ? (f.evidence.document_ids as string[])
                                   : typeof f.evidence?.document_id === "string"
                                     ? [f.evidence.document_id]
                                     : [];
-                                const linkedDoc = data.documents.find((d) =>
-                                  docIds.includes(d.id),
+                                const leftDoc =
+                                  data.documents.find((d) => leftDocIds.includes(d.id)) ||
+                                  data.documents.find((d) => leftPath.startsWith(d.doc_type + "."));
+
+                                const rightDocIds = Array.isArray(f.evidence?.reference_document_ids)
+                                  ? (f.evidence.reference_document_ids as string[])
+                                  : [];
+                                const rightDoc =
+                                  data.documents.find((d) => rightDocIds.includes(d.id)) ||
+                                  (rightPath ? data.documents.find((d) => rightPath.startsWith(d.doc_type + ".")) : null);
+
+                                const leftParts = leftPath.split(".");
+                                const leftType = leftParts[0];
+                                const leftField = leftParts.slice(1).join(".") || leftPath;
+
+                                const rightParts = rightPath.split(".");
+                                const rightType = rightParts[0];
+                                const rightField = rightParts.slice(1).join(".") || rightPath;
+
+                                const getFieldLabel = (docType: string, fieldKey: string) => {
+                                  const profileCols = cfg?.payload.profiles[docType as keyof typeof cfg.payload.profiles]?.columns;
+                                  const col = profileCols?.find(([k]) => k === fieldKey || k === fieldKey.split(".").pop());
+                                  return col ? col[1] : fieldKey;
+                                };
+
+                                const leftLabel = leftDoc ? getFieldLabel(leftDoc.doc_type, leftField) : leftField;
+                                const rightLabel = rightDoc ? getFieldLabel(rightDoc.doc_type, rightField) : rightField;
+
+                                const isComparison = Boolean(
+                                  rightPath &&
+                                  (rightPath !== leftPath || (rightDoc && leftDoc && rightDoc.id !== leftDoc.id))
                                 );
+
                                 return (
                                   <div className="finding-card" key={`${f.rule_id}-${index}`}>
                                     <div>
@@ -854,19 +887,106 @@ export default function CasePage({
                                         </span>
                                       )}
                                       <strong>{f.field}</strong>
+                                      {f.source_ref && (
+                                        <span className="count-pill" style={{ fontSize: "0.75rem", padding: "1px 6px" }}>
+                                          {f.source_ref}
+                                        </span>
+                                      )}
                                       <span className="rule-id">{f.rule_id}</span>
                                     </div>
+
+                                    {/* Dedicated document and field comparison pathway */}
+                                    <div className="sop-pathway-banner">
+                                      {isComparison ? (
+                                        <div className="sop-comparison-flow">
+                                          <div className="sop-pathway-node source">
+                                            <span className="sop-node-tag">SOURCE DOCUMENT</span>
+                                            <div className="sop-node-title">
+                                              <FileText size={14} className="node-icon" />
+                                              <strong title={leftDoc?.filename || leftType}>
+                                                {leftDoc ? leftDoc.filename : leftType}
+                                              </strong>
+                                            </div>
+                                            <div className="sop-node-field">
+                                              <span className="field-name-badge">{leftLabel}</span>
+                                              <code className="field-path-code">{leftField}</code>
+                                            </div>
+                                          </div>
+
+                                          <div className="sop-comparison-badge">
+                                            <div className="sop-vs-pill">⇄ VS</div>
+                                            <span className="sop-comparison-method">
+                                              {f.evidence?.policy ? String(f.evidence.policy).replace(/_/g, " ") : "compared with"}
+                                            </span>
+                                          </div>
+
+                                          <div className="sop-pathway-node reference">
+                                            <span className="sop-node-tag">REFERENCE DOCUMENT</span>
+                                            <div className="sop-node-title">
+                                              <FileText size={14} className="node-icon" />
+                                              <strong title={rightDoc?.filename || rightType}>
+                                                {rightDoc ? rightDoc.filename : rightType}
+                                              </strong>
+                                            </div>
+                                            <div className="sop-node-field">
+                                              <span className="field-name-badge">{rightLabel}</span>
+                                              <code className="field-path-code">{rightField}</code>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      ) : (
+                                        <div className="sop-single-doc-flow">
+                                          <div className="sop-pathway-node single">
+                                            <span className="sop-node-tag">EVALUATED DOCUMENT & FIELD</span>
+                                            <div className="sop-node-title">
+                                              <FileText size={14} className="node-icon" />
+                                              <strong title={leftDoc?.filename || leftType}>
+                                                {leftDoc ? leftDoc.filename : (leftType || "Case Document")}
+                                              </strong>
+                                            </div>
+                                            <div className="sop-node-field">
+                                              <span className="field-name-badge">{leftLabel}</span>
+                                              <code className="field-path-code">{leftField || leftPath}</code>
+                                            </div>
+                                          </div>
+                                          <div className="sop-rule-objective">
+                                            <span className="sop-node-tag">EVALUATION RULE</span>
+                                            <div className="rule-policy-desc">
+                                              {f.evidence?.policy ? String(f.evidence.policy).replace(/_/g, " ") : f.evaluation_type === "VISUAL" ? "Visual verification check" : "Field validation requirement"}
+                                            </div>
+                                          </div>
+                                        </div>
+                                      )}
+                                    </div>
+
                                     <p>{f.message}</p>
                                     <div className="finding-side-by-side">
                                       <div>
-                                        <span className="small-label">ACTUAL OBSERVATION</span>
+                                        <span className="small-label">
+                                          ACTUAL OBSERVATION · {leftDoc?.filename ? `${leftDoc.filename} (${leftField})` : leftPath}
+                                        </span>
                                         <div>{display(f.actual)}</div>
                                       </div>
                                       <div>
-                                        <span className="small-label">EXPECTED / REFERENCE</span>
+                                        <span className="small-label">
+                                          {isComparison
+                                            ? `EXPECTED / REFERENCE · ${rightDoc?.filename ? `${rightDoc.filename} (${rightField})` : rightPath}`
+                                            : "EXPECTED / RULE REQUIREMENT"}
+                                        </span>
                                         <div>{display(f.expected)}</div>
                                       </div>
                                     </div>
+
+                                    {Array.isArray(f.evidence?.comparisons) && f.evidence.comparisons.length > 0 && (
+                                      <div className="finding-comparison-pills">
+                                        {f.evidence.comparisons.map((c: any, i: number) => (
+                                          <span key={i} className={`comparison-result-pill ${c.match ? "match" : "mismatch"}`}>
+                                            <strong>Method:</strong> {c.method || "match"} · <strong>Match:</strong> {c.match ? "✓ YES" : "✗ NO"}
+                                          </span>
+                                        ))}
+                                      </div>
+                                    )}
+
                                     <div className="finding-actions-row">
                                       {f.evaluation_type === "VISUAL" && (
                                         <Link
@@ -877,16 +997,28 @@ export default function CasePage({
                                           <ArrowUpRight size={13} />
                                         </Link>
                                       )}
-                                      {linkedDoc && (
+                                      {leftDoc && (
                                         <button
                                           type="button"
                                           className="text-link"
                                           onClick={() => {
-                                            setSelected(linkedDoc.id);
+                                            setSelected(leftDoc.id);
                                             setTab("fields");
                                           }}
                                         >
-                                          Inspect {linkedDoc.filename} fields
+                                          Inspect {leftDoc.filename} ({leftField})
+                                        </button>
+                                      )}
+                                      {rightDoc && rightDoc.id !== leftDoc?.id && (
+                                        <button
+                                          type="button"
+                                          className="text-link"
+                                          onClick={() => {
+                                            setSelected(rightDoc.id);
+                                            setTab("fields");
+                                          }}
+                                        >
+                                          Inspect {rightDoc.filename} ({rightField})
                                         </button>
                                       )}
                                       <details>

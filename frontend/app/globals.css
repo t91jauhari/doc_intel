@@ -1564,6 +1564,151 @@ main {
   font-size: 11px;
   margin: 11px 0;
 }
+/* SOP Finding Pathway & Document Comparison Banner */
+.sop-pathway-banner {
+  background: var(--bg-accent, rgba(240, 244, 248, 0.6));
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin: 10px 0 12px;
+}
+.sop-comparison-flow {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.sop-pathway-node {
+  flex: 1 1 240px;
+  background: var(--card-bg, #ffffff);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.sop-pathway-node.source {
+  border-left: 3px solid #0284c7;
+}
+.sop-pathway-node.reference {
+  border-left: 3px solid #10b981;
+}
+.sop-pathway-node.single {
+  border-left: 3px solid #6366f1;
+}
+.sop-node-tag {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+}
+.sop-node-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--text-main);
+  word-break: break-all;
+}
+.sop-node-title strong {
+  font-size: 0.85rem;
+  color: var(--text-main);
+}
+.sop-node-title .node-icon {
+  flex-shrink: 0;
+  color: var(--text-muted);
+}
+.sop-node-field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 2px;
+}
+.field-name-badge {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+.field-path-code {
+  font-size: 0.75rem;
+  background: var(--bg-accent, #f1f5f9);
+  color: #475569;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-family: var(--font-mono, monospace);
+}
+.sop-comparison-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 0 4px;
+}
+.sop-vs-pill {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  color: #475569;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 12px;
+  white-space: nowrap;
+}
+.sop-comparison-method {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  text-transform: capitalize;
+  text-align: center;
+}
+.sop-single-doc-flow {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.sop-rule-objective {
+  flex: 1 1 200px;
+  background: var(--card-bg, #ffffff);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.rule-policy-desc {
+  font-size: 0.82rem;
+  color: var(--text-main);
+  text-transform: capitalize;
+  font-weight: 500;
+}
+.finding-comparison-pills {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 8px 0;
+}
+.comparison-result-pill {
+  font-size: 0.75rem;
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--line);
+  background: #fff;
+}
+.comparison-result-pill.match {
+  background: #f0fdf4;
+  border-color: #86efac;
+  color: #166534;
+}
+.comparison-result-pill.mismatch {
+  background: #fef2f2;
+  border-color: #fca5a5;
+  color: #991b1b;
+}
 .finding-values {
   display: flex;
   gap: 15px;
