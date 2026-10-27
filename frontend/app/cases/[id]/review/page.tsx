@@ -69,7 +69,7 @@ function initialDraft(
     reason: "",
     observations: available.map((doc) => {
       const field = finding.field.split(".").slice(1).join(".");
-      const value = doc.normalized[field];
+      const value = doc?.normalized?.[field];
       const page =
         value && typeof value === "object" && "page_number" in value
           ? Number(value.page_number)

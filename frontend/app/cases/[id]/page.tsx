@@ -109,7 +109,7 @@ export default function CasePage({
     data?.documents.filter(
       (d) =>
         d.status === "COMPLETED" &&
-        Object.entries(d.normalized).some(([f]) => f !== "page_results"),
+        Object.entries(d.normalized || {}).some(([f]) => f !== "page_results"),
     ) || [];
   const retryableDocs =
     data?.documents.filter((d) => !d.provider_state?.pending_create) || [];
@@ -129,7 +129,7 @@ export default function CasePage({
         const label = columns?.find(([key]) => key === field)?.[1] || field;
         const text =
           value == null &&
-          doc.validation.fields?.[field]?.issues.some((issue) =>
+          doc.validation?.fields?.[field]?.issues?.some((issue) =>
             ["UNRECOGNIZED_ENUM", "INVALID_OR_MISSING_ENUM"].includes(
               issue.code,
             ),
@@ -509,12 +509,12 @@ export default function CasePage({
                         Audit timeline
                       </button>
                     </div>
-                    {Array.isArray(doc.provider_state.location_guidance) &&
-                      doc.provider_state.location_guidance.length > 0 && (
+                    {Array.isArray(doc?.provider_state?.location_guidance) &&
+                      (doc.provider_state?.location_guidance?.length || 0) > 0 && (
                         <details className="info-note">
                           <summary>
                             Reviewed location guidance for this job ·{" "}
-                            {doc.provider_state.location_guidance.length} fields
+                            {doc.provider_state?.location_guidance?.length || 0} fields
                           </summary>
                           <p>
                             Matching reviewed forms supplied location hints to
@@ -522,7 +522,7 @@ export default function CasePage({
                             document and still requires independent
                             verification.
                           </p>
-                          {doc.provider_state.location_guidance.map(
+                          {doc.provider_state?.location_guidance?.map(
                             (hint, index) => (
                               <div key={index}>
                                 {String(hint.field)} · page{" "}
@@ -532,11 +532,11 @@ export default function CasePage({
                           )}
                         </details>
                       )}
-                    {doc.error && (
+                    {doc?.error && (
                       <div className="document-error">
                         <ErrorNotice message={doc.error} />
                         {data.can_write &&
-                          !!doc.provider_state.pending_create && (
+                          !!doc.provider_state?.pending_create && (
                             <p className="subtext">
                               <strong>Provider request needs recovery</strong> —
                               the request may have reached the provider before
@@ -546,8 +546,8 @@ export default function CasePage({
                                 className="text-link"
                                 title={
                                   "Request " +
-                                  String(doc.provider_state.pending_create) +
-                                  (doc.provider_state.provider_stage
+                                  String(doc.provider_state?.pending_create) +
+                                  (doc.provider_state?.provider_stage
                                     ? " · stage " +
                                       doc.provider_state.provider_stage
                                     : "")
@@ -563,7 +563,7 @@ export default function CasePage({
                             ["ERROR", "NEEDS_CLASSIFICATION"].includes(
                               doc.status,
                             ) &&
-                            !Object.keys(doc.raw).length && (
+                            !Object.keys(doc.raw || {}).length && (
                               <button
                                 className="primary"
                                 onClick={() =>
@@ -577,7 +577,7 @@ export default function CasePage({
                           {data.can_write &&
                             doc.status === "COMPLETED" &&
                             String(
-                              doc.provider_state.provider_stage || "",
+                              doc.provider_state?.provider_stage || "",
                             ).startsWith("SPIDER_FIELDS_") && (
                               <FieldRequestRecovery
                                 documentId={doc.id}
@@ -587,7 +587,7 @@ export default function CasePage({
                           <div className="button-row">
                             {data.can_write &&
                               doc.status === "ERROR" &&
-                              !doc.provider_state.pending_create && (
+                              !doc.provider_state?.pending_create && (
                                 <button
                                   className="secondary"
                                   disabled={pending}
@@ -608,20 +608,20 @@ export default function CasePage({
                             {data.can_write &&
                               doc.status === "ERROR" &&
                               !String(
-                                doc.provider_state.pending_create ||
-                                  doc.provider_state.provider_stage ||
+                                doc.provider_state?.pending_create ||
+                                  doc.provider_state?.provider_stage ||
                                   "",
                               )
                                 .toLowerCase()
                                 .startsWith("spider_fields_") &&
                               (String(
-                                doc.provider_state.pending_create || "",
+                                doc.provider_state?.pending_create || "",
                               ).startsWith("spider_") ||
                                 (String(
-                                  doc.provider_state.provider_stage || "",
+                                  doc.provider_state?.provider_stage || "",
                                 ).startsWith("SPIDER_") &&
-                                  !!doc.provider_state[
-                                    `spider_${String(doc.provider_state.provider_stage).slice(7).toLowerCase()}_response_key`
+                                  !!doc.provider_state?.[
+                                    `spider_${String(doc.provider_state?.provider_stage).slice(7).toLowerCase()}_response_key`
                                   ])) && (
                                 <SpiderResubmit
                                   documentId={doc.id}
@@ -631,9 +631,9 @@ export default function CasePage({
                             {user?.role === "bank_admin" &&
                               doc.status === "ERROR" &&
                               !String(
-                                doc.provider_state.pending_create || "",
+                                doc.provider_state?.pending_create || "",
                               ).startsWith("spider_") &&
-                              !!doc.provider_state.pending_create && (
+                              !!doc.provider_state?.pending_create && (
                                 <button
                                   className="secondary"
                                   onClick={() =>
@@ -647,7 +647,7 @@ export default function CasePage({
                         </div>
                       </div>
                     )}
-                    {tab === "fields" && (
+                    {tab === "fields" && doc && (
                       <>
                         {data.can_write && doc.status === "COMPLETED" && (
                           <FieldReprocess
@@ -658,7 +658,7 @@ export default function CasePage({
                               cfg?.payload.profiles[
                                 doc.doc_type as keyof typeof cfg.payload.profiles
                               ]?.columns ||
-                              Object.keys(doc.raw).map(
+                              Object.keys(doc.raw || {}).map(
                                 (key) => [key, key] as [string, string],
                               )
                             }
@@ -698,9 +698,9 @@ export default function CasePage({
                             were skipped; case SOP results are shown separately.
                           </p>
                         )}
-                        {Object.keys(doc.normalized).length ||
-                        doc.validation.visual_evidence?.length ||
-                        doc.validation.field_evidence?.length ? (
+                        {Object.keys(doc.normalized || {}).length ||
+                        doc.validation?.visual_evidence?.length ||
+                        doc.validation?.field_evidence?.length ? (
                           <FieldEvidenceWorkspace
                             doc={doc}
                             columns={
@@ -729,7 +729,8 @@ export default function CasePage({
                               })
                             }
                             onRegionSaved={() => void refresh()}
-                          />                        ) : (
+                          />
+                        ) : (
                           <Empty
                             title={
                               ["ERROR", "NEEDS_CLASSIFICATION"].includes(
@@ -747,14 +748,14 @@ export default function CasePage({
                             }
                           />
                         )}
-                        {Array.isArray(doc.raw.page_results) && (
+                        {Array.isArray(doc.raw?.page_results) && (
                           <details className="provider-details">
                             <summary>
                               Page extraction details (
-                              {doc.raw.page_results.length} pages)
+                              {doc.raw?.page_results?.length || 0} pages)
                             </summary>
                             <pre>
-                              {JSON.stringify(doc.raw.page_results, null, 2)}
+                              {JSON.stringify(doc.raw?.page_results, null, 2)}
                             </pre>
                           </details>
                         )}
@@ -1162,8 +1163,8 @@ function ActionModal({
     [target, setTarget] = useState("");
   const [value, setValue] = useState(
       JSON.stringify(
-        action.doc.overrides[action.field || ""] ??
-          action.doc.raw[action.field || ""] ??
+        action.doc.overrides?.[action.field || ""] ??
+          action.doc.raw?.[action.field || ""] ??
           null,
         null,
         2,
@@ -1210,7 +1211,7 @@ function ActionModal({
               await api(base + "/reconcile", {
                 method: "POST",
                 body: JSON.stringify({
-                  stage: action.doc.provider_state.pending_create,
+                  stage: action.doc.provider_state?.pending_create,
                   provider_id: providerId,
                   reason,
                 }),
@@ -1282,7 +1283,7 @@ function ActionModal({
               Reconcile only a saved job for a supported provider. Historical Llama submissions cannot resume; upgrade the case to Spider-AI before retrying.
             </p>
             <label>
-              {String(action.doc.provider_state.pending_create)}
+              {String(action.doc.provider_state?.pending_create)}
               <input
                 required
                 value={providerId}
