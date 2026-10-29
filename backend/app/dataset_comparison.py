@@ -280,7 +280,10 @@ def project(doc, field, kind, *, policy=None):
             else value
         )
     if kind == "initials":
-        from page_policy import initial_page_records
+        try:
+            from app.engine.page_policy import initial_page_records
+        except (ImportError, ValueError):
+            from page_policy import initial_page_records
         pages = value.get("pages", []) if isinstance(value, dict) else []
         count=value.get('page_count',3) if isinstance(value,dict) else 3
         if policy and policy.exclude_final_page:

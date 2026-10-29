@@ -131,7 +131,10 @@ def evaluate_policy(policy, documents):
                 for p in pages
             ):
                 return "REVIEW", "PAGE_COVERAGE_UNVERIFIED"
-            from page_policy import initial_page_records
+            try:
+                from ..engine.page_policy import initial_page_records
+            except (ImportError, ValueError):
+                from page_policy import initial_page_records
             try:
                 pages = initial_page_records(count, pages, exclude_final_page=policy.exclude_final_page)
             except ValueError:

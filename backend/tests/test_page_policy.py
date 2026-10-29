@@ -1,7 +1,10 @@
 """Required-page policies preserve physical numbering and exempt only the final page."""
 from types import SimpleNamespace
 import pytest
-from page_policy import required_initial_pages, initial_page_records
+try:
+    from app.engine.page_policy import required_initial_pages, initial_page_records
+except (ImportError, ValueError):
+    from page_policy import required_initial_pages, initial_page_records
 from app.configuration.sop_policies import VisualPolicy, evaluate_policy
 from app.configuration.dataset_policy import comparison_policy
 from app.dataset_comparison import project

@@ -564,7 +564,10 @@ def evaluate(documents, cfg, context):
                     ):
                         valid = True
                 elif op == "all_pages_marked" and isinstance(actual, dict):
-                    from page_policy import required_initial_pages, initial_page_records
+                    try:
+                        from app.engine.page_policy import required_initial_pages, initial_page_records
+                    except (ImportError, ValueError):
+                        from page_policy import required_initial_pages, initial_page_records
                     pages = actual.get("pages", [])
                     count = actual.get("page_count")
                     page_policy = cfg["profiles"].get(left_type, {}).get("policy", {})
