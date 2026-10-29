@@ -1,5 +1,8 @@
 """Exactly 19 invoice columns; aligned arrays retain every line item."""
-from schema import scalar, obj
+try:
+    from ..schema import scalar, obj
+except (ImportError, ValueError):
+    from schema import scalar, obj
 
 
 def text(description):

@@ -1,8 +1,10 @@
 """Document-specific schema/prompt/policy routing without changing application defaults."""
 
 from importlib import import_module
-
-from account_opening.profiles import NAMES as ACCOUNT_PROFILE_NAMES
+try:
+    from .account_opening.profiles import NAMES as ACCOUNT_PROFILE_NAMES, get as get_account_profile
+except (ImportError, ValueError):
+    from account_opening.profiles import NAMES as ACCOUNT_PROFILE_NAMES, get as get_account_profile
 
 PROFILE_NAMES = (
     "application",
@@ -15,14 +17,19 @@ PROFILE_NAMES = (
 ) + ACCOUNT_PROFILE_NAMES
 
 
+def _import_sub(mod_name):
+    try:
+        return import_module(f"app.engine.{mod_name}")
+    except ModuleNotFoundError:
+        return import_module(mod_name)
+
+
 def get_profile(name):
     if name in ACCOUNT_PROFILE_NAMES:
-        from account_opening.profiles import get
-
-        return get(name)
+        return get_account_profile(name)
     if name == "application":
-        schema = import_module("schema")
-        validator = import_module("validation").validate
+        schema = _import_sub("schema")
+        validator = _import_sub("validation").validate
         return {
             "name": name,
             "schema": schema.SCHEMA,
@@ -34,8 +41,8 @@ def get_profile(name):
             "validate": validator,
         }
     if name == "lld":
-        schema = import_module("lld.schema")
-        validator = import_module("lld.validation").validate
+        schema = _import_sub("lld.schema")
+        validator = _import_sub("lld.validation").validate
         return {
             "name": name,
             "schema": schema.SCHEMA,
@@ -47,8 +54,8 @@ def get_profile(name):
             "validate": validator,
         }
     if name == "invoice":
-        schema = import_module("invoice.schema")
-        validator = import_module("invoice.validation").validate
+        schema = _import_sub("invoice.schema")
+        validator = _import_sub("invoice.validation").validate
         return {
             "name": name,
             "schema": schema.SCHEMA,
@@ -60,8 +67,8 @@ def get_profile(name):
             "validate": validator,
         }
     if name == "valas_declaration_2":
-        schema = import_module("valas2.schema")
-        validator = import_module("valas2.validation").validate
+        schema = _import_sub("valas2.schema")
+        validator = _import_sub("valas2.validation").validate
         return {
             "name": name,
             "schema": schema.SCHEMA,
@@ -73,8 +80,8 @@ def get_profile(name):
             "validate": validator,
         }
     if name == "valas_declaration_1":
-        schema = import_module("valas1.schema")
-        validator = import_module("valas1.validation").validate
+        schema = _import_sub("valas1.schema")
+        validator = _import_sub("valas1.validation").validate
         return {
             "name": name,
             "schema": schema.SCHEMA,
@@ -86,8 +93,8 @@ def get_profile(name):
             "validate": validator,
         }
     if name == "ektp":
-        schema = import_module("ektp.schema")
-        validator = import_module("ektp.validation").validate
+        schema = _import_sub("ektp.schema")
+        validator = _import_sub("ektp.validation").validate
         return {
             "name": name,
             "schema": schema.SCHEMA,
@@ -99,8 +106,8 @@ def get_profile(name):
             "validate": validator,
         }
     if name == "riplay":
-        schema = import_module("riplay.schema")
-        validator = import_module("riplay.validation").validate
+        schema = _import_sub("riplay.schema")
+        validator = _import_sub("riplay.validation").validate
         return {
             "name": name,
             "schema": schema.SCHEMA,

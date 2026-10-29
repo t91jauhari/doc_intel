@@ -11,8 +11,12 @@ import pycountry
 from dateutil.parser import parse as parse_datetime
 from num2words import num2words
 
-from schema import COLUMNS, SCHEMA
-from context import check_directory, correct_name, resolve_checkbox
+try:
+    from .schema import COLUMNS, SCHEMA
+    from .context import check_directory, correct_name, resolve_checkbox
+except (ImportError, ValueError):
+    from schema import COLUMNS, SCHEMA
+    from context import check_directory, correct_name, resolve_checkbox
 
 
 def clean(value):

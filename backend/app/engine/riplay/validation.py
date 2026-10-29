@@ -3,9 +3,14 @@
 from copy import deepcopy
 from decimal import Decimal
 import math
-from validation import check_schema, clean, parse_date, current_date, confidence_values
-from riplay.schema import SCHEMA, COLUMNS, DOCUMENT_NAME
-from page_policy import required_initial_pages, initial_page_records
+try:
+    from ..validation import check_schema, clean, parse_date, current_date, confidence_values
+    from .schema import SCHEMA, COLUMNS, DOCUMENT_NAME
+    from ..page_policy import required_initial_pages, initial_page_records
+except (ImportError, ValueError):
+    from validation import check_schema, clean, parse_date, current_date, confidence_values
+    from riplay.schema import SCHEMA, COLUMNS, DOCUMENT_NAME
+    from page_policy import required_initial_pages, initial_page_records
 
 
 def validate(

@@ -81,7 +81,7 @@ def test_approved_alias_uses_saved_raw_and_records_transformation():
     import sys
     from pathlib import Path
 
-    sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "engine/tests"))
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "app/engine/tests"))
     from test_ektp import evidence, metadata, comparison_context
 
     cfg = default_config()

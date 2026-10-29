@@ -1,5 +1,8 @@
 """LLD: exactly 36 retained columns, with currency nested under transaction_value."""
-from schema import scalar, obj, selection, CHECKBOX_INSTRUCTIONS
+try:
+    from ..schema import scalar, obj, selection, CHECKBOX_INSTRUCTIONS
+except (ImportError, ValueError):
+    from schema import scalar, obj, selection, CHECKBOX_INSTRUCTIONS
 
 
 def choice(description):

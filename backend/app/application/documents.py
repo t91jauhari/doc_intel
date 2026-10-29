@@ -214,7 +214,7 @@ def confirm_type(*, doc_id: str, data: ClassificationInput, user):
 
 
 def correct_field(*, doc_id: str, data: CorrectionInput, user):
-    from validation import check_schema
+    from app.engine.validation import check_schema
 
     with SessionLocal.begin() as db:
         d = authorized(db, Document, doc_id, user)
@@ -258,7 +258,7 @@ def correct_field(*, doc_id: str, data: CorrectionInput, user):
 def correct_effective_field(*, doc_id: str, data: EffectiveCorrectionInput, user):
     from app.effective_corrections import extraction_value
     from app.provider import validate_extraction
-    from validation import check_schema
+    from app.engine.validation import check_schema
 
     with SessionLocal.begin() as db:
         d = authorized(db, Document, doc_id, user)

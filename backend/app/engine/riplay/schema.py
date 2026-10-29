@@ -1,6 +1,9 @@
 """Ten RIPLAY fields, with explicit observations for every physical page."""
 
-from schema import scalar, obj
+try:
+    from ..schema import scalar, obj
+except (ImportError, ValueError):
+    from schema import scalar, obj
 
 DOCUMENT_NAME = "RIPLAY Document"
 

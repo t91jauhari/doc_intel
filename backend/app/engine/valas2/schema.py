@@ -1,5 +1,8 @@
 """Ten fields for the threshold-limited Valas 2 purchase declaration."""
-from schema import obj, scalar
+try:
+    from ..schema import obj, scalar
+except (ImportError, ValueError):
+    from schema import obj, scalar
 
 DOCUMENT_NAME = "Surat Pernyataan Pembelian Valas 2 (Paling Banyak Sebesar Jumlah Threshold)"
 

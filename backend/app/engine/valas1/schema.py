@@ -1,7 +1,11 @@
 """Sixteen requested columns for the above-threshold purchase declaration."""
 from copy import deepcopy
-from schema import scalar, obj
-from valas2.schema import PROPERTIES as COMMON_PROPERTIES, text
+try:
+    from ..schema import scalar, obj
+    from ..valas2.schema import PROPERTIES as COMMON_PROPERTIES, text
+except (ImportError, ValueError):
+    from schema import scalar, obj
+    from valas2.schema import PROPERTIES as COMMON_PROPERTIES, text
 
 DOCUMENT_NAME = "Surat Pernyataan Pembelian Valas 1 (Diatas Jumlah Threshold)"
 

@@ -1,5 +1,8 @@
 """Exactly twenty eKTP fields; observations remain distinct from verification."""
-from schema import scalar, obj
+try:
+    from ..schema import scalar, obj
+except (ImportError, ValueError):
+    from schema import scalar, obj
 
 DOCUMENT_NAME = "eKTP"
 

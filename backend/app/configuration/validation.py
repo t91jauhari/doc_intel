@@ -4,7 +4,7 @@ from app.native_profiles import ACCOUNT_REFERENCE, PROFILE_NAMES, check_director
 import copy
 import re
 from app.settings import settings
-from account_opening.profiles import REFERENCE as ACCOUNT_REFERENCE
+from app.engine.account_opening.profiles import REFERENCE as ACCOUNT_REFERENCE
 
 
 def validate_config(payload):
@@ -177,7 +177,7 @@ def validate_config(payload):
                 f"{name}: System Instruction must contain 10–30000 characters."
             )
         if name in ACCOUNT_REFERENCE["profiles"]:
-            from account_opening.profiles import validate_policy
+            from app.engine.account_opening.profiles import validate_policy
 
             validate_policy(name, p.get("policy", {}))
         if name == "ektp":

@@ -44,7 +44,7 @@ def main():
         ("backend", [sys.executable, "-m", "pytest", "backend/tests", "-q"], ROOT),
         (
             "engine",
-            [sys.executable, "-m", "unittest", "discover", "-s", "engine/tests", "-q"],
+            [sys.executable, "-m", "unittest", "discover", "-s", "backend/app/engine/tests", "-q"],
             ROOT,
         ),
         (

@@ -7,9 +7,14 @@ import unicodedata
 import holidays
 import pycountry
 
-from context import checkbox_identity, resolve_checkbox
-from validation import check_schema, clean, parse_date, parse_number, current_date, confidence_values
-from lld.schema import SCHEMA, COLUMNS
+try:
+    from ..context import checkbox_identity, resolve_checkbox
+    from ..validation import check_schema, clean, parse_date, parse_number, current_date, confidence_values
+    from .schema import SCHEMA, COLUMNS
+except (ImportError, ValueError):
+    from context import checkbox_identity, resolve_checkbox
+    from validation import check_schema, clean, parse_date, parse_number, current_date, confidence_values
+    from lld.schema import SCHEMA, COLUMNS
 
 
 def label(value):

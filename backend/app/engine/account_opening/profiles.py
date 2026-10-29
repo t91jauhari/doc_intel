@@ -6,7 +6,10 @@ import re
 import unicodedata
 from datetime import date
 from pathlib import Path
-from validation import check_schema, parse_date, clean, confidence_values
+try:
+    from ..validation import check_schema, parse_date, clean, confidence_values
+except (ImportError, ValueError):
+    from validation import check_schema, parse_date, clean, confidence_values
 
 REFERENCE = json.loads(
     (Path(__file__).parent / "reference.json").read_text(encoding="utf-8")

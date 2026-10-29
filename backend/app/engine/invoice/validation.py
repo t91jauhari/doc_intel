@@ -7,9 +7,14 @@ import unicodedata
 import holidays
 import pycountry
 
-from context import correct_name, identity
-from validation import check_schema, clean, parse_date, current_date, confidence_values
-from invoice.schema import SCHEMA, COLUMNS
+try:
+    from ..context import correct_name, identity
+    from ..validation import check_schema, clean, parse_date, current_date, confidence_values
+    from .schema import SCHEMA, COLUMNS
+except (ImportError, ValueError):
+    from context import correct_name, identity
+    from validation import check_schema, clean, parse_date, current_date, confidence_values
+    from invoice.schema import SCHEMA, COLUMNS
 
 
 def decimal_literal(raw, locale):

@@ -92,7 +92,7 @@ def evaluate_field(value, definition):
     if policy.kind == 'identifier' and not re.fullmatch(r'[0-9]{'+str(policy.digits)+'}' if policy.digits else r'[0-9]+', value):
         return 'FAIL', 'INVALID_IDENTIFIER'
     if policy.kind == 'date':
-        from validation import parse_date
+        from app.engine.validation import parse_date
         try:
             parse_date(value)
         except (ValueError, TypeError, OverflowError):

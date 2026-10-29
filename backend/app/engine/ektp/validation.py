@@ -4,8 +4,12 @@ import math
 import re
 import unicodedata
 
-from validation import check_schema, clean, parse_date, current_date, confidence_values
-from ektp.schema import SCHEMA, COLUMNS, DOCUMENT_NAME
+try:
+    from ..validation import check_schema, clean, parse_date, current_date, confidence_values
+    from .schema import SCHEMA, COLUMNS, DOCUMENT_NAME
+except (ImportError, ValueError):
+    from validation import check_schema, clean, parse_date, current_date, confidence_values
+    from ektp.schema import SCHEMA, COLUMNS, DOCUMENT_NAME
 
 
 def validate(raw, metadata, policy, as_of=None, directory=None, validation_context=None, extract_job_id=None):

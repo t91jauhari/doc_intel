@@ -6,9 +6,14 @@ import unicodedata
 import holidays
 import pycountry
 
-from validation import clean, parse_date
-from valas_common import validate_declaration
-from valas1.schema import SCHEMA, COLUMNS, DOCUMENT_NAME
+try:
+    from ..validation import clean, parse_date
+    from ..valas_common import validate_declaration
+    from .schema import SCHEMA, COLUMNS, DOCUMENT_NAME
+except (ImportError, ValueError):
+    from validation import clean, parse_date
+    from valas_common import validate_declaration
+    from valas1.schema import SCHEMA, COLUMNS, DOCUMENT_NAME
 
 
 def validate_extra(raw, normalized, reports, issue, structural, policy, reference_date):

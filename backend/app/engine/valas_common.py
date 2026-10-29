@@ -6,7 +6,10 @@ import unicodedata
 
 import pycountry
 
-from validation import check_schema, clean, parse_date, current_date, confidence_values
+try:
+    from .validation import check_schema, clean, parse_date, current_date, confidence_values
+except (ImportError, ValueError):
+    from validation import check_schema, clean, parse_date, current_date, confidence_values
 
 
 def validate_declaration(raw, metadata, policy, as_of=None, directory=None, validation_context=None, extract_job_id=None,

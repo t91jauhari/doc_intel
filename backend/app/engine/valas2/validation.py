@@ -1,6 +1,10 @@
 """Valas 2 uses shared declaration checks with its ten-field schema."""
-from valas_common import validate_declaration
-from valas2.schema import SCHEMA, COLUMNS, DOCUMENT_NAME
+try:
+    from ..valas_common import validate_declaration
+    from .schema import SCHEMA, COLUMNS, DOCUMENT_NAME
+except (ImportError, ValueError):
+    from valas_common import validate_declaration
+    from valas2.schema import SCHEMA, COLUMNS, DOCUMENT_NAME
 
 
 def validate(raw, metadata, policy, as_of=None, directory=None, validation_context=None, extract_job_id=None):

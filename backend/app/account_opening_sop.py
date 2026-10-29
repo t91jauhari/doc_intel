@@ -51,7 +51,7 @@ def _name_abbreviation(left, right):
 
 def _birth_parts(value):
     """Parse an explicit full trailing date; never infer a missing component."""
-    from validation import parse_date
+    from app.engine.validation import parse_date
 
     if not isinstance(value, str):
         raise ValueError("Combined birth place/date must be explicit text.")
@@ -93,7 +93,7 @@ def sources():
 
 
 def fields():
-    from account_opening.profiles import REFERENCE
+    from app.engine.account_opening.profiles import REFERENCE
 
     return [
         {
@@ -301,7 +301,7 @@ def evaluate_rule(rule, documents, cfg, context):
             and birth
             and expected
         ):
-            from validation import parse_date
+            from app.engine.validation import parse_date
 
             try:
                 form_place, form_date = _birth_parts(expected)
