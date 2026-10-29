@@ -445,6 +445,9 @@ export function ConnectorHub() {
                   onChange={(e) => setCustomModelId(e.target.value)}
                   placeholder="e.g. pct-prod-spider/pecut/gemini-3.8-flash-high"
                 />
+                <span style={{ fontSize: "11px", color: "var(--muted)", display: "block", marginTop: "4px" }}>
+                  Active model. Automatically falls back to <code>pct-prod-spider/pecut/gemini-4-argon</code> on HTTP 503.
+                </span>
               </label>
             )}
 

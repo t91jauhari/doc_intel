@@ -12,7 +12,8 @@
     "classify_page_limit": 2,
     "timeout_seconds": 600,
     "connect_timeout_seconds": 15,
-    "field_image_max_bytes": 180000
+    "field_image_max_bytes": 180000,
+    "fallback_model_id": "pct-prod-spider/pecut/gemini-4-argon"
   },
   "gemini": {
     "base_url": "https://generativelanguage.googleapis.com/v1beta",

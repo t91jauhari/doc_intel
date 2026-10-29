@@ -36,6 +36,10 @@ class SpiderOptions(BaseModel):
     model_config = ConfigDict(extra="ignore", frozen=True)
     base_url: str = Field(default_factory=lambda: defaults("spider-ai")["base_url"], max_length=2000)
     model_id: str = Field(default_factory=lambda: defaults("spider-ai")["model_id"], min_length=1, max_length=200)
+    fallback_model_id: str | None = Field(
+        default_factory=lambda: defaults("spider-ai").get("fallback_model_id", "pct-prod-spider/pecut/gemini-4-argon"),
+        max_length=200,
+    )
     temperature: float = Field(default_factory=lambda: defaults("spider-ai")["temperature"], ge=0, le=2, strict=True)
     top_p: float = Field(default_factory=lambda: defaults("spider-ai")["top_p"], ge=0, le=1, strict=True)
     max_tokens: int = Field(default_factory=lambda: defaults("spider-ai")["max_tokens"], ge=1, le=65536, strict=True)

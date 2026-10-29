@@ -646,3 +646,61 @@ def test_render_limit_and_expired_capacity_are_explicit(signed):
 
     with SessionLocal() as db:
         assert db.get(WorkerSlot, slot).owner == "new-owner"
+
+def test_spider_immediate_fallback_on_503(signed, monkeypatch):
+    from app.provider import run_provider
+    doc = create_case(signed)
+    save_key(signed)
+    cfg = default_config()
+    cfg["provider"] = "spider-ai"
+
+    requested_models = []
+
+    class Client:
+        def __init__(self, **kwargs):
+            pass
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *args):
+            pass
+
+        def post(self, url, headers, json):
+            model = json.get("model")
+            requested_models.append(model)
+            if model == "pct-prod-spider/pecut/gemini-3.8-flash-high":
+                return httpx.Response(
+                    503,
+                    json={"error": {"message": "Service Temporarily Unavailable"}},
+                    headers={"content-type": "application/json"},
+                )
+            elif model == "pct-prod-spider/pecut/gemini-4-argon":
+                return httpx.Response(
+                    200,
+                    json={
+                        "id": "fallback-resp-1",
+                        "choices": [
+                            {
+                                "finish_reason": "stop",
+                                "message": {
+                                    "content": '{"transaction_id": "TRX-FALLBACK-100", "currency": "USD"}'
+                                },
+                            }
+                        ],
+                    },
+                    headers={"content-type": "application/json"},
+                )
+            return httpx.Response(500, json={"error": "Unexpected model"})
+
+    monkeypatch.setattr("app.spider_provider.httpx.Client", Client)
+    run_provider(doc, cfg, lambda: None)
+    assert requested_models == [
+        "pct-prod-spider/pecut/gemini-3.8-flash-high",
+        "pct-prod-spider/pecut/gemini-4-argon",
+    ]
+    with SessionLocal() as db:
+        state = db.get(Document, doc.id).provider_state
+    assert state.get("spider_model") == "pct-prod-spider/pecut/gemini-4-argon"
+    assert state.get("spider_fallback_from") == "pct-prod-spider/pecut/gemini-3.8-flash-high"
+

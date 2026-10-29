@@ -379,6 +379,14 @@ def run_gemini(doc, cfg, heartbeat):
     try:
         with httpx.Client(timeout=timeout) as client:
             resp = client.post(url, headers=headers, json=payload)
+            if resp.status_code == 503 and is_openai_mode and model_id == "pct-prod-spider/pecut/gemini-3.8-flash-high":
+                log.warning(
+                    "Google Gemini / OpenAI endpoint returned HTTP 503 for model '%s'. Falling back to 'pct-prod-spider/pecut/gemini-4-argon'.",
+                    model_id,
+                )
+                fallback_payload = dict(payload)
+                fallback_payload["model"] = "pct-prod-spider/pecut/gemini-4-argon"
+                resp = client.post(url, headers=headers, json=fallback_payload)
             if resp.status_code != 200:
                 err_msg = _extract_google_error(resp)
                 raise ProcessingIssue(f"Google Gemini request failed ({resp.status_code}): {err_msg}")

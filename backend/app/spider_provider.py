@@ -26,6 +26,12 @@ from .extraction.connector_contracts import defaults
 SPIDER_DEFAULTS = defaults("spider-ai")
 BASE_URL = SPIDER_DEFAULTS["base_url"]
 MODEL = SPIDER_DEFAULTS["model_id"]
+FALLBACK_MODEL = SPIDER_DEFAULTS.get(
+    "fallback_model_id", "pct-prod-spider/pecut/gemini-4-argon"
+)
+DEFAULT_MODEL_FALLBACKS = {
+    "pct-prod-spider/pecut/gemini-3.8-flash-high": "pct-prod-spider/pecut/gemini-4-argon",
+}
 log = logging.getLogger("sqe.spider")
 
 
@@ -337,6 +343,48 @@ def completion(doc, stage, messages, options, key, heartbeat):
                 },
                 json=request_payload,
             )
+            current_model = request_payload.get("model", "")
+            fallback_target = options.get("fallback_model_id") or DEFAULT_MODEL_FALLBACKS.get(current_model)
+            if response.status_code == 503 and fallback_target and fallback_target != current_model:
+                log.warning(
+                    "Spider-AI model '%s' returned HTTP 503 for doc=%s stage=%s. Attempting immediate fallback to '%s'.",
+                    current_model,
+                    doc.id,
+                    stage,
+                    fallback_target,
+                )
+                heartbeat()
+                pre_fallback_key = object_key(
+                    doc.org,
+                    doc.branch_id,
+                    "documents",
+                    doc.id,
+                    f"spider-{stage}-{request_id}-503-pre-fallback.txt",
+                )
+                store().put(pre_fallback_key, response.content, "text/plain")
+
+                fallback_request_id = str(uuid.uuid4())
+                fallback_payload = dict(request_payload)
+                fallback_payload["model"] = fallback_target
+                fallback_response = client.post(
+                    options.get("base_url", BASE_URL).rstrip("/") + "/chat/completions",
+                    headers={
+                        "Authorization": f"Bearer {key}",
+                        "Content-Type": "application/json",
+                        "Accept": "application/json",
+                        "X-Request-ID": fallback_request_id,
+                    },
+                    json=fallback_payload,
+                )
+                checkpoint(
+                    doc.id,
+                    spider_model=fallback_target,
+                    spider_fallback_from=current_model,
+                    spider_fallback_request_id=fallback_request_id,
+                )
+                response = fallback_response
+                request_id = fallback_request_id
+                request_payload = fallback_payload
         body_key = object_key(
             doc.org,
             doc.branch_id,
