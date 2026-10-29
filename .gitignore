@@ -59,6 +59,7 @@ scripts/build_*.py
 _enum.py
 _tree.txt
 
-# Documentation & markdown files
+# Documentation & markdown files (allow root README only)
 *.md
 **/*.md
+!/README.md
