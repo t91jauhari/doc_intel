@@ -17,6 +17,7 @@ x-backend: &backend
     MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
     MINIO_BUCKET: sqe-documents
     MINIO_SECURE: "false"
+    MINIO_POOL_SIZE: ${MINIO_POOL_SIZE:-64}
     WORKFLOW_DRIVER: temporal
     TEMPORAL_ADDRESS: temporal:7233
   deploy:

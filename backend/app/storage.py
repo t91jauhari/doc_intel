@@ -8,6 +8,7 @@ from threading import Lock
 from minio import Minio
 from minio.error import S3Error
 from urllib3 import PoolManager, Timeout
+from urllib3.util import Retry
 
 from .settings import settings
 
@@ -63,6 +64,13 @@ class ObjectStore:
         self.ready = False
         self.lock = Lock()
         if settings.storage_driver == "minio" and client is None:
+            pool_size = max(settings.minio_pool_size, settings.concurrency * 2)
+            retries = Retry(
+                total=3,
+                backoff_factor=0.2,
+                status_forcelist=[500, 502, 503, 504],
+                raise_on_status=False,
+            )
             self.client = Minio(
                 settings.minio_endpoint,
                 access_key=settings.minio_access_key,
@@ -70,7 +78,10 @@ class ObjectStore:
                 secure=settings.minio_secure,
                 region=settings.minio_region,
                 http_client=PoolManager(
-                    timeout=Timeout(connect=5, read=60), retries=False
+                    num_pools=10,
+                    maxsize=pool_size,
+                    timeout=Timeout(connect=5, read=60),
+                    retries=retries,
                 ),
             )
 

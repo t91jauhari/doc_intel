@@ -16,6 +16,7 @@ if target.exists():
         "MINIO_BUCKET": "sqe-documents",
         "MINIO_SECURE": "false",
         "MINIO_REGION": "us-east-1",
+        "MINIO_POOL_SIZE": "64",
     }
     present = {
         line.split("=", 1)[0].strip() for line in existing.splitlines() if "=" in line
@@ -36,6 +37,7 @@ else:
         "MINIO_BUCKET=sqe-documents",
         "MINIO_SECURE=false",
         "MINIO_REGION=us-east-1",
+        "MINIO_POOL_SIZE=64",
         "APP_SECRET=" + secrets.token_urlsafe(48),
         "DEV_ORGANIZATION=sqe",
         "DEV_EMAIL=sqe@bic.local",

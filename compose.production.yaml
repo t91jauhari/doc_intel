@@ -11,6 +11,7 @@ x-runtime: &runtime
     MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:?Set the object storage secret key}
     MINIO_BUCKET: ${MINIO_BUCKET:?Set the existing document bucket}
     MINIO_SECURE: "true"
+    MINIO_POOL_SIZE: ${MINIO_POOL_SIZE:-64}
     WORKFLOW_DRIVER: temporal
     TEMPORAL_ADDRESS: ${TEMPORAL_ADDRESS:?Set the Temporal service address}
     TEMPORAL_NAMESPACE: ${TEMPORAL_NAMESPACE:-default}

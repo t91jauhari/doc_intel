@@ -27,6 +27,7 @@ class Settings:
     minio_bucket: str = os.getenv("MINIO_BUCKET", "sqe-documents")
     minio_secure: bool = os.getenv("MINIO_SECURE", "false").lower() == "true"
     minio_region: str = os.getenv("MINIO_REGION", "us-east-1")
+    minio_pool_size: int = int(os.getenv("MINIO_POOL_SIZE", "64"))
     secret: str = os.getenv("APP_SECRET", "")
     secure_cookie: bool = os.getenv("SECURE_COOKIE", "false").lower() == "true"
     origins: tuple = tuple(
@@ -62,6 +63,9 @@ if settings.environment != "development" and (
     raise RuntimeError(
         "Production requires a strong secret, secure cookies and Temporal."
     )
+
+if settings.minio_pool_size < 1:
+    raise RuntimeError("MINIO_POOL_SIZE must be at least 1.")
 
 if settings.storage_driver not in {"local", "minio"}:
     raise RuntimeError("STORAGE_DRIVER must be minio or local.")
