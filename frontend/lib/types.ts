@@ -145,6 +145,11 @@ export type Configuration = {
       report_context?: Record<string, string>;
     }
   >;
+  invoice_profiles?: Record<string, Partial<Profile> & { columns?: [string, string][] }>;
+  invoice_signatures?: {
+    invoice_2_terms: string[];
+    invoice_1_terms: string[];
+  };
   name_directory: Record<string, unknown>;
   rules: Rule[];
   report_title: string;
@@ -188,6 +193,8 @@ export type CaseSummary = {
   reference: string;
   customer: string;
   branch_id: string;
+  branch_name?: string;
+  branch_code?: string;
   status: string;
   validation_status: string;
   template: string;

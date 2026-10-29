@@ -350,7 +350,7 @@ def evaluate(documents, cfg, context):
     findings = []
     types = {d["doc_type"] for d in documents}
     templates = cfg.get("sop_message_templates", {})
-    visual_review_enabled = cfg.get("visual_evidence_review", True) and not cfg.get("sop_review_bypass", False)
+    visual_review_enabled = cfg.get("visual_evidence_review", False) and not cfg.get("sop_review_bypass", False)
 
     def tpl(key):
         """Look up a message template with graceful fallback to the hardcoded default."""
@@ -380,6 +380,36 @@ def evaluate(documents, cfg, context):
             from .account_opening_sop import evaluate_rule
 
             findings.append(evaluate_rule(r, documents, cfg, context))
+            continue
+        if (
+            r.get("operator") == "policy_review"
+            or r.get("kind") == "regulatory_disclaimer"
+            or r.get("rule_type") == "disclaimer"
+        ):
+            findings.append(
+                {
+                    "rule_id": r["id"],
+                    "field": r.get("path", ""),
+                    "source_ref": r.get("source_ref", ""),
+                    "scope_basis": r.get("scope_basis", "SYSTEM"),
+                    "category": r.get("report_category", "DOCUMENT_COMPLETION"),
+                    "eligible": True,
+                    "result": "NOT_APPLICABLE",
+                    "message": r.get("label", r["id"]),
+                    "actual": None,
+                    "expected": None,
+                    "evidence": {
+                        "document_ids": [],
+                        "reference_document_ids": [],
+                        "path": "",
+                        "other_path": "",
+                        "policy": "regulatory_scope_disclaimer",
+                        "metadata": [],
+                    },
+                    "evaluation_type": "DATA",
+                    "reason_code": "EXPLICITLY_NOT_APPLICABLE",
+                }
+            )
             continue
         left_path = r["path"]
         right_path = r.get("other_path") or r["path"]

@@ -1,75 +1,28 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
 import {
-  ExternalLink,
-  Eye,
   Image as ImageIcon,
-  Layers,
   Maximize2,
   Minimize2,
-  Pencil,
   RefreshCw,
   Sparkles,
-  ZoomIn,
-  ZoomOut,
-  ChevronUp,
-  ChevronDown,
 } from "lucide-react";
-import { Badge, display } from "@/components/ui";
-import { VisualRegionEditor } from "@/components/visual-region-editor";
+import { usePlatform } from "@/components/platform-provider";
 import { extractionCheck } from "@/lib/extraction-export";
-import type { Configuration, Document, FieldResult } from "@/lib/types";
-
-type CropItem = {
-  kind: "field" | "visual";
-  sourceField: string;
-  pageNumber?: number;
-  revision: string;
-  storageKey?: string;
-  url?: string;
-  available: boolean;
-  observedPresent?: boolean | null;
-  reviewStatus?: string;
-  error?: string;
-};
-
-type UnifiedFieldRow = {
-  field: string;
-  label: string;
-  value: unknown;
-  isVisualOnly: boolean;
-  result?: FieldResult;
-  checkStatus: string;
-  hasApprovedAlias: boolean;
-  crops: CropItem[];
-  errors: string[];
-  needsAttention: boolean;
-  isVisual: boolean;
-};
-
-function buildCropUrl(
-  docId: string,
-  revision: string,
-  storageKey?: string,
-): string | undefined {
-  if (!storageKey || !revision) return undefined;
-  const filename = storageKey.split("/").pop();
-  if (!filename || filename.length <= revision.length + 5) return undefined;
-  const token = filename.slice(revision.length + 1, -4);
-  if (!token) return undefined;
-  return `/api/documents/${docId}/evidence/${revision}/${token}`;
-}
-
-function baseFieldKey(path: string): string {
-  return path.split(".")[0] || path;
-}
-
-function formatFieldKeyLabel(key: string): string {
-  return key
-    .replaceAll(".", " · ")
-    .replaceAll("_", " ")
-    .replace(/\b\w/g, (c) => c.toUpperCase());
-}
+import {
+  extractBboxArray,
+  areCropsDuplicate,
+  buildCropUrl,
+  formatFieldKeyLabel,
+} from "@/components/evidence/evidence-bbox-utils";
+import { EvidenceTable } from "@/components/evidence/evidence-table";
+import { EvidenceCropInspector } from "@/components/evidence/evidence-crop-inspector";
+import type {
+  CropItem,
+  UnifiedFieldRow,
+  FieldFilter,
+} from "@/components/evidence/evidence-types";
+import type { Configuration, Document } from "@/lib/types";
 
 export function FieldEvidenceWorkspace({
   doc,
@@ -87,38 +40,36 @@ export function FieldEvidenceWorkspace({
   provider?: Configuration["provider"];
   canWrite: boolean;
   canReview: boolean;
-  pending: boolean;
-  onRefreshCrops: () => void;
+  pending?: boolean;
+  onRefreshCrops?: () => void;
   onCorrectField: (field: string) => void;
-  onRegionSaved: () => void;
+  onRegionSaved?: () => void;
 }) {
-  const [filter, setFilter] = useState<
-    "all" | "with_crops" | "attention" | "visual"
-  >("all");
+  const [filter, setFilter] = useState<FieldFilter>("all");
   const [selectedField, setSelectedField] = useState<string>("");
-  const [showInspector, setShowInspector] = useState<boolean>(true);
+  const [showInspector, setShowInspector] = useState<boolean>(false);
   const [inspectorZoom, setInspectorZoom] = useState<number>(100);
+  const [showDevKeys, setShowDevKeys] = useState<boolean>(false);
+  const { devMode } = usePlatform();
 
   const rows = useMemo<UnifiedFieldRow[]>(() => {
     const labelMap = new Map<string, string>(columns || []);
-    const normalizedEntries = Object.entries(doc.normalized || {}).filter(
-      ([field]) => field !== "page_results",
-    );
-    const knownFields = new Set(normalizedEntries.map(([f]) => f));
-
+    const normalizedEntries = Object.entries(doc.normalized || {});
     const fieldEvidenceList = doc.validation?.field_evidence || [];
-    const visualEvidenceList = doc.validation?.visual_evidence || [];
+    const visualEvidenceList = (doc.raw?.visual_evidence as unknown[]) || [];
 
-    // Group field_evidence and visual_evidence by their target row key
     const cropsByField = new Map<string, CropItem[]>();
     const errorsByField = new Map<string, string[]>();
     const extraVisualFields = new Set<string>();
+    const knownFields = new Set<string>([
+      ...(columns || []).map(([k]) => k),
+      ...normalizedEntries.map(([k]) => k),
+    ]);
 
-    const resolveTargetField = (rawField: string): string => {
-      if (knownFields.has(rawField)) return rawField;
-      const root = baseFieldKey(rawField);
-      if (knownFields.has(root)) return root;
-      return root;
+    const resolveTargetField = (src: string) => {
+      const topKey = src.split(".")[0];
+      if (knownFields.has(topKey)) return topKey;
+      return src;
     };
 
     for (const fe of fieldEvidenceList) {
@@ -133,18 +84,36 @@ export function FieldEvidenceWorkspace({
         extraVisualFields.add(target);
       }
       const list = cropsByField.get(target) || [];
-      for (const c of fe.crops || []) {
-        const url = buildCropUrl(doc.id, c.revision, c.storage_key);
-        if (url && !list.some((existing) => existing.url === url)) {
+      for (const cRaw of fe.crops || []) {
+        const c = cRaw as Record<string, unknown>;
+        const revision = String(c.revision || "");
+        const storageKey = c.storage_key ? String(c.storage_key) : undefined;
+        const url = buildCropUrl(doc.id, revision, storageKey);
+        const bboxArray = extractBboxArray(c.bbox);
+        const imageSha256 = c.image_sha256 ? String(c.image_sha256) : undefined;
+        const pageNumber = typeof c.page_number === "number" ? c.page_number : undefined;
+        const candidate = {
+          url,
+          storageKey,
+          imageSha256,
+          pageNumber,
+          bboxArray,
+        };
+        if (
+          url &&
+          !list.some((existing) => areCropsDuplicate(existing, candidate))
+        ) {
           list.push({
             kind: "field",
             sourceField: fe.field,
-            pageNumber: c.page_number,
-            revision: c.revision,
-            storageKey: c.storage_key,
+            pageNumber,
+            revision,
+            storageKey,
             url,
             available: true,
             reviewStatus: fe.review_status,
+            imageSha256,
+            bboxArray,
           });
         }
       }
@@ -156,31 +125,52 @@ export function FieldEvidenceWorkspace({
       }
     }
 
-    for (const ve of visualEvidenceList) {
-      const target = resolveTargetField(ve.field);
+    for (const veRaw of visualEvidenceList) {
+      const ve = veRaw as Record<string, unknown>;
+      const field = String(ve.field || "");
+      const target = resolveTargetField(field);
       if (!knownFields.has(target)) {
         extraVisualFields.add(target);
       }
       const list = cropsByField.get(target) || [];
-      const url = ve.available
-        ? buildCropUrl(doc.id, ve.revision, ve.storage_key)
+      const revision = String(ve.revision || "");
+      const storageKey = ve.storage_key ? String(ve.storage_key) : undefined;
+      const url = ve.available && storageKey
+        ? buildCropUrl(doc.id, revision, storageKey)
         : undefined;
-      list.push({
-        kind: "visual",
-        sourceField: ve.field,
-        pageNumber: ve.page_number,
-        revision: ve.revision,
-        storageKey: ve.storage_key,
+      const bboxArray = extractBboxArray(ve.bbox);
+      const imageSha256 = ve.image_sha256 ? String(ve.image_sha256) : undefined;
+      const pageNumber = typeof ve.page_number === "number" ? ve.page_number : undefined;
+      const candidate = {
         url,
-        available: !!(ve.available && url),
-        observedPresent: ve.observed_present,
-        reviewStatus: ve.review_status,
-        error: ve.error,
-      });
+        storageKey,
+        imageSha256,
+        pageNumber,
+        bboxArray,
+      };
+      if (
+        !list.some((existing) => areCropsDuplicate(existing, candidate))
+      ) {
+        list.push({
+          kind: "visual",
+          sourceField: field,
+          pageNumber,
+          revision,
+          storageKey,
+          url,
+          available: !!(ve.available && url),
+          observedPresent: ve.observed_present === true ? true : ve.observed_present === false ? false : null,
+          reviewStatus: typeof ve.review_status === "string" ? ve.review_status : undefined,
+          error: typeof ve.error === "string" ? ve.error : undefined,
+          imageSha256,
+          bboxArray,
+        });
+      }
       cropsByField.set(target, list);
       if (ve.error) {
         const errs = errorsByField.get(target) || [];
-        if (!errs.includes(ve.error)) errs.push(ve.error);
+        const errStr = String(ve.error);
+        if (!errs.includes(errStr)) errs.push(errStr);
         errorsByField.set(target, errs);
       }
     }
@@ -238,11 +228,51 @@ export function FieldEvidenceWorkspace({
       };
     };
 
-    const allRows: UnifiedFieldRow[] = normalizedEntries.map(([field, value]) =>
-      buildRow(field, value, false),
-    );
+    const definedKeys = new Set((columns || []).map(([k]) => k));
+    const hasAmountRaw = (v: unknown): boolean => {
+      if (!v || typeof v !== "object") return false;
+      if (Array.isArray(v)) {
+        return v.some(
+          (item) =>
+            item &&
+            typeof item === "object" &&
+            (item as Record<string, unknown>).amount_raw != null &&
+            (item as Record<string, unknown>).amount_raw !== "",
+        );
+      }
+      const rec = v as Record<string, unknown>;
+      return rec.amount_raw != null && rec.amount_raw !== "";
+    };
 
+    const rowsFromColumns = (columns || []).map(([colKey]) => {
+      let rawVal =
+        doc.overrides?.[colKey] ??
+        (hasAmountRaw(doc.raw?.[colKey])
+          ? doc.raw?.[colKey]
+          : (doc.normalized?.[colKey] ?? doc.raw?.[colKey] ?? null));
+      if (
+        (rawVal == null ||
+          (typeof rawVal === "object" &&
+            (rawVal as Record<string, unknown>).amount_raw == null &&
+            (rawVal as Record<string, unknown>).amount == null)) &&
+        colKey === "subtotal_all_items"
+      ) {
+        rawVal =
+          doc.overrides?.subtotal ??
+          (hasAmountRaw(doc.raw?.subtotal)
+            ? doc.raw?.subtotal
+            : (doc.normalized?.subtotal ?? doc.raw?.subtotal ?? null));
+      }
+      return buildRow(colKey, rawVal, false);
+    });
+
+    const extraNormalizedRows = normalizedEntries
+      .filter(([field]) => !definedKeys.has(field))
+      .map(([field, value]) => buildRow(field, value, false));
+
+    const extraVisualRows: UnifiedFieldRow[] = [];
     for (const extraField of extraVisualFields) {
+      if (definedKeys.has(extraField) || knownFields.has(extraField)) continue;
       const extraCrops = cropsByField.get(extraField) || [];
       const observedSummary = extraCrops
         .filter((c) => c.kind === "visual")
@@ -253,7 +283,7 @@ export function FieldEvidenceWorkspace({
               ? "Absent"
               : "Uncertain",
         );
-      allRows.push(
+      extraVisualRows.push(
         buildRow(
           extraField,
           observedSummary.length ? observedSummary.join(", ") : null,
@@ -262,7 +292,9 @@ export function FieldEvidenceWorkspace({
       );
     }
 
-    return allRows;
+    return columns && columns.length > 0
+      ? [...rowsFromColumns, ...extraNormalizedRows, ...extraVisualRows]
+      : [...normalizedEntries.map(([f, v]) => buildRow(f, v, false)), ...extraVisualRows];
   }, [columns, doc, provider]);
 
   const counts = useMemo(() => {
@@ -387,6 +419,16 @@ export function FieldEvidenceWorkspace({
             {showInspector ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
             {showInspector ? "Hide inspector" : "Show inspector"}
           </button>
+          {devMode && (
+            <button
+              type="button"
+              className="dev-keys-toggle-btn"
+              onClick={() => setShowDevKeys((v) => !v)}
+              title="Toggle database schema field names"
+            >
+              {showDevKeys ? "Hide Technical Keys" : "Technical Keys"}
+            </button>
+          )}
         </div>
       </div>
 
@@ -395,421 +437,34 @@ export function FieldEvidenceWorkspace({
           "field-evidence-split " + (showInspector ? "with-inspector" : "full")
         }
       >
-        <div className="table-scroll fields-table side-by-side-table">
-          <table>
-            <thead>
-              <tr>
-                <th>Field</th>
-                <th>Effective value</th>
-                <th>Source crop evidence</th>
-                <th>Check</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredRows.length === 0 ? (
-                <tr>
-                  <td colSpan={4} className="empty-filter-row">
-                    No fields match the selected filter.{" "}
-                    <button
-                      type="button"
-                      className="text-link"
-                      onClick={() => setFilter("all")}
-                    >
-                      Show all {counts.all} fields
-                    </button>
-                  </td>
-                </tr>
-              ) : (
-                filteredRows.map((row) => {
-                  const isSelected = activeRow?.field === row.field;
-                  const availableCrops = row.crops.filter((c) => c.url);
-                  const isOverridden =
-                    doc.overrides &&
-                    Object.prototype.hasOwnProperty.call(
-                      doc.overrides,
-                      row.field,
-                    ) &&
-                    doc.overrides[row.field] !== undefined;
-
-                  return (
-                    <tr
-                      key={row.field}
-                      className={
-                        (isSelected ? "selected-field-row " : "") +
-                        (row.needsAttention ? "attention-field-row" : "")
-                      }
-                      onClick={() => setSelectedField(row.field)}
-                    >
-                      <td className="field-name-cell">
-                        <div className="field-label-wrap">
-                          <strong>{row.label}</strong>
-                          <span className="field-key-code">{row.field}</span>
-                        </div>
-                        <div className="field-tags-row">
-                          {row.isVisual && (
-                            <span className="mini-tag visual">Visual</span>
-                          )}
-                          {isOverridden && (
-                            <span className="mini-tag override">Overridden</span>
-                          )}
-                        </div>
-                      </td>
-
-                      <td className="field-value">
-                        {row.value == null &&
-                        row.result?.issues.some((i) =>
-                          [
-                            "UNRECOGNIZED_ENUM",
-                            "INVALID_OR_MISSING_ENUM",
-                          ].includes(i.code),
-                        ) ? (
-                          <span className="enum-warning-text">
-                            Unrecognized value · needs review
-                          </span>
-                        ) : (
-                          <span className="effective-value-text">
-                            {display(row.value)}
-                          </span>
-                        )}
-                        {row.crops
-                          .filter((c) => c.kind === "visual")
-                          .map((c, idx) => (
-                            <div key={idx} className="visual-observed-line">
-                              Observed:{" "}
-                              <strong>
-                                {c.observedPresent === null ||
-                                c.observedPresent === undefined
-                                  ? "uncertain"
-                                  : c.observedPresent
-                                    ? "present"
-                                    : "absent"}
-                              </strong>
-                              {c.pageNumber ? ` (P${c.pageNumber})` : ""}
-                            </div>
-                          ))}
-                      </td>
-
-                      <td className="field-crop-cell">
-                        {availableCrops.length > 0 ? (
-                          <div className="inline-crop-strip">
-                            {availableCrops.map((crop, idx) => (
-                              <div
-                                key={`${crop.storageKey || idx}`}
-                                className="inline-crop-card"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setSelectedField(row.field);
-                                  if (!showInspector) setShowInspector(true);
-                                }}
-                              >
-                                <div className="inline-crop-img-wrap">
-                                  <img
-                                    loading="lazy"
-                                    alt={`${row.label}${
-                                      crop.pageNumber
-                                        ? `, page ${crop.pageNumber}`
-                                        : ""
-                                    }`}
-                                    src={crop.url}
-                                  />
-                                </div>
-                                <div className="inline-crop-meta">
-                                  <span>
-                                    {crop.pageNumber
-                                      ? `Page ${crop.pageNumber}`
-                                      : "Crop"}
-                                  </span>
-                                  {crop.sourceField !== row.field && (
-                                    <span className="crop-subpath">
-                                      {crop.sourceField.replace(
-                                        row.field + ".",
-                                        "",
-                                      )}
-                                    </span>
-                                  )}
-                                  <Eye size={12} />
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        ) : (
-                          <div className="inline-crop-empty">
-                            <span>
-                              {row.errors[0] || "No crop image available"}
-                            </span>
-                            {canReview && (
-                              <span
-                                className="inline-region-trigger"
-                                onClick={(e) => e.stopPropagation()}
-                              >
-                                <VisualRegionEditor
-                                  documentId={doc.id}
-                                  field={row.field}
-                                  onSaved={onRegionSaved}
-                                />
-                              </span>
-                            )}
-                          </div>
-                        )}
-                      </td>
-
-                      <td className="field-check-cell">
-                        <div className="check-action-top">
-                          {row.checkStatus === "OK" ? (
-                            <span
-                              className="badge good"
-                              title="Spider-AI extraction result. Native document validation was skipped."
-                            >
-                              OK
-                            </span>
-                          ) : (
-                            <Badge value={row.checkStatus} />
-                          )}
-                          {canReview &&
-                            !row.isVisualOnly &&
-                            doc.status === "COMPLETED" && (
-                              <button
-                                type="button"
-                                className="icon-button"
-                                aria-label={"Correct " + row.label}
-                                title={"Correct " + row.label}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  onCorrectField(row.field);
-                                }}
-                              >
-                                <Pencil size={14} />
-                              </button>
-                            )}
-                        </div>
-                        {row.hasApprovedAlias && (
-                          <div className="field-issue">
-                            Normalized using approved alias
-                          </div>
-                        )}
-                        {row.result?.issues.slice(0, 2).map((i) => (
-                          <div key={i.code} className="field-issue">
-                            {i.code.replaceAll("_", " ").toLowerCase()}
-                          </div>
-                        ))}
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
-        </div>
+        <EvidenceTable
+          filteredRows={filteredRows}
+          activeField={activeRow?.field || ""}
+          showInspector={showInspector}
+          doc={doc}
+          totalAllCount={counts.all}
+          canReview={canReview}
+          onSelectField={setSelectedField}
+          onOpenInspector={() => setShowInspector(true)}
+          onFilterReset={() => setFilter("all")}
+          onCorrectField={onCorrectField}
+          onRegionSaved={onRegionSaved}
+        />
 
         {showInspector && activeRow && (
-          <aside
-            className="field-inspector-pane"
-            aria-label="Selected field evidence inspector"
-          >
-            <div className="inspector-head">
-              <div>
-                <span className="eyebrow">EVIDENCE INSPECTOR</span>
-                <h3>{activeRow.label}</h3>
-                <span className="field-key-code">{activeRow.field}</span>
-              </div>
-              <div className="inspector-nav">
-                <button
-                  type="button"
-                  className="icon-button"
-                  disabled={activeIndex <= 0}
-                  onClick={() => stepSelection(-1)}
-                  title="Previous field"
-                  aria-label="Previous field"
-                >
-                  <ChevronUp size={16} />
-                </button>
-                <span className="inspector-counter">
-                  {activeIndex >= 0 ? activeIndex + 1 : 1} /{" "}
-                  {filteredRows.length}
-                </span>
-                <button
-                  type="button"
-                  className="icon-button"
-                  disabled={
-                    activeIndex < 0 || activeIndex >= filteredRows.length - 1
-                  }
-                  onClick={() => stepSelection(1)}
-                  title="Next field"
-                  aria-label="Next field"
-                >
-                  <ChevronDown size={16} />
-                </button>
-              </div>
-            </div>
-
-            <div className="inspector-value-box">
-              <div className="inspector-value-header">
-                <span className="small-label">EFFECTIVE VALUE</span>
-                {activeRow.checkStatus === "OK" ? (
-                  <span className="badge good">OK</span>
-                ) : (
-                  <Badge value={activeRow.checkStatus} />
-                )}
-              </div>
-              <div className="inspector-effective-val">
-                {display(activeRow.value)}
-              </div>
-              <div className="inspector-actions-bar">
-                {canReview &&
-                  !activeRow.isVisualOnly &&
-                  doc.status === "COMPLETED" && (
-                    <button
-                      type="button"
-                      className="secondary compact-btn"
-                      onClick={() => onCorrectField(activeRow.field)}
-                    >
-                      <Pencil size={13} />
-                      Correct value
-                    </button>
-                  )}
-                {canReview && (
-                  <VisualRegionEditor
-                    documentId={doc.id}
-                    field={activeRow.field}
-                    onSaved={onRegionSaved}
-                  />
-                )}
-              </div>
-            </div>
-
-            <div className="inspector-crops-section">
-              <div className="inspector-crops-head">
-                <span className="small-label">
-                  SOURCE CROP EVIDENCE (
-                  {activeRow.crops.filter((c) => c.url).length})
-                </span>
-                {activeRow.crops.some((c) => c.url) && (
-                  <div className="inspector-zoom-bar">
-                    <button
-                      type="button"
-                      className="icon-button"
-                      disabled={inspectorZoom <= 75}
-                      onClick={() =>
-                        setInspectorZoom((z) => Math.max(75, z - 25))
-                      }
-                      title="Zoom out crop"
-                      aria-label="Zoom out crop"
-                    >
-                      <ZoomOut size={14} />
-                    </button>
-                    <span>{inspectorZoom}%</span>
-                    <button
-                      type="button"
-                      className="icon-button"
-                      disabled={inspectorZoom >= 200}
-                      onClick={() =>
-                        setInspectorZoom((z) => Math.min(200, z + 25))
-                      }
-                      title="Zoom in crop"
-                      aria-label="Zoom in crop"
-                    >
-                      <ZoomIn size={14} />
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              {activeRow.crops.filter((c) => c.url).length > 0 ? (
-                <div className="inspector-crop-list">
-                  {activeRow.crops
-                    .filter((c) => c.url)
-                    .map((crop, idx) => (
-                      <div
-                        key={crop.storageKey || idx}
-                        className="inspector-crop-card"
-                      >
-                        <div className="inspector-crop-viewport">
-                          <img
-                            alt={`${activeRow.label}, page ${
-                              crop.pageNumber || 1
-                            }`}
-                            style={{
-                              width:
-                                inspectorZoom === 100
-                                  ? "auto"
-                                  : `${inspectorZoom}%`,
-                              maxWidth:
-                                inspectorZoom === 100 ? "100%" : "none",
-                            }}
-                            src={crop.url}
-                          />
-                        </div>
-                        <div className="inspector-crop-foot">
-                          <div>
-                            <strong>
-                              {crop.pageNumber
-                                ? `Source page ${crop.pageNumber}`
-                                : "Source crop"}
-                            </strong>
-                            {crop.sourceField !== activeRow.field && (
-                              <span className="crop-subpath">
-                                {" · "}
-                                {crop.sourceField}
-                              </span>
-                            )}
-                            {crop.kind === "visual" && (
-                              <span className="crop-subpath">
-                                {" · Observed: "}
-                                {crop.observedPresent === null ||
-                                crop.observedPresent === undefined
-                                  ? "uncertain"
-                                  : String(crop.observedPresent)}
-                              </span>
-                            )}
-                          </div>
-                          <a
-                            className="text-link"
-                            href={
-                              crop.pageNumber
-                                ? `/api/documents/${doc.id}/pages/${crop.pageNumber}`
-                                : `/api/documents/${doc.id}/file`
-                            }
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            Open page
-                            <ExternalLink size={12} />
-                          </a>
-                        </div>
-                      </div>
-                    ))}
-                </div>
-              ) : (
-                <div className="inspector-no-crop">
-                  <Layers size={20} />
-                  <p>
-                    {activeRow.errors[0] ||
-                      "No bounding-box crop is stored for this field yet."}
-                  </p>
-                  <span>
-                    Use <strong>Select evidence region</strong> above to mark
-                    the location on the document page, or open the full PDF.
-                  </span>
-                </div>
-              )}
-            </div>
-
-            <details className="inspector-raw-details">
-              <summary>Raw, override & validation metadata</summary>
-              <pre>
-                {JSON.stringify(
-                  {
-                    raw: doc.raw?.[activeRow.field],
-                    override: doc.overrides?.[activeRow.field],
-                    evidence: activeRow.result?.metadata,
-                    issues: activeRow.result?.issues,
-                  },
-                  null,
-                  2,
-                )}
-              </pre>
-            </details>
-          </aside>
+          <EvidenceCropInspector
+            activeRow={activeRow}
+            activeIndex={activeIndex}
+            totalFiltered={filteredRows.length}
+            doc={doc}
+            canReview={canReview}
+            devMode={devMode}
+            inspectorZoom={inspectorZoom}
+            onZoomChange={setInspectorZoom}
+            onStep={stepSelection}
+            onCorrectField={onCorrectField}
+            onRegionSaved={onRegionSaved}
+          />
         )}
       </div>
     </div>

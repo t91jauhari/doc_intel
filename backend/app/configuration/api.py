@@ -20,19 +20,106 @@ ADMIN = require_roles("bank_admin")
 @router.get("/api/config")
 def configuration(user=Depends(current_user)):
     from app.schema_descriptions import with_schemas
+    import copy
 
     with SessionLocal() as db:
         cfg = latest_config(db, user.org, copy_payload=False)
+        payload = with_schemas(
+            cfg.payload,
+            {
+                name: {"schema": profile_schema(cfg.payload, name)}
+                for name in cfg.payload["profiles"]
+            },
+        )
+        if isinstance(payload.get("profiles"), dict):
+            payload["profiles"].pop("invoice_1", None)
+            payload["profiles"].pop("invoice_2", None)
+        if "invoice" in payload.get("profiles", {}):
+            inv = payload["profiles"]["invoice"]
+            payload.setdefault("invoice_profiles", {})
+            if "invoice_1" not in payload["invoice_profiles"]:
+                payload["invoice_profiles"]["invoice_1"] = {
+                    "label": "Underlying Invoice 1",
+                    "columns": [
+                        ["from_name", "Company Name (Header)"],
+                        ["from_address", "Company Address"],
+                        ["to_name", "Bill To Name"],
+                        ["to_address", "Bill To Address"],
+                        ["to_phone", "Bill To Phone"],
+                        ["ship_to_name", "Ship To Name"],
+                        ["ship_to_address", "Ship To Address"],
+                        ["ship_to_phone", "Ship To Phone"],
+                        ["invoice_number", "Invoice Number\n(what if the underlying is not an invoice)"],
+                        ["invoice_date", "Invoice Date\n(what if the underlying is not an invoice)"],
+                        ["due_date", "Due Date"],
+                        ["item_name", "Item Description"],
+                        ["quantity", "Quantity"],
+                        ["unit_price", "Unit Price"],
+                        ["final_total_amount", "Total"],
+                        ["subtotal_all_items", "Subtotal"],
+                        ["discount", "Discount"],
+                        ["subtotal_less_discount", "Subtotal Less Discount"],
+                        ["shipping_handling", "Shipping/Handling"],
+                        ["beneficiary_name", "Beneficiary Name"],
+                        ["bank_account_number", "Account Number"],
+                        ["bank_name", "Beneficiary Bank"],
+                        ["bank_address", "Address Bank"],
+                        ["swift_code", "Beneficary Bank SWIFT Code"],
+                    ],
+                    "schema": copy.deepcopy(inv.get("schema", {})),
+                    "policy": copy.deepcopy(inv.get("policy", {})),
+                    "system_prompt": inv.get("system_prompt", ""),
+                    "parse_prompt": inv.get("parse_prompt", ""),
+                }
+            if "invoice_2" not in payload["invoice_profiles"]:
+                payload["invoice_profiles"]["invoice_2"] = {
+                    "label": "Underlying Invoice 2",
+                    "columns": [
+                        ["to_name", "To (Customer Name)"],
+                        ["to_address", "To Address"],
+                        ["to_phone", "To Phone"],
+                        ["from_name", "From (Company Name)"],
+                        ["from_address", "From Address"],
+                        ["from_phone", "From Phone"],
+                        ["bank_name", "Bank Name (Payment Note)"],
+                        ["swift_code", "SWIFT Code"],
+                        ["bank_account_number", "Bank Account Number"],
+                        ["invoice_date", "Invoice Date"],
+                        ["due_date", "Due Date"],
+                        ["invoice_number", "Invoice Number"],
+                        ["item_name", "Item Name"],
+                        ["quantity", "Quantity"],
+                        ["unit_price", "Unit Price"],
+                        ["subtotal", "Subtotal"],
+                        ["subtotal_all_items", "Subtotal (All Items)"],
+                        ["final_total_amount", "Final Total Amount"],
+                        ["claim_note", "Claim No.2 (60% of Supply Equipment) Claim Note / Material Arrived at Site"],
+                    ],
+                    "schema": copy.deepcopy(inv.get("schema", {})),
+                    "policy": copy.deepcopy(inv.get("policy", {})),
+                    "system_prompt": inv.get("system_prompt", ""),
+                    "parse_prompt": inv.get("parse_prompt", ""),
+                }
+            payload.setdefault("invoice_signatures", {
+                "invoice_2_terms": [
+                    "claim no",
+                    "supply equipment",
+                    "material arrived at site",
+                    "pt tiga utama",
+                    "chem co",
+                    "dokumen underlying",
+                ],
+                "invoice_1_terms": [
+                    "ship to",
+                    "bill to",
+                    "subtotal less discount",
+                    "shipping/handling",
+                ],
+            })
         return JSONResponse({
             "id": cfg.id,
             "version": cfg.version,
-            "payload": with_schemas(
-                cfg.payload,
-                {
-                    name: {"schema": profile_schema(cfg.payload, name)}
-                    for name in cfg.payload["profiles"]
-                },
-            ),
+            "payload": payload,
             "can_edit": user.role == "bank_admin",
         })
 
@@ -44,6 +131,9 @@ class ConfigInput(BaseModel):
 
 @router.post("/api/config/publish")
 def publish_config(data: ConfigInput, user=Depends(ADMIN)):
+    if isinstance(data.payload.get("profiles"), dict):
+        data.payload["profiles"].pop("invoice_1", None)
+        data.payload["profiles"].pop("invoice_2", None)
     from app.configuration.publication import (
         publish_configuration,
         ConfigurationStorageNotReady,
@@ -70,6 +160,9 @@ def publish_config(data: ConfigInput, user=Depends(ADMIN)):
 
 @router.post("/api/config/test")
 def test_config(data: ConfigInput, user=Depends(ADMIN)):
+    if isinstance(data.payload.get("profiles"), dict):
+        data.payload["profiles"].pop("invoice_1", None)
+        data.payload["profiles"].pop("invoice_2", None)
     from app.configuration.replay import replay_configuration
 
     try:

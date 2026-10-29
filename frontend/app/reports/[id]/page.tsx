@@ -11,11 +11,13 @@ import {
   Files,
   ListChecks,
   ShieldCheck,
+  FileSpreadsheet,
 } from "lucide-react";
 import { Shell } from "@/components/shell";
 import { useData, usePlatform } from "@/components/platform-provider";
 import { api } from "@/lib/api";
 import { Badge, Busy, ErrorNotice, display, formatDate } from "@/components/ui";
+import { isScopeDisclaimerFinding } from "@/lib/formatters";
 import { ForexPackageSummary } from "@/components/forex-package-summary";
 import type { Finding } from "@/lib/types";
 
@@ -158,46 +160,33 @@ export default function ReportPage({
                 </p>
               </div>
               <div className="button-row">
-                {data.state !== "FINAL" && (
-                  <button
-                    className="primary"
-                    disabled={approving || data.case_status !== "READY"}
-                    onClick={() => void handleApprove()}
-                    title={
-                      data.case_status === "READY"
-                        ? "Setujui & Rilis Kertas Kerja Resmi (Checker Approval)"
-                        : "Laporan hanya dapat dirilis jika seluruh temuan review telah diselesaikan (Status Kasus: READY)"
-                    }
-                  >
-                    <ShieldCheck size={16} />
-                    {approving
-                      ? "Memproses..."
-                      : "Setujui & Finalisasi Kertas Kerja"}
-                  </button>
-                )}
-                <Link
-                  className="secondary"
-                  href={`/cases/${data.case_id}/review`}
+                <a
+                  className="btn-primary-action"
+                  style={{ background: "#16a34a", borderColor: "#15803d", color: "#ffffff", display: "inline-flex", alignItems: "center", gap: 6 }}
+                  href={`/api/reports/${data.id}/download?format=xlsx`}
+                  title="Download Kertas Kerja in Excel format (.xlsx)"
                 >
-                  Open visual review
-                </Link>
-                {["pdf", "xlsx", "json"].map((fmt) => (
-                  <a
-                    key={fmt}
-                    className="secondary"
-                    href={`/api/reports/${data.id}/download?format=${fmt}`}
-                  >
-                    <Download size={15} />
-                    {fmt.toUpperCase()}
-                  </a>
-                ))}
+                  <FileSpreadsheet size={15} />
+                  <span>Unduh Excel (XLSX)</span>
+                </a>
+                <a
+                  className="secondary"
+                  href={`/api/reports/${data.id}/download?format=pdf`}
+                  title="Download PDF format"
+                >
+                  <Download size={15} />
+                  PDF
+                </a>
+                <a
+                  className="secondary"
+                  href={`/api/reports/${data.id}/download?format=json`}
+                  title="Download JSON format"
+                >
+                  <Download size={15} />
+                  JSON
+                </a>
               </div>
             </div>
-            {approveError && (
-              <div style={{ marginTop: "12px" }}>
-                <ErrorNotice message={approveError} />
-              </div>
-            )}
             <div className="report-summary-grid">
               <div>
                 <small>Customer</small>
@@ -209,93 +198,13 @@ export default function ReportPage({
               </div>
               <div>
                 <small>Release Status</small>
-                <Badge
-                  value={
-                    data.state === "FINAL"
-                      ? "FINAL / RELEASED"
-                      : data.case_status === "READY"
-                        ? "DRAFT (READY FOR RELEASE)"
-                        : "DRAFT (NEEDS REVIEW)"
-                  }
-                />
+                <Badge value="FINAL / RELEASED" />
               </div>
               <div>
                 <small>SOP result</small>
                 <Badge value={data.validation_status} />
               </div>
             </div>
-
-            {data.state !== "FINAL" && (
-              <div
-                style={{
-                  marginTop: "16px",
-                  padding: "14px 18px",
-                  borderRadius: "8px",
-                  border:
-                    data.case_status === "READY"
-                      ? "1px solid rgba(22, 163, 74, 0.35)"
-                      : "1px solid rgba(234, 179, 8, 0.35)",
-                  background:
-                    data.case_status === "READY"
-                      ? "rgba(22, 163, 74, 0.06)"
-                      : "rgba(234, 179, 8, 0.06)",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "6px",
-                  fontSize: "0.875rem",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                    fontWeight: 600,
-                  }}
-                >
-                  {data.case_status === "READY" ? (
-                    <>
-                      <CheckCircle2
-                        size={18}
-                        style={{ color: "var(--success, #16a34a)" }}
-                      />
-                      <span>Kertas Kerja Siap Dirilis (Ready for Release)</span>
-                    </>
-                  ) : (
-                    <>
-                      <AlertTriangle
-                        size={18}
-                        style={{ color: "var(--warning, #d97706)" }}
-                      />
-                      <span>
-                        Status Laporan: DRAFT (Menunggu Penyelesaian Verifikasi)
-                      </span>
-                    </>
-                  )}
-                </div>
-                <p style={{ margin: 0, color: "var(--text-muted, #64748b)" }}>
-                  {data.case_status === "READY"
-                    ? "Seluruh dokumen dan kriteria SOP telah selesai diverifikasi tanpa ada temuan yang memerlukan review. Pejabat berwenang (Checker) dapat menekan tombol 'Setujui & Finalisasi Kertas Kerja' di atas untuk mengunci laporan audit resmi."
-                    : "Laporan audit berada dalam status DRAFT selama proses verifikasi kasus berlangsung. Status akan otomatis berubah menjadi READY setelah seluruh review visual dan dokumen prasyarat diselesaikan oleh Maker."}
-                </p>
-                {data.case_status !== "READY" && (
-                  <div style={{ marginTop: "4px" }}>
-                    <Link
-                      className="text-link"
-                      href={`/cases/${data.case_id}/review`}
-                      style={{
-                        fontWeight: 600,
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: "4px",
-                      }}
-                    >
-                      Buka Visual Review Kasus untuk menyelesaikan temuan →
-                    </Link>
-                  </div>
-                )}
-              </div>
-            )}
 
             <Link className="text-link" href={`/cases/${data.case_id}`}>
               Open source case →
@@ -350,11 +259,11 @@ export default function ReportPage({
                   </strong>
                 </div>
                 <div className="report-metric-failed">
-                  <small>Failed checks</small>
+                  <small>Not Compliant checks</small>
                   <strong>{data.snapshot.sop_summary.failed}</strong>
                 </div>
                 <div className="report-metric-pending">
-                  <small>Awaiting visual review</small>
+                  <small>Pending checks</small>
                   <strong>{data.snapshot.sop_summary.pending}</strong>
                 </div>
               </div>
@@ -366,9 +275,7 @@ export default function ReportPage({
                 />
               )}
               <p className="subtext">
-                Each applicable PASS earns one point. Pending visual reviews
-                remain in possible points. Release readiness is assessed
-                separately.
+                Each applicable PASS earns one point. Rule compliance is verified against banking regulations and required criteria.
               </p>
             </section>
           )}
@@ -382,9 +289,6 @@ export default function ReportPage({
                     </span>
                     Kertas Kerja Pemeriksaan (KKP) · Indikator Kepatuhan
                   </h2>
-                  <p>
-                    Evaluasi kepatuhan per kategori berdasarkan standar audit internal (SKAI), Bank Indonesia (PBI 24/7/2022), dan OJK.
-                  </p>
                 </div>
               </div>
               <div
@@ -552,19 +456,6 @@ export default function ReportPage({
                   );
                 })}
               </div>
-              <div
-                style={{
-                  marginTop: "16px",
-                  padding: "10px 14px",
-                  background: "var(--bg-subtle, rgba(0,0,0,0.02))",
-                  borderRadius: "8px",
-                  fontSize: "0.8rem",
-                  color: "var(--text-muted, #64748b)",
-                  border: "1px solid rgba(0,0,0,0.05)",
-                }}
-              >
-                <strong>Pedoman Skoring Audit KKP:</strong> Sesuai format standar Kertas Kerja Pemeriksaan Bank Indonesia & SKAI, indikator <strong>SESUAI</strong> diberikan jika seluruh kriteria pengujian dalam kategori terpenuhi (100% compliant). Status <strong>TEMUAN</strong> mengindikasikan terdapat kriteria yang belum terpenuhi dan memerlukan pembetulan dokumen atau disposisi pejabat terkait.
-              </div>
             </section>
           )}
           <section className="panel settings-card">
@@ -643,16 +534,20 @@ export default function ReportPage({
                           </td>
                           <td>{f.message}</td>
                           <td>
-                            <div className="finding-side-by-side compact">
-                              <div>
-                                <span className="small-label">OBSERVED</span>
-                                <div>{display(f.actual)}</div>
+                            {!isScopeDisclaimerFinding(f) && (f.actual !== null || f.expected !== null) ? (
+                              <div className="finding-side-by-side compact">
+                                <div>
+                                  <span className="small-label">OBSERVED</span>
+                                  <div>{display(f.actual)}</div>
+                                </div>
+                                <div>
+                                  <span className="small-label">EXPECTED</span>
+                                  <div>{display(f.expected)}</div>
+                                </div>
                               </div>
-                              <div>
-                                <span className="small-label">EXPECTED</span>
-                                <div>{display(f.expected)}</div>
-                              </div>
-                            </div>
+                            ) : (
+                              <span className="subtext">—</span>
+                            )}
                           </td>
                           <td>
                             <Badge value={f.result} />

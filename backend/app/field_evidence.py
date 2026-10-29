@@ -141,6 +141,12 @@ def build_field_evidence(doc, response):
     result, source = [], None
     try:
         entries = dict(populated_fields(raw))
+        for prefix in ["beneficiary", "remitter", "applicant", "bank"]:
+            ft_key = f"{prefix}.full_text"
+            nm_key = f"{prefix}.name"
+            if ft_key in entries and nm_key in entries:
+                if str(entries[ft_key]).strip() == str(entries[nm_key]).strip():
+                    entries.pop(ft_key, None)
         for path in metadata.get("spatial_evidence", {}):
             value = at_path(raw, path)
             if isinstance(value, dict) and set(value) == {"raw", "complete"}:
@@ -151,6 +157,9 @@ def build_field_evidence(doc, response):
                     entries[path] = value["raw"]
             elif isinstance(value, (dict,list)):
                 entries[path] = value
+                if isinstance(value, dict) and "name" in value and "full_text" in value:
+                    if str(value.get("name", "")).strip() == str(value.get("full_text", "")).strip():
+                        entries.pop(f"{path}.full_text", None)
         allowed = dict(populated_fields(raw, include_empty=True))
         entries.update({field: allowed[field] for field in manual if field in allowed})
         for field, value in entries.items():
@@ -195,6 +204,14 @@ def build_field_evidence(doc, response):
                     "; ".join(errors)
                     or "No localized source evidence returned; select a region for review."
                 )
+            seen_boxes = set()
+            unique_boxes = []
+            for b in (boxes or []):
+                k = (b.get("page_number"), tuple(b.get("box", [])))
+                if k not in seen_boxes:
+                    seen_boxes.add(k)
+                    unique_boxes.append(b)
+            boxes = unique_boxes
             for i, box in enumerate(boxes):
                 try:
                     if source is None:

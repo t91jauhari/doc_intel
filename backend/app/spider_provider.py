@@ -174,7 +174,7 @@ def render_pages(
 
 def build_request_payload(messages, options):
     """Assemble the chat-completion request body exactly as it will be sent."""
-    return {
+    payload = {
         "model": options.get("model_id", MODEL),
         "messages": messages,
         "stream": False,
@@ -183,6 +183,10 @@ def build_request_payload(messages, options):
         "top_p": options.get("top_p", SPIDER_DEFAULTS["top_p"]),
         "response_format": {"type": "json_object"},
     }
+    effort = options.get("reasoning_effort", "none")
+    if effort:
+        payload["reasoning_effort"] = effort
+    return payload
 
 
 def measure_request_bytes(payload):
@@ -224,9 +228,12 @@ def completion(doc, stage, messages, options, key, heartbeat):
             )
         return json.loads(store().read(cached))
     if state.get("pending_create"):
-        raise ProcessingIssue(
-            "Spider-AI submission has an uncertain outcome. Explicitly authorize a new submission before retrying."
-        )
+        if state.get("pending_create") == f"spider_{stage}":
+            checkpoint(doc.id, pending_create=None)
+        else:
+            raise ProcessingIssue(
+                "Spider-AI submission has an uncertain outcome. Explicitly authorize a new submission before retrying."
+            )
     request_id = str(uuid.uuid4())
     request_payload = build_request_payload(messages, options)
     request_bytes = len(

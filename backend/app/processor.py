@@ -54,7 +54,7 @@ def process_job(job_id, heartbeat=lambda: None):
                 active.lease_until = time.time() + 600
 
     try:
-        if doc.raw and job.action != "reextract":
+        if doc.raw and job.action != "reextract" and doc.doc_type in cfg.get("profiles", {}):
             response = {
                 "extract_result": doc.raw,
                 "extract_metadata": doc.metadata_json,
@@ -78,8 +78,8 @@ def process_job(job_id, heartbeat=lambda: None):
                 stored.classification = classification
             # Save raw extraction before validation so invalid schemas never cause another paid job.
             if (
-                cfg.get("provider") == "spider-ai"
-                and cfg["profiles"][doc.doc_type].get("validation_adapter") != "schema"
+                cfg.get("provider") in {"spider-ai", "gemini"}
+                and cfg.get("profiles", {}).get(doc.doc_type, {}).get("validation_adapter") != "schema"
             ):
                 from .spider_result import extraction_report
 
@@ -87,7 +87,7 @@ def process_job(job_id, heartbeat=lambda: None):
             else:
                 report = validate_extraction(doc, cfg, response)
             evidence = build_evidence(doc, response)
-            if cfg.get("provider") == "spider-ai":
+            if cfg.get("provider") in {"spider-ai", "gemini"}:
                 report["visual_evidence"] = evidence
             else:
                 apply_evidence_review(report, evidence)
@@ -103,8 +103,16 @@ def process_job(job_id, heartbeat=lambda: None):
                 stored.normalized = report["normalized"]
                 stored.validation = report
                 stored.validation_status = report["status"]
-                stored.status = "COMPLETED"
-                stored.error = ""
+                stored.status = (
+                    "NEEDS_CLASSIFICATION"
+                    if report.get("status") == "NEEDS_CLASSIFICATION"
+                    else "COMPLETED"
+                )
+                stored.error = (
+                    "Document classification needs confirmation before extraction."
+                    if report.get("status") == "NEEDS_CLASSIFICATION"
+                    else ""
+                )
         with SessionLocal.begin() as db:
             db.scalar(select(Case).where(Case.id == doc.case_id).with_for_update())
             job = db.get(Job, job_id)

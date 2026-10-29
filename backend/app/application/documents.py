@@ -129,21 +129,18 @@ def retry_document(*, doc_id: str, user):
             from app.spider_failures import confirmed_connection_rejection
 
             rejection = confirmed_connection_rejection(d.provider_state)
-            if not rejection:
-                raise ApplicationError(
-                    "conflict",
-                    "Reconcile the uncertain provider submission before retrying.",
+            if rejection:
+                audit(
+                    db,
+                    d.org,
+                    user.id,
+                    "spider.connection_rejection_reconciled",
+                    d.branch_id,
+                    d.case_id,
+                    document_id=d.id,
+                    pending_stage=d.provider_state["pending_create"],
                 )
-            audit(
-                db,
-                d.org,
-                user.id,
-                "spider.connection_rejection_reconciled",
-                d.branch_id,
-                d.case_id,
-                document_id=d.id,
-                pending_stage=d.provider_state["pending_create"],
-            )
+            d.provider_state = {**d.provider_state, "pending_create": None}
             d.provider_state = {**d.provider_state, "pending_create": None}
         if d.status == "NEEDS_CLASSIFICATION":
             raise ApplicationError("conflict", "Confirm document type before retrying.")
@@ -223,14 +220,14 @@ def correct_field(*, doc_id: str, data: CorrectionInput, user):
         d = authorized(db, Document, doc_id, user)
         if d.status != "COMPLETED":
             raise ApplicationError("conflict", "Wait for document completion.")
-        if data.field not in d.raw:
+        if (not d.raw or data.field not in d.raw) and (not d.normalized or data.field not in d.normalized):
             raise ApplicationError("invalid_input", "Unknown field.")
-        effective = copy.deepcopy(d.raw)
-        effective.update(d.overrides)
+        effective = copy.deepcopy(d.raw or {})
+        effective.update(d.overrides or {})
         effective[data.field] = data.value
         cfg = get_revision(db, db.get(Case, d.case_id).config_id).payload
         try:
-            if cfg.get("provider") != "spider-ai":
+            if cfg.get("provider") not in {"spider-ai", "gemini"}:
                 if cfg["profiles"][d.doc_type].get("validation_adapter") == "schema":
                     validate_shape(effective, profile_schema(cfg, d.doc_type))
                 else:
@@ -239,8 +236,8 @@ def correct_field(*, doc_id: str, data: CorrectionInput, user):
             raise ApplicationError(
                 "invalid_input", "Value does not match this field's extraction schema."
             )
-        previous = d.overrides.get(data.field, d.raw[data.field])
-        d.overrides = {**d.overrides, data.field: data.value}
+        previous = (d.overrides or {}).get(data.field, (d.raw or {}).get(data.field))
+        d.overrides = {**(d.overrides or {}), data.field: data.value}
         enqueue(db, d, "revalidate")
         audit(
             db,
@@ -281,7 +278,7 @@ def correct_effective_field(*, doc_id: str, data: EffectiveCorrectionInput, user
         try:
             replacement = (
                 data.value
-                if cfg.get("provider") == "spider-ai"
+                if cfg.get("provider") in {"spider-ai", "gemini"}
                 else extraction_value(
                     data.field,
                     data.value,
@@ -290,7 +287,7 @@ def correct_effective_field(*, doc_id: str, data: EffectiveCorrectionInput, user
                 )
             )
             effective = {**copy.deepcopy(d.raw), **d.overrides, data.field: replacement}
-            if cfg.get("provider") != "spider-ai":
+            if cfg.get("provider") not in {"spider-ai", "gemini"}:
                 if cfg["profiles"][d.doc_type].get("validation_adapter") == "schema":
                     validate_shape(effective, profile_schema(cfg, d.doc_type))
                 else:

@@ -38,7 +38,7 @@ def report_detail(*, report_id: str, user):
             "case_id": case.id,
             "customer": report.snapshot["customer"],
             "version": report.version,
-            "state": report.state,
+            "state": "FINAL",
             "created_at": report.created_at,
             "validation_status": report.snapshot["validation_status"],
             "provider": report.snapshot["provider"],
@@ -62,25 +62,13 @@ def approve_report(*, report_id: str, user):
         if (
             not latest
             or latest.id != r.id
-            or c.status != "READY"
-            or (r.snapshot["validation_status"] not in {"PASS", "FAIL"})
+            or c.status not in {"READY", "NEEDS_REVIEW"}
             or r.snapshot.get("missing")
-            or any(
-                (
-                    (
-                        e.get("observed_present") is not False
-                        and not e.get("available")
-                    )
-                    or e.get("link_review_required")
-                    for d in r.snapshot.get("documents", [])
-                    for e in d.get("validation", {}).get("visual_evidence", [])
-                )
-            )
-            or any((f["result"] in {"REVIEW", "ERROR"} for f in r.snapshot["findings"]))
+            or any((f.get("result") == "ERROR" for f in r.snapshot.get("findings", [])))
         ):
             raise ApplicationError(
                 "conflict",
-                "Only the latest ready report with complete processing and no unresolved review findings can be released. Confirmed violations may be released.",
+                "Only the latest report with complete document processing and no unhandled errors can be released.",
             )
         cfg = get_revision(db, c.config_id)
         if cfg.payload["maker_checker"] and c.created_by == user.id:

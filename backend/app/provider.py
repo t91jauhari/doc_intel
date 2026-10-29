@@ -70,6 +70,19 @@ def run_llama(doc, cfg, heartbeat):
 def validate_extraction(doc, cfg, response, authoritative=None):
     from .configuration.field_checks import apply_field_checks
 
+    if doc.doc_type not in cfg.get("profiles", {}):
+        return {
+            "document_type": doc.doc_type,
+            "status": "NEEDS_CLASSIFICATION",
+            "normalized": {},
+            "fields": {},
+            "issues": [{"code": "UNKNOWN_PROFILE", "message": f"Document profile '{doc.doc_type}' is not configured."}],
+        }
+
+    if cfg.get("provider") in {"spider-ai", "gemini"}:
+        from .spider_result import extraction_report
+        return extraction_report(doc, cfg, response)
+
     if cfg["profiles"][doc.doc_type].get("validation_adapter") == "schema":
         return apply_field_checks(
             schema_report(doc, cfg, response), cfg["profiles"][doc.doc_type]

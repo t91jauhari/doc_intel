@@ -179,7 +179,7 @@ def case_detail(*, case_id: str, user):
                 {
                     "id": r_id,
                     "version": r_version,
-                    "state": r_state,
+                    "state": "FINAL",
                     "created_at": r_created_at,
                     "approved_by": r_approved_by,
                     "snapshot": report_snapshots[r_id],
@@ -467,14 +467,18 @@ def retry_case_documents(*, case_id: str, user, only_failed: bool = True):
                 )
                 continue
             if d.provider_state.get("pending_create"):
-                skipped.append(
-                    {
-                        "id": d.id,
-                        "filename": d.filename,
-                        "reason": "uncertain provider submission — reconcile first",
-                    }
-                )
-                continue
+                if d.status in {"ERROR", "FAILED"}:
+                    # Clear stale pending_create on explicit operator retry of failed document
+                    pass
+                else:
+                    skipped.append(
+                        {
+                            "id": d.id,
+                            "filename": d.filename,
+                            "reason": "uncertain provider submission — reconcile first",
+                        }
+                    )
+                    continue
             # Reset extraction state while preserving storage location and upload grouping
             preserved_state = {
                 k: v

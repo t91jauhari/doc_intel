@@ -32,6 +32,7 @@ def route(filename, cfg):
         "invoice": "invoice",
         "ektp": "ektp",
         "surat pernyataan pembelian valas": "unknown",
+        "surat pernyataan valas": "unknown",
     }
     for name, profile in cfg["profiles"].items():
         for suffix in profile["suffixes"]:

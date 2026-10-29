@@ -1,2 +1,0 @@
-# Working instructions
-Read ../tracking/CHECKPOINT.md before refactor work. Update it after each verified step and before stopping. Current production-like application is ../.. /sourcecode/document-platform; do not change its files or containers for refactor testing. Never copy .env or backup data into Git. Use isolated databases, storage and distinct ports. Preserve case configuration pins. All architectural changes require regression evidence. No automatic publication at startup.

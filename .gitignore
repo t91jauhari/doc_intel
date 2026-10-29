@@ -1,16 +1,48 @@
+# Environment & Secrets
 .env
+.env.*
+!.env.example
+
+# Python runtime & caches
 .venv/
-data/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+
+# Node & Next.js
 frontend/node_modules/
 frontend/.next/
-__pycache__/
-*.pyc
-.pytest_cache/
+frontend/out/
 *.tsbuildinfo
+.npm/
+
+# Local database & storage mounts
+data/
 engine/outputs/
+
+# Redundant workspace clones and scratch areas
+refactor/
+sourcecode/
 scratch/
-*.xlsx
 scripts/scratch/
+
+# Office documents and test data dumps (preserve official templates and docs)
+*.xlsx
+!templates/*.xlsx
+!docs/**/*.xlsx
+~$*.xlsx
+*.csv.tmp
+
+# Image & visual dumps
+page_rendered.png
+*.png.tmp
+
+# Ad-hoc inspection and maintenance scripts
 scripts/inspect_*.py
 scripts/patch_*.py
 scripts/check_*.py
@@ -23,4 +55,10 @@ scripts/test_*.py
 !scripts/test_export_public_source.py
 scripts/build_*.py
 
+# Loose scratch files
+_enum.py
+_tree.txt
 
+# Documentation & markdown files
+*.md
+**/*.md

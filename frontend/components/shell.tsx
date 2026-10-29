@@ -45,11 +45,13 @@ export function Shell({
   title,
   subtitle,
   action,
+  hideHero = false,
 }: {
   children: React.ReactNode;
   title: string;
   subtitle: string;
   action?: React.ReactNode;
+  hideHero?: boolean;
 }) {
   const { user, loading, online, signOut, upload, notify } = usePlatform();
   const pathname = usePathname(),
@@ -217,20 +219,22 @@ export function Shell({
           </div>
         )}
         <main id="main-content" tabIndex={-1}>
-          <div className={`page-head corporate-hero tone-${identity.tone}`}>
-            <div className="page-heading-group">
-              <span className="page-emblem">
-                <PageIcon size={28} strokeWidth={1.6} aria-hidden />
-              </span>
-              <div className="page-heading-copy">
-                <div className="eyebrow">{identity.label}</div>
-                <h1>{title}</h1>
-                <p>{subtitle}</p>
+          {!hideHero && (
+            <div className={`page-head corporate-hero tone-${identity.tone}`}>
+              <div className="page-heading-group">
+                <span className="page-emblem">
+                  <PageIcon size={28} strokeWidth={1.6} aria-hidden />
+                </span>
+                <div className="page-heading-copy">
+                  <div className="eyebrow">{identity.label}</div>
+                  <h1>{title}</h1>
+                  <p>{subtitle}</p>
+                </div>
               </div>
+              {action && <div className="page-actions">{action}</div>}
+              <PagePath path={pathname} />
             </div>
-            {action && <div className="page-actions">{action}</div>}
-            <PagePath path={pathname} />
-          </div>
+          )}
           {children}
         </main>
         <footer className="page-footer">

@@ -8,6 +8,9 @@ from account_opening.profiles import REFERENCE as ACCOUNT_REFERENCE
 
 
 def validate_config(payload):
+    if isinstance(payload.get("profiles"), dict):
+        payload["profiles"].pop("invoice_1", None)
+        payload["profiles"].pop("invoice_2", None)
     from app.configuration.bootstrap import default_config
     from app.configuration.contracts import validate_envelope
 

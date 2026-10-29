@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import {
@@ -8,21 +8,19 @@ import {
   X,
   ArrowRight,
   ShieldCheck,
+  FolderPlus,
+  Info,
 } from "lucide-react";
 import { Shell } from "@/components/shell";
 import { useData, usePlatform } from "@/components/platform-provider";
 import { api } from "@/lib/api";
 import { Busy, ErrorNotice } from "@/components/ui";
 import type { Branch, ConfigResponse, CaseDetail } from "@/lib/types";
-import {familyCatalog} from "@/lib/document-family";
+import { familyCatalog } from "@/lib/document-family";
 import {
   GroupingDialog,
   type GroupingRow as Preview,
 } from "@/components/grouping-dialog";
-import {
-  TemplateChoiceDialog,
-  type TemplateOption,
-} from "@/components/template-choice-dialog";
 function UploadForm() {
   const router = useRouter(),
     params = useSearchParams(),
@@ -35,9 +33,7 @@ function UploadForm() {
   const [files, setFiles] = useState<File[]>([]),
     [preview, setPreview] = useState<Preview[]>([]),
     [branch, setBranch] = useState(attachBranch),
-    // No default: the flow must be confirmed explicitly for this batch.
-    [template, setTemplate] = useState("");
-  const [choiceOpen, setChoiceOpen] = useState(false);
+    [template, setTemplate] = useState(params.get("template") || "");
   const [error, setError] = useState(""),
     [pending, setPending] = useState(false),
     [dragging, setDragging] = useState(false);
@@ -47,9 +43,51 @@ function UploadForm() {
   const previewRequest = useRef(0);
   const input = useRef<HTMLInputElement>(null),
     key = useRef("");
+
+  const templateOptions = useMemo(() => {
+    if (!cfg?.payload.templates) return [];
+    const catalog = familyCatalog(cfg.payload);
+    return Object.entries(cfg.payload.templates)
+      .filter(
+        ([, t]) =>
+          t.enabled !== false &&
+          catalog[t.document_family || "forex"]?.enabled !== false,
+      )
+      .map(([id, t]) => ({
+        id,
+        label: t.label || id,
+        description: t.description,
+      }));
+  }, [cfg]);
+  const isAdmin =
+    user?.role === "bank_admin" ||
+    user?.role === "admin" ||
+    user?.role === "superadmin";
+
+  const canChangeBranch = isAdmin || (user?.branches && user.branches.length > 1);
+
+  const displayedBranches = useMemo(() => {
+    if (!branches?.length) return [];
+    if (isAdmin || !user?.branches?.length) return branches;
+    const filtered = branches.filter((b) => user.branches.includes(b.id));
+    return filtered.length > 0 ? filtered : branches;
+  }, [branches, isAdmin, user]);
+
+  const userManuallyChangedBranch = useRef(false);
+
   useEffect(() => {
-    if (!branch && branches?.length) setBranch(branches[0].id);
-  }, [branches, branch]);
+    if (caseId || attachBranch || userManuallyChangedBranch.current) return;
+    if (user?.branches?.length && branches?.length) {
+      const userBranchId =
+        user.branches.find((ub) => branches.some((b) => b.id === ub)) ||
+        user.branches[0];
+      if (userBranchId && branch !== userBranchId) {
+        setBranch(userBranchId);
+      }
+    } else if (!branch && branches?.length) {
+      setBranch(branches[0].id);
+    }
+  }, [branches, user, branch, caseId, attachBranch]);
   useEffect(() => {
     // Only auto-pick when the flow is pinned by an existing case; free uploads
     // require an explicit choice through the confirmation dialog.
@@ -64,7 +102,11 @@ function UploadForm() {
     if (!caseId) return;
     let active = true;
     api<CaseDetail>(`/cases/${caseId}`).then(value => {
-      if (active) { setAttachedCase(value); setTemplate(value.template); }
+      if (active) {
+        setAttachedCase(value);
+        setTemplate(value.template);
+        if (value.branch_id) setBranch(value.branch_id);
+      }
     }).catch(e => { if (active) setError(e instanceof Error ? e.message : "Unable to load existing case"); });
     return () => { active = false; };
   }, [caseId]);
@@ -111,7 +153,6 @@ function UploadForm() {
       setPreview(normalized);
       if (!caseId && normalized.some((p) => p.status === "unresolved"))
         setGroupingOpen(true);
-      else if (!caseId) setChoiceOpen(true);
     } catch (e) {
       if (request === previewRequest.current)
         setError(e instanceof Error ? e.message : "Preview unavailable.");
@@ -160,8 +201,12 @@ function UploadForm() {
   ).size;
   return (
     <Shell
-      title={caseId ? "Add documents to case" : "Bulk upload"}
-      subtitle="Match customer names across the batch, review uncertain matches, then process."
+      title={caseId ? "Add Supplementary Documents" : "Bulk upload"}
+      subtitle={
+        caseId
+          ? `Upload additional or missing mandatory documents for case ${attachedCase?.reference ? `"${attachedCase.reference}"` : ""} (${attachedCase?.customer || "Customer"}). All uploaded documents will be processed and verified as part of the existing case workflow.`
+          : "Match customer names across the batch, review uncertain matches, then process."
+      }
     >
       {groupingOpen && (
         <GroupingDialog
@@ -172,27 +217,7 @@ function UploadForm() {
             setPreview(rows);
             setGroupingOpen(false);
             key.current = crypto.randomUUID();
-            if (!caseId && !template) setChoiceOpen(true);
           }}
-        />
-      )}
-      {choiceOpen && !caseId && (
-        <TemplateChoiceDialog
-          options={Object.entries(cfg?.payload.templates || {})
-            .filter(([, t]) => t.enabled !== false && familyCatalog(cfg?.payload)[t.document_family||"forex"]?.enabled!==false)
-            .map(([id, t]): TemplateOption => ({
-              id,
-              label: t.label || id,
-              description: t.description,
-            }))}
-          selected={template}
-          busy={pending || previewPending}
-          onConfirm={(value) => {
-            setTemplate(value);
-            setChoiceOpen(false);
-            key.current = crypto.randomUUID();
-          }}
-          onClose={() => setChoiceOpen(false)}
         />
       )}
       {user?.role === "auditor" ? (
@@ -200,14 +225,73 @@ function UploadForm() {
       ) : (
         <div className="upload-layout">
           <section className="panel upload-panel">
+            {caseId && (
+              <div
+                style={{
+                  padding: "16px 20px",
+                  background: "#f0fdf4",
+                  border: "1px solid #bbf7d0",
+                  borderRadius: "10px",
+                  marginBottom: "20px",
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: "14px",
+                }}
+              >
+                <div
+                  style={{
+                    padding: "8px",
+                    background: "#dcfce7",
+                    borderRadius: "8px",
+                    color: "#15803d",
+                    flexShrink: 0,
+                  }}
+                >
+                  <FolderPlus size={20} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap", marginBottom: "4px" }}>
+                    <strong style={{ fontSize: "15px", color: "#166534" }}>
+                      Upload Supplementary Documents for Existing Case
+                    </strong>
+                    {attachedCase && (
+                      <span
+                        style={{
+                          fontSize: "11px",
+                          fontWeight: 700,
+                          background: "#ffffff",
+                          color: "#166534",
+                          padding: "2px 8px",
+                          borderRadius: "12px",
+                          border: "1px solid #bbf7d0",
+                        }}
+                      >
+                        Case: {attachedCase.reference}
+                      </span>
+                    )}
+                  </div>
+                  <p style={{ margin: "0 0 8px", fontSize: "13px", color: "#374151", lineHeight: 1.5 }}>
+                    This page is used to upload documents to a specific ongoing case (<strong>{attachedCase?.customer || "Current Customer"}</strong>). Use this when the case requires another mandatory document, or when you need to attach missing documents required by the SOP compliance workflow.
+                  </p>
+                  <div style={{ display: "flex", gap: "16px", fontSize: "12px", color: "#4b5563", flexWrap: "wrap" }}>
+                    <span>✓ Documents are automatically linked to this case package</span>
+                    <span>✓ SOP compliance checks rerun automatically after extraction</span>
+                  </div>
+                </div>
+              </div>
+            )}
             <div className="section-head">
               <div>
                 <h2>
                   {caseId
-                    ? "Supplement an existing case"
+                    ? "Upload Missing or Supplementary Documents"
                     : "A batch, one upload"}
                 </h2>
-                <p>Processing continues when you leave this screen.</p>
+                <p>
+                  {caseId
+                    ? "Select and upload the missing mandatory documents required to complete this customer case."
+                    : "Processing continues when you leave this screen."}
+                </p>
               </div>
               <span className="small-label">PDF · UP TO 30 MB EACH</span>
             </div>
@@ -216,10 +300,14 @@ function UploadForm() {
                 Branch
                 <select
                   value={branch}
-                  disabled={!!caseId || pending}
-                  onChange={(e) => setBranch(e.target.value)}
+                  disabled={!canChangeBranch || !!caseId || pending}
+                  onChange={(e) => {
+                    userManuallyChangedBranch.current = true;
+                    setBranch(e.target.value);
+                  }}
+                  title={!canChangeBranch ? "Branch is assigned based on your user profile" : undefined}
                 >
-                  {branches?.map((b) => (
+                  {displayedBranches.map((b) => (
                     <option key={b.id} value={b.id}>
                       {b.name}
                     </option>
@@ -227,7 +315,7 @@ function UploadForm() {
                 </select>
               </label>
               <label>
-                Transaction flow
+                Transaction Flow Type
                 {caseId && attachedCase ? (
                   <select value={template} disabled>
                     <option value={attachedCase.template}>
@@ -236,36 +324,30 @@ function UploadForm() {
                       · pinned configuration
                     </option>
                   </select>
-                ) : template ? (
-                  <span className="template-chip">
-                    <strong>
-                      {cfg?.payload.templates[template]?.label || template}
-                    </strong>
-                    <button
-                      type="button"
-                      className="link-button"
-                      disabled={pending || previewPending}
-                      onClick={() => setChoiceOpen(true)}
-                    >
-                      Change
-                    </button>
-                  </span>
                 ) : (
-                  <span className="template-chip unset">
-                    Not chosen yet
-                    <button
-                      type="button"
-                      className="link-button"
-                      disabled={!files.length || previewPending}
-                      onClick={() => setChoiceOpen(true)}
-                    >
-                      Choose
-                    </button>
-                  </span>
+                  <select
+                    value={template}
+                    disabled={pending}
+                    onChange={(e) => {
+                      setTemplate(e.target.value);
+                      key.current = crypto.randomUUID();
+                    }}
+                  >
+                    <option value="">Select Transaction Flow Type…</option>
+                    {templateOptions.map((t) => (
+                      <option key={t.id} value={t.id}>
+                        {t.label}
+                      </option>
+                    ))}
+                  </select>
                 )}
               </label>
             </div>
-            {caseId && cfg?.payload.templates[template]?.description && <div className="info-note">{cfg.payload.templates[template].description}</div>}
+            {template && cfg?.payload.templates[template]?.description && (
+              <div className="info-note" style={{ margin: "10px 25px 0" }}>
+                {cfg.payload.templates[template].description}
+              </div>
+            )}
             <div
               className={"dropzone " + (dragging ? "dragging" : "")}
               onDragOver={(e) => {
@@ -282,14 +364,14 @@ function UploadForm() {
               <div className="drop-icon">
                 <UploadCloud size={29} />
               </div>
-              <h3>Drop customer documents here</h3>
-              <p>Or choose a batch from your computer</p>
+              <h3>{caseId ? "Drop supplementary documents here" : "Drop customer documents here"}</h3>
+              <p>{caseId ? "Select additional files for this case from your computer" : "Or choose a batch from your computer"}</p>
               <button
                 className="secondary"
                 disabled={pending}
                 onClick={() => input.current?.click()}
               >
-                Browse files
+                {caseId ? "Browse supplementary files" : "Browse files"}
               </button>
               <input
                 ref={input}
@@ -443,7 +525,11 @@ function UploadForm() {
               <span>
                 {pending
                   ? "Upload " + (upload?.progress || 0) + "%"
-                  : "Classification verifies the schema after grouping."}
+                  : !template && files.length
+                    ? "Select a Transaction Flow Type above to proceed."
+                    : caseId
+                      ? "Uploaded files will be directly attached to this case package."
+                      : "Classification verifies the schema after grouping."}
               </span>
               <button
                 className="primary"
@@ -458,7 +544,11 @@ function UploadForm() {
                 }
                 onClick={() => void submit()}
               >
-                {pending ? "Uploading…" : "Upload & start processing"}
+                {pending
+                  ? "Uploading…"
+                  : caseId
+                    ? "Upload & Attach to Case"
+                    : "Upload & start processing"}
                 <ArrowRight size={17} />
               </button>
             </div>
@@ -467,40 +557,64 @@ function UploadForm() {
             <div className="guidance-icon">
               <ShieldCheck size={23} />
             </div>
-            <h3>Names bring the case together.</h3>
-            <p>
-              Full names and unambiguous initials are matched automatically.
-              Review uncertain assignments before processing.
-            </p>
-            <div className="filename-example">
-              customer_transaction.pdf
-              <br />
-              customer_lld.pdf
-              <br />
-              customer_invoice.pdf
-            </div>
-            <ol>
-              <li>
-                <strong>Group first</strong>
-                <span>
-                  Same customer label, selected branch and upload batch.
-                </span>
-              </li>
-              <li>
-                <strong>Classify next</strong>
-                <span>The configured provider verifies the document type.</span>
-              </li>
-              <li>
-                <strong>Extract and check</strong>
-                <span>
-                  The matching schema and SOP rules run automatically.
-                </span>
-              </li>
-            </ol>
-            <p className="subtext">
-              Later uploads create new cases unless explicitly attached to an
-              existing case.
-            </p>
+            {caseId ? (
+              <>
+                <h3>Supplementary Intake</h3>
+                <p>
+                  Documents uploaded here will be attached directly to customer case <strong>{attachedCase?.reference || caseId}</strong> ({attachedCase?.customer || "Customer"}).
+                </p>
+                <div style={{ marginTop: "14px", fontSize: "13px", color: "var(--text-muted)" }}>
+                  <p style={{ margin: "0 0 8px", fontWeight: 600, color: "var(--text)" }}>
+                    When to use this page:
+                  </p>
+                  <ul style={{ paddingLeft: "18px", margin: "0 0 12px", display: "flex", flexDirection: "column", gap: "6px" }}>
+                    <li>To fulfill missing mandatory documents required by SOP.</li>
+                    <li>To provide supplementary customer identity (e-KTP) or transaction slips.</li>
+                    <li>To replace unreadable or incomplete document scans.</li>
+                  </ul>
+                  <p style={{ margin: 0 }}>
+                    Once uploaded, the platform extracts fields and recalculates SOP compliance automatically.
+                  </p>
+                </div>
+              </>
+            ) : (
+              <>
+                <h3>Names bring the case together.</h3>
+                <p>
+                  Full names and unambiguous initials are matched automatically.
+                  Review uncertain assignments before processing.
+                </p>
+                <div className="filename-example">
+                  customer_transaction.pdf
+                  <br />
+                  customer_lld.pdf
+                  <br />
+                  customer_invoice.pdf
+                </div>
+                <ol>
+                  <li>
+                    <strong>Group first</strong>
+                    <span>
+                      Same customer label, selected branch and upload batch.
+                    </span>
+                  </li>
+                  <li>
+                    <strong>Classify next</strong>
+                    <span>The configured provider verifies the document type.</span>
+                  </li>
+                  <li>
+                    <strong>Extract and check</strong>
+                    <span>
+                      The matching schema and SOP rules run automatically.
+                    </span>
+                  </li>
+                </ol>
+                <p className="subtext">
+                  Later uploads create new cases unless explicitly attached to an
+                  existing case ID.
+                </p>
+              </>
+            )}
             {cfg?.payload.provider === "fixture" && (
               <p className="fixture-note">
                 Fixture mode is enabled. Outputs contain synthetic test values.

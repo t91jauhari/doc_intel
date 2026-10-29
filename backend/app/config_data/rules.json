@@ -413,7 +413,8 @@
     "severity": "REVIEW",
     "label": "Uploaded-document signature observations only; external specimens and identity authentication excluded.",
     "condition_operator": "always",
-    "comparison_policy": "Unconfigured document-only component; configure approved policy before release."
+    "comparison_policy": "Unconfigured document-only component; configure approved policy before release.",
+    "kind": "regulatory_disclaimer"
   },
   {
     "id": "POLICY_SOP1_5",
@@ -427,7 +428,8 @@
     "severity": "REVIEW",
     "label": "Declared carrier and supplied authority-document presence only; actual presenter/CCTV/employee authorization verification excluded.",
     "condition_operator": "always",
-    "comparison_policy": "Unconfigured document-only component; configure approved policy before release."
+    "comparison_policy": "Unconfigured document-only component; configure approved policy before release.",
+    "kind": "regulatory_disclaimer"
   },
   {
     "id": "POLICY_SOP1_6",
@@ -441,7 +443,8 @@
     "severity": "REVIEW",
     "label": "Visible written confirmation on supplied form only; external SPIV/HO and voice recording verification excluded.",
     "condition_operator": "always",
-    "comparison_policy": "Unconfigured document-only component; configure approved policy before release."
+    "comparison_policy": "Unconfigured document-only component; configure approved policy before release.",
+    "kind": "regulatory_disclaimer"
   },
   {
     "id": "POLICY_SOP1_7",
@@ -455,7 +458,8 @@
     "severity": "REVIEW",
     "label": "Conditional on explicit transaction direction; no inferred funding currency.",
     "condition_operator": "always",
-    "comparison_policy": "Unconfigured document-only component; configure approved policy before release."
+    "comparison_policy": "Unconfigured document-only component; configure approved policy before release.",
+    "kind": "regulatory_disclaimer"
   },
   {
     "id": "POLICY_SOP1_9",
@@ -469,7 +473,8 @@
     "severity": "REVIEW",
     "label": "Conditional on documented case applicability; monthly Smart FX computation excluded; invoice-date conflict needs policy.",
     "condition_operator": "always",
-    "comparison_policy": "Unconfigured document-only component; configure approved policy before release."
+    "comparison_policy": "Unconfigured document-only component; configure approved policy before release.",
+    "kind": "regulatory_disclaimer"
   },
   {
     "id": "POLICY_SOP5_RIplay_2",
@@ -483,7 +488,8 @@
     "severity": "REVIEW",
     "label": "Name and uploaded-document signature observations only; no authentication.",
     "condition_operator": "always",
-    "comparison_policy": "Unconfigured document-only component; configure approved policy before release."
+    "comparison_policy": "Unconfigured document-only component; configure approved policy before release.",
+    "kind": "regulatory_disclaimer"
   },
   {
     "id": "POLICY_SOP4_Stempel_1",
@@ -497,7 +503,8 @@
     "severity": "REVIEW",
     "label": "Observed document stamp against configured allowed types only; physical branch inventory excluded.",
     "condition_operator": "always",
-    "comparison_policy": "Unconfigured document-only component; configure approved policy before release."
+    "comparison_policy": "Unconfigured document-only component; configure approved policy before release.",
+    "kind": "regulatory_disclaimer"
   },
   {
     "id": "POLICY_SOP4_Stempel_3",
@@ -511,7 +518,8 @@
     "severity": "REVIEW",
     "label": "Document stamp legibility only; physical originality and manufacture excluded.",
     "condition_operator": "always",
-    "comparison_policy": "Unconfigured document-only component; configure approved policy before release."
+    "comparison_policy": "Unconfigured document-only component; configure approved policy before release.",
+    "kind": "regulatory_disclaimer"
   },
   {
     "id": "POLICY_SOP4_Stempel_4",
@@ -525,7 +533,8 @@
     "severity": "REVIEW",
     "label": "Visible stamp role/function against configured policy; actual employee authority excluded.",
     "condition_operator": "always",
-    "comparison_policy": "Unconfigured document-only component; configure approved policy before release."
+    "comparison_policy": "Unconfigured document-only component; configure approved policy before release.",
+    "kind": "regulatory_disclaimer"
   },
   {
     "id": "POLICY_SOP4_Stempel_5",
@@ -539,7 +548,8 @@
     "severity": "REVIEW",
     "label": "Document placement only.",
     "condition_operator": "always",
-    "comparison_policy": "Unconfigured document-only component; configure approved policy before release."
+    "comparison_policy": "Unconfigured document-only component; configure approved policy before release.",
+    "kind": "regulatory_disclaimer"
   },
   {
     "id": "SYS_02_NAME",
