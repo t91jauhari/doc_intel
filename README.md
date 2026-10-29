@@ -88,6 +88,49 @@ Once running, access the interfaces:
 
 ---
 
+## AI Model Connectors (Gemini Native & OpenAI-Compatible)
+
+The platform features a **Model Connector Hub** accessible under **Settings → AI Connectors & Credentials** ([http://localhost:3000/settings](http://localhost:3000/settings)). You can register, test, and switch Vision/LLM extraction providers on the fly with zero container restarts.
+
+### 1. Google Gemini Native Endpoint (Recommended)
+Direct integration with Google's Generative Language REST API.
+
+- **Provider Type**: `Google Gemini`
+- **Base URL**: `https://generativelanguage.googleapis.com/v1beta`
+- **Supported Models**:
+  - `gemini-2.5-pro` (Recommended for banking documents, invoices, and table recognition)
+  - `gemini-2.0-flash` (High-speed multimodal extraction)
+  - `gemini-1.5-pro` / `gemini-1.5-flash`
+- **API Key**: Google AI Studio API key (`AIza...`).
+- **Request Format**: Dispatches directly to `/models/{model_id}:generateContent`.
+
+### 2. OpenAI-Compatible Vision Endpoints
+Connect to any OpenAI-compatible gateway (e.g., Azure OpenAI, Spider-AI, OpenRouter, vLLM, Ollama, LiteLLM).
+
+- **Provider Type**: `Spider-AI / OpenAI-compatible Vision Gateway`
+- **Base URL**: Gateway URL ending with `/v1` (e.g. `https://api.openai.com/v1` or `https://your-proxy-domain/v1`).
+- **Model Identifier**: Target model name (e.g. `gpt-4o`, `gpt-4o-mini`, `gemini-2.5-pro`).
+- **API Key**: Gateway Bearer token / API key.
+- **Request Format**: Automatically detected when the Base URL contains `openai` or ends with `/v1`; dispatches multimodal `/chat/completions` with base64 image data payloads.
+
+### Registering via UI or REST API
+- **In the UI**: Go to [http://localhost:3000/settings](http://localhost:3000/settings) → click **Register Connector** → enter credentials → click **Test Connection** to measure probe latency → click **Save & Set Active**.
+- **Via API**:
+  ```bash
+  curl -X POST http://localhost:8000/api/connectors \
+    -H "Content-Type: application/json" \
+    -d '{
+      "name": "Google Gemini 2.5 Pro",
+      "provider_type": "gemini",
+      "model_id": "gemini-2.5-pro",
+      "base_url": "https://generativelanguage.googleapis.com/v1beta",
+      "api_key": "YOUR_API_KEY",
+      "is_active": true
+    }'
+  ```
+
+---
+
 ## Testing & Verifying UI / UX
 
 ### 1. Interactive Reviewer Workflow
